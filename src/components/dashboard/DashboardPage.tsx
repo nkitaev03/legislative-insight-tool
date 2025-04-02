@@ -7,7 +7,6 @@ import {
   CheckCircle,
   Clock,
   Shield,
-  PieChart,
   CalendarClock,
   AlertCircle
 } from 'lucide-react';
@@ -23,36 +22,16 @@ import {
   CartesianGrid, 
   Tooltip as RechartsTooltip, 
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
   PieChart as RechartsPieChart,
   Pie,
+  Cell,
   Legend
 } from 'recharts';
-
-const lineData = [
-  { name: 'Янв', value: 12 },
-  { name: 'Фев', value: 19 },
-  { name: 'Мар', value: 15 },
-  { name: 'Апр', value: 27 },
-  { name: 'Май', value: 29 },
-  { name: 'Июн', value: 35 },
-  { name: 'Июл', value: 40 },
-];
 
 const riskData = [
   { name: 'Высокий', value: 15, color: '#f44336' },
   { name: 'Средний', value: 30, color: '#ff9800' },
   { name: 'Низкий', value: 55, color: '#2a9e31' },
-];
-
-const industryData = [
-  { name: 'Финансы', risk: 75, color: '#f44336' },
-  { name: 'Здравоохранение', risk: 60, color: '#ff9800' },
-  { name: 'Розница', risk: 45, color: '#ff9800' },
-  { name: 'Производство', risk: 30, color: '#2a9e31' },
-  { name: 'Образование', risk: 25, color: '#2a9e31' },
 ];
 
 const tasks = [
@@ -144,86 +123,32 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle>Тренд изменений в законодательстве</CardTitle>
-                <CardDescription>Количество новых законов и постановлений</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lineData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <RechartsTooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#2a9e31" 
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Распределение рисков</CardTitle>
-                <CardDescription>По уровню важности</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPieChart>
-                    <Pie
-                      data={riskData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {riskData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Legend />
-                  </RechartsPieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Risk by Industry */}
+          {/* Risk Distribution Chart */}
           <Card>
-            <CardHeader className="pb-0">
-              <CardTitle>Риски по отраслям</CardTitle>
-              <CardDescription>Уровень комплаенс-рисков в различных секторах</CardDescription>
+            <CardHeader>
+              <CardTitle>Распределение рисков</CardTitle>
+              <CardDescription>По уровню важности</CardDescription>
             </CardHeader>
-            <CardContent className="h-80 pt-6">
+            <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={industryData}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                  <XAxis type="number" domain={[0, 100]} />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <RechartsTooltip />
-                  <Bar dataKey="risk" radius={[0, 4, 4, 0]}>
-                    {industryData.map((entry, index) => (
+                <RechartsPieChart>
+                  <Pie
+                    data={riskData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={120}
+                    fill="#8884d8"
+                    paddingAngle={5}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {riskData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
-                  </Bar>
-                </BarChart>
+                  </Pie>
+                  <Legend />
+                </RechartsPieChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon } from 'lucide-react';
+import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog";
 
 // Extended legislation data with risks, recommendations, and responsible person
-const legislationChanges = [
+const initialLegislationChanges = [
   {
     id: '1',
     title: 'Об изменениях в Федеральном законе "О защите персональных данных"',
@@ -139,11 +139,23 @@ const legislationChanges = [
   },
 ];
 
+// List of available responsible persons
+const responsiblePersons = [
+  "Иванов И.И., Директор IT-отдела",
+  "Петрова А.С., HR-директор",
+  "Смирнова Е.В., Главный бухгалтер",
+  "Козлов А.А., Руководитель отдела качества",
+  "Никитин В.П., Коммерческий директор",
+  "Сидоров М.Н., Юрисконсульт"
+];
+
 export default function MonitoringPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRisk, setSelectedRisk] = useState('all');
   const [selectedDate, setSelectedDate] = useState('all');
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  const [editResponsibleId, setEditResponsibleId] = useState<string | null>(null);
+  const [legislationChanges, setLegislationChanges] = useState(initialLegislationChanges);
   
   // Find the selected legislation for dialog
   const selectedLegislation = legislationChanges.find(item => item.id === openDialogId);
@@ -159,6 +171,17 @@ export default function MonitoringPage() {
     
     return matchesSearch && matchesRisk && matchesDate;
   });
+
+  const handleResponsibleChange = (itemId: string, newResponsible: string) => {
+    setLegislationChanges(prev => 
+      prev.map(item => 
+        item.id === itemId 
+          ? { ...item, responsible: newResponsible } 
+          : item
+      )
+    );
+    setEditResponsibleId(null);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -264,7 +287,37 @@ export default function MonitoringPage() {
                     <p className="text-sm mt-3">{item.description}</p>
                     <div className="mt-4 flex flex-wrap gap-2 items-center">
                       <Badge variant="secondary">{item.category}</Badge>
-                      <span className="text-sm text-muted-foreground">Ответственный: {item.responsible}</span>
+                      
+                      {/* Responsible Person with inline edit functionality */}
+                      <div className="flex items-center gap-1 ml-2">
+                        <User className="h-3.5 w-3.5 text-muted-foreground" />
+                        
+                        {editResponsibleId === item.id ? (
+                          <Select 
+                            value={item.responsible} 
+                            onValueChange={(value) => handleResponsibleChange(item.id, value)}
+                            onOpenChange={(open) => {
+                              if (!open) setEditResponsibleId(null);
+                            }}
+                          >
+                            <SelectTrigger className="h-7 text-xs w-[250px]">
+                              <SelectValue placeholder="Выберите ответственного" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {responsiblePersons.map(person => (
+                                <SelectItem key={person} value={person}>{person}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <span 
+                            className="text-sm text-muted-foreground cursor-pointer hover:text-foreground hover:underline"
+                            onClick={() => setEditResponsibleId(item.id)}
+                          >
+                            {item.responsible || "Назначить ответственного"}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <Separator />
@@ -307,7 +360,10 @@ export default function MonitoringPage() {
 
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium mb-2">Описание</h3>
+                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+                  <FileWarning className="h-5 w-5 text-compBlue-500" />
+                  Описание
+                </h3>
                 <p>{selectedLegislation.description}</p>
               </div>
 
@@ -324,7 +380,10 @@ export default function MonitoringPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-medium mb-2">Рекомендации</h3>
+                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+                  <ListTodo className="h-5 w-5 text-compGreen-500" />
+                  Рекомендации
+                </h3>
                 <ul className="space-y-2 list-disc pl-5">
                   {selectedLegislation.recommendations.map((rec, index) => (
                     <li key={index}>{rec}</li>
@@ -333,10 +392,31 @@ export default function MonitoringPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-medium mb-2">Информация</h3>
+                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
+                  <Info className="h-5 w-5 text-compPurple-500" />
+                  Информация
+                </h3>
                 <div className="space-y-2">
                   <p><strong>Дата публикации:</strong> {selectedLegislation.date}</p>
-                  <p><strong>Ответственный:</strong> {selectedLegislation.responsible}</p>
+                  
+                  {/* Editable responsible person in dialog */}
+                  <div className="flex items-center gap-2">
+                    <strong>Ответственный:</strong>
+                    <Select 
+                      value={selectedLegislation.responsible} 
+                      onValueChange={(value) => handleResponsibleChange(selectedLegislation.id, value)}
+                    >
+                      <SelectTrigger className="h-8 w-[250px]">
+                        <SelectValue placeholder="Выберите ответственного" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {responsiblePersons.map(person => (
+                          <SelectItem key={person} value={person}>{person}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   <p className="flex items-center gap-2">
                     <strong>Источник:</strong>
                     <a 
