@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,32 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// ComplianceAI custom colors
+				compGreen: {
+					50: '#f0faf0',
+					100: '#dbf1dc',
+					200: '#b8e3ba',
+					300: '#86ce8a',
+					400: '#4eb354',
+					500: '#2a9e31',
+					600: '#1d7f24',
+					700: '#1b6521',
+					800: '#1a511f',
+					900: '#18451d',
+				},
+				compOrange: {
+					50: '#fff8ed',
+					100: '#ffefd4',
+					200: '#ffdca8',
+					300: '#ffc170',
+					400: '#ff9a38',
+					500: '#ff7a0f',
+					600: '#ed5f04',
+					700: '#c44a06',
+					800: '#9c3c0c',
+					900: '#7e340f',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +110,16 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-light': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-light': 'pulse-light 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 			}
 		}
 	},
