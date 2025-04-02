@@ -22,9 +22,9 @@ export default function RiskIndicator({
   };
 
   const levelClasses = {
-    low: 'bg-compGreen-500',
-    medium: 'bg-compOrange-500',
-    high: 'bg-red-500'
+    low: 'bg-compGreen-500 shadow-[0_0_5px_rgba(37,184,115,0.5)]',
+    medium: 'bg-compOrange-500 shadow-[0_0_5px_rgba(255,122,15,0.5)]',
+    high: 'bg-red-500 shadow-[0_0_5px_rgba(239,68,68,0.5)]'
   };
 
   const levelLabels = {
@@ -38,8 +38,21 @@ export default function RiskIndicator({
       <Tooltip>
         <TooltipTrigger asChild>
           <div className={cn('flex items-center gap-2', className)}>
-            <div className={cn('rounded-full', sizeClasses[size], levelClasses[level])} />
-            {showLabel && <span className="text-sm">{levelLabels[level]}</span>}
+            <div className={cn(
+              'rounded-full animate-pulse-light', 
+              sizeClasses[size], 
+              levelClasses[level]
+            )} />
+            {showLabel && (
+              <span className={cn(
+                "text-sm font-medium",
+                level === 'low' && 'text-compGreen-600',
+                level === 'medium' && 'text-compOrange-600',
+                level === 'high' && 'text-red-600'
+              )}>
+                {levelLabels[level]}
+              </span>
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent>
