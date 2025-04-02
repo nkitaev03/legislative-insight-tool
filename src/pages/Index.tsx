@@ -33,16 +33,10 @@ export default function Index() {
     switch (path) {
       case '/monitoring':
         return <MonitoringPage />;
-      case '/analysis':
-        return <div className="p-6"><h1 className="text-2xl font-semibold">Анализ влияния на бизнес</h1></div>;
-      case '/recommendations':
-        return <div className="p-6"><h1 className="text-2xl font-semibold">Рекомендации</h1></div>;
-      case '/reports':
-        return <div className="p-6"><h1 className="text-2xl font-semibold">Отчеты</h1></div>;
-      case '/storage':
-        return <div className="p-6"><h1 className="text-2xl font-semibold">Хранилище данных</h1></div>;
-      case '/settings':
-        return <div className="p-6"><h1 className="text-2xl font-semibold">Настройки</h1></div>;
+      case '/simulation':
+        return <div className="p-6"><h1 className="text-2xl font-semibold">Симуляция</h1></div>;
+      case '/audit':
+        return <div className="p-6"><h1 className="text-2xl font-semibold">Аудит</h1></div>;
       default:
         return <DashboardPage />;
     }

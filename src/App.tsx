@@ -18,11 +18,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/monitoring" element={<Index />} />
-          <Route path="/analysis" element={<Index />} />
-          <Route path="/recommendations" element={<Index />} />
-          <Route path="/reports" element={<Index />} />
-          <Route path="/storage" element={<Index />} />
-          <Route path="/settings" element={<Index />} />
+          <Route path="/simulation" element={<Index />} />
+          <Route path="/audit" element={<Index />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

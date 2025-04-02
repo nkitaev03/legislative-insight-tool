@@ -4,11 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   BarChart3, 
   FileSearch, 
-  Brain, 
-  CheckSquare, 
-  FileText, 
-  Archive, 
-  Settings, 
+  Play, 
+  Clipboard, 
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -47,15 +44,8 @@ export default function Sidebar() {
   const navigationItems = [
     { icon: BarChart3, text: "Дашборд", path: "/" },
     { icon: FileSearch, text: "Мониторинг", path: "/monitoring" },
-    { icon: Brain, text: "Анализ", path: "/analysis" },
-    { icon: CheckSquare, text: "Рекомендации", path: "/recommendations" },
-    { icon: FileText, text: "Отчеты", path: "/reports" },
-    { icon: Archive, text: "Хранилище", path: "/storage" },
-  ];
-
-  // Admin section
-  const adminItems = [
-    { icon: Settings, text: "Настройки", path: "/settings" },
+    { icon: Play, text: "Симуляция", path: "/simulation" },
+    { icon: Clipboard, text: "Аудит", path: "/audit" },
   ];
 
   return (
@@ -97,27 +87,6 @@ export default function Sidebar() {
             />
           ))}
         </nav>
-
-        <div className="mt-6 pt-4 border-t border-sidebar-border/50">
-          <div className={cn(
-            "px-3 mb-2 text-xs font-semibold text-sidebar-foreground/60",
-            isCollapsed && "text-center"
-          )}>
-            {!isCollapsed && "Администрирование"}
-          </div>
-          <nav className="space-y-1">
-            {adminItems.map((item) => (
-              <SidebarItem
-                key={item.path}
-                icon={item.icon}
-                text={item.text}
-                path={item.path}
-                isCollapsed={isCollapsed}
-                active={location.pathname === item.path}
-              />
-            ))}
-          </nav>
-        </div>
       </div>
       
       <div className={cn(
