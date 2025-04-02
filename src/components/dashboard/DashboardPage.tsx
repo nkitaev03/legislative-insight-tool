@@ -25,13 +25,27 @@ import {
   PieChart as RechartsPieChart,
   Pie,
   Cell,
-  Legend
+  Legend,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar
 } from 'recharts';
 
 const riskData = [
   { name: 'Высокий', value: 15, color: '#f44336' },
   { name: 'Средний', value: 30, color: '#ff9800' },
   { name: 'Низкий', value: 55, color: '#2a9e31' },
+];
+
+const risksByType = [
+  { subject: 'Операционные', A: 85, fullMark: 100 },
+  { subject: 'Юридические', A: 65, fullMark: 100 },
+  { subject: 'Финансовые', A: 40, fullMark: 100 },
+  { subject: 'Регуляторные', A: 90, fullMark: 100 },
+  { subject: 'Репутационные', A: 30, fullMark: 100 },
+  { subject: 'Стратегические', A: 45, fullMark: 100 },
 ];
 
 const tasks = [
@@ -74,6 +88,25 @@ const tasks = [
 
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
+
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -123,103 +156,133 @@ export default function DashboardPage() {
             />
           </div>
 
-          {/* Risk Distribution Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Распределение рисков</CardTitle>
-              <CardDescription>По уровню важности</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <RechartsPieChart>
-                  <Pie
-                    data={riskData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {riskData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Legend />
-                </RechartsPieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="trends" className="space-y-6">
+          {/* Risk Distribution Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle>Сезонность изменений</CardTitle>
-                <CardDescription>Динамика изменений НПА по кварталам</CardDescription>
+                <CardTitle>Распределение рисков</CardTitle>
+                <CardDescription>По уровню важности</CardDescription>
               </CardHeader>
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={[
-                      { month: 'Q1-2022', value: 24 },
-                      { month: 'Q2-2022', value: 13 },
-                      { month: 'Q3-2022', value: 15 },
-                      { month: 'Q4-2022', value: 30 },
-                      { month: 'Q1-2023', value: 22 },
-                      { month: 'Q2-2023', value: 17 },
-                    ]}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <RechartsTooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#2a9e31" 
-                      strokeWidth={2}
+                  <RechartsPieChart>
+                    <Pie
+                      data={riskData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={120}
+                      fill="#8884d8"
+                      paddingAngle={5}
+                      dataKey="value"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                    >
+                      {riskData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Legend 
+                      layout="horizontal" 
+                      verticalAlign="bottom" 
+                      align="center"
+                      formatter={(value, entry, index) => (
+                        <span className="text-sm font-medium">{value}</span>
+                      )}
                     />
-                  </LineChart>
+                  </RechartsPieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle>Источники рисков</CardTitle>
-                <CardDescription>Распределение по типам рисков</CardDescription>
+                <CardTitle>Типы рисков</CardTitle>
+                <CardDescription>Распределение по категориям</CardDescription>
               </CardHeader>
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPieChart>
-                    <Pie
-                      data={[
-                        { name: 'Законодательный', value: 40, color: '#2a9e31' },
-                        { name: 'Операционный', value: 25, color: '#ff9800' },
-                        { name: 'Финансовый', value: 15, color: '#f44336' },
-                        { name: 'Репутационный', value: 20, color: '#9c27b0' },
-                      ]}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={90}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {riskData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
+                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={risksByType}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#888', fontSize: 12 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                    <Radar
+                      name="Уровень риска"
+                      dataKey="A"
+                      stroke="#1cb16b"
+                      fill="#1cb16b"
+                      fillOpacity={0.6}
+                    />
                     <Legend />
-                  </RechartsPieChart>
+                  </RadarChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
+
+          {/* Latest Risk Alerts */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Последние предупреждения</CardTitle>
+              <CardDescription>Новые и важные комплаенс-риски</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {[
+                  { title: 'Новый законопроект о защите данных', level: 'high', date: '12.05.2023', desc: 'Требуется анализ влияния на бизнес-процессы' },
+                  { title: 'Изменение требований к отчетности', level: 'medium', date: '10.05.2023', desc: 'Необходимо обновить внутренние документы' },
+                  { title: 'Обновление антимонопольного законодательства', level: 'medium', date: '05.05.2023', desc: 'Требуется пересмотр договоров с партнерами' },
+                ].map((alert, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40">
+                    <div className="mt-1">
+                      <RiskIndicator level={alert.level as 'low' | 'medium' | 'high'} size="md" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium">{alert.title}</h4>
+                        <span className="text-xs text-muted-foreground">{alert.date}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">{alert.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="trends" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Сезонность изменений</CardTitle>
+              <CardDescription>Динамика изменений НПА по кварталам</CardDescription>
+            </CardHeader>
+            <CardContent className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={[
+                    { month: 'Q1-2022', value: 24 },
+                    { month: 'Q2-2022', value: 13 },
+                    { month: 'Q3-2022', value: 15 },
+                    { month: 'Q4-2022', value: 30 },
+                    { month: 'Q1-2023', value: 22 },
+                    { month: 'Q2-2023', value: 17 },
+                  ]}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <RechartsTooltip />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#2a9e31" 
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </TabsContent>
         
         <TabsContent value="tasks" className="space-y-4">

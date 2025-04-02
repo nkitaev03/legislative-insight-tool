@@ -8,6 +8,7 @@ import {
   Clipboard,
   ChevronLeft,
   ChevronRight,
+  User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -46,6 +47,7 @@ export default function Sidebar() {
     { icon: FileSearch, text: "Мониторинг", path: "/monitoring" },
     { icon: Play, text: "Симуляция", path: "/simulation" },
     { icon: Clipboard, text: "Аудит", path: "/audit" },
+    { icon: User, text: "Личный кабинет", path: "/profile" },
   ];
 
   return (
@@ -64,13 +66,14 @@ export default function Sidebar() {
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/c3cc4010-d252-4d7f-bde7-dc7c9b2fe33a.png" alt="НОРМ Logo" className="h-8 w-8" />
+            <img src="/lovable-uploads/7a95b305-97a9-4461-a20f-4599b4bff0a2.png" alt="НОРМ Logo" className="h-8 w-8" />
             <div className="text-white font-bold text-lg">НОРМ</div>
           </div>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="text-white/80 p-1.5 rounded-md hover:bg-white/10 transition-colors"
+          data-testid="sidebar-toggle"
         >
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4" />

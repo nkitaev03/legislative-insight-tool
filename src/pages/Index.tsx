@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Play, Clipboard } from 'lucide-react';
+import { Play, Clipboard, User } from 'lucide-react';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import DashboardPage from '@/components/dashboard/DashboardPage';
 import MonitoringPage from '@/components/monitoring/MonitoringPage';
+import ProfilePage from '@/components/profile/ProfilePage';
 import ChatSupport from '@/components/common/ChatSupport';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -14,10 +15,29 @@ export default function Index() {
   const location = useLocation();
   const { toast } = useToast();
 
+  // Listen for sidebar toggle events
+  useEffect(() => {
+    const handleSidebarToggle = () => {
+      const toggleButton = document.querySelector('[data-testid="sidebar-toggle"]');
+      if (toggleButton) {
+        const observer = new MutationObserver((mutations) => {
+          mutations.forEach(() => {
+            const isCollapsed = toggleButton.parentElement?.parentElement?.classList.contains('w-16') || false;
+            setSidebarCollapsed(isCollapsed);
+          });
+        });
+        observer.observe(toggleButton.parentElement.parentElement, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
+      }
+    };
+    
+    handleSidebarToggle();
+  }, []);
+
   // Show welcome toast on first render
   useEffect(() => {
     toast({
-      title: "Добро пожаловать в ComplianceAI",
+      title: "Добро пожаловать в НОРМ",
       description: "У вас 2 новых уведомления об изменениях в законодательстве",
       className: "bg-white border-l-4 border-compGreen-500",
     });
@@ -78,6 +98,8 @@ export default function Index() {
             </div>
           </div>
         );
+      case '/profile':
+        return <ProfilePage />;
       default:
         return <DashboardPage />;
     }
