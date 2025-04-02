@@ -15,13 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricCard from '../common/MetricCard';
 import RiskIndicator from '../common/RiskIndicator';
 import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip as RechartsTooltip, 
-  ResponsiveContainer,
   PieChart as RechartsPieChart,
   Pie,
   Cell,
@@ -30,7 +23,8 @@ import {
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
-  Radar
+  Radar,
+  ResponsiveContainer
 } from 'recharts';
 
 const riskData = [
@@ -117,7 +111,6 @@ export default function DashboardPage() {
       <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="overview">Обзор</TabsTrigger>
-          <TabsTrigger value="trends">Тренды</TabsTrigger>
           <TabsTrigger value="tasks">Задачи</TabsTrigger>
         </TabsList>
         
@@ -247,40 +240,6 @@ export default function DashboardPage() {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="trends" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Сезонность изменений</CardTitle>
-              <CardDescription>Динамика изменений НПА по кварталам</CardDescription>
-            </CardHeader>
-            <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={[
-                    { month: 'Q1-2022', value: 24 },
-                    { month: 'Q2-2022', value: 13 },
-                    { month: 'Q3-2022', value: 15 },
-                    { month: 'Q4-2022', value: 30 },
-                    { month: 'Q1-2023', value: 22 },
-                    { month: 'Q2-2023', value: 17 },
-                  ]}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <RechartsTooltip />
-                  <Line 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#2a9e31" 
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>

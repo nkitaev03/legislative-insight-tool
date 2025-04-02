@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info } from 'lucide-react';
+import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import RiskIndicator from '../common/RiskIndicator';
 import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogClose,
@@ -44,9 +44,9 @@ const initialLegislationChanges = [
       'Репутационные риски при публичном раскрытии инцидентов'
     ],
     recommendations: [
-      'Обновить политику обработки персональных данных до 01.06.2023',
-      'Провести аудит систем хранения данных клиентов',
-      'Назначить ответственного за защиту персональных данных'
+      { text: 'Обновить политику обработки персональных данных до 01.06.2023', responsible: '', status: 'pending' },
+      { text: 'Провести аудит систем хранения данных клиентов', responsible: '', status: 'pending' },
+      { text: 'Назначить ответственного за защиту персональных данных', responsible: '', status: 'pending' }
     ]
   },
   {
@@ -66,9 +66,9 @@ const initialLegislationChanges = [
       'Административная ответственность при проверке трудовой инспекцией'
     ],
     recommendations: [
-      'Обновить систему учета рабочего времени',
-      'Провести обучение HR-специалистов',
-      'Внести изменения в правила внутреннего трудового распорядка'
+      { text: 'Обновить систему учета рабочего времени', responsible: '', status: 'pending' },
+      { text: 'Провести обучение HR-специалистов', responsible: '', status: 'pending' },
+      { text: 'Внести изменения в правила внутреннего трудового распорядка', responsible: '', status: 'pending' }
     ]
   },
   {
@@ -88,9 +88,9 @@ const initialLegislationChanges = [
       'Усиление налогового контроля за IT-компаниями'
     ],
     recommendations: [
-      'Провести анализ возможности применения новых льгот',
-      'Обновить учетную политику организации',
-      'Подготовить документы для подтверждения права на льготы'
+      { text: 'Провести анализ возможности применения новых льгот', responsible: '', status: 'pending' },
+      { text: 'Обновить учетную политику организации', responsible: '', status: 'pending' },
+      { text: 'Подготовить документы для подтверждения права на льготы', responsible: '', status: 'pending' }
     ]
   },
   {
@@ -110,9 +110,9 @@ const initialLegislationChanges = [
       'Затраты на обновление упаковки продукции'
     ],
     recommendations: [
-      'Изучить новые требования к маркировке',
-      'Обновить дизайн упаковки',
-      'Провести обучение персонала отдела качества'
+      { text: 'Изучить новые требования к маркировке', responsible: '', status: 'pending' },
+      { text: 'Обновить дизайн упаковки', responsible: '', status: 'pending' },
+      { text: 'Провести обучение персонала отдела качества', responsible: '', status: 'pending' }
     ]
   },
   {
@@ -132,9 +132,9 @@ const initialLegislationChanges = [
       'Изъятие товаров без маркировки из оборота'
     ],
     recommendations: [
-      'Зарегистрироваться в системе "Честный ЗНАК"',
-      'Приобрести оборудование для считывания кодов маркировки',
-      'Обновить учетную систему для работы с маркированными товарами'
+      { text: 'Зарегистрироваться в системе "Честный ЗНАК"', responsible: '', status: 'pending' },
+      { text: 'Приобрести оборудование для считывания кодов маркировки', responsible: '', status: 'pending' },
+      { text: 'Обновить учетную систему для работы с маркированными товарами', responsible: '', status: 'pending' }
     ]
   },
 ];
@@ -156,6 +156,7 @@ export default function MonitoringPage() {
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
   const [editResponsibleId, setEditResponsibleId] = useState<string | null>(null);
   const [legislationChanges, setLegislationChanges] = useState(initialLegislationChanges);
+  const { toast } = useToast();
   
   // Find the selected legislation for dialog
   const selectedLegislation = legislationChanges.find(item => item.id === openDialogId);
@@ -183,6 +184,47 @@ export default function MonitoringPage() {
     setEditResponsibleId(null);
   };
 
+  // Handle recommendation responsible change
+  const handleRecommendationResponsibleChange = (itemId: string, recIndex: number, newResponsible: string) => {
+    setLegislationChanges(prev => 
+      prev.map(item => {
+        if (item.id === itemId) {
+          const updatedRecommendations = [...item.recommendations];
+          updatedRecommendations[recIndex] = {
+            ...updatedRecommendations[recIndex],
+            responsible: newResponsible
+          };
+          return { ...item, recommendations: updatedRecommendations };
+        }
+        return item;
+      })
+    );
+
+    toast({
+      title: "Ответственный назначен",
+      description: "Для рекомендации успешно назначен ответственный",
+      className: "bg-compGreen-50 border-l-4 border-compGreen-500",
+    });
+  };
+
+  // Toggle recommendation status
+  const handleToggleRecommendationStatus = (itemId: string, recIndex: number) => {
+    setLegislationChanges(prev => 
+      prev.map(item => {
+        if (item.id === itemId) {
+          const updatedRecommendations = [...item.recommendations];
+          const currentStatus = updatedRecommendations[recIndex].status;
+          updatedRecommendations[recIndex] = {
+            ...updatedRecommendations[recIndex],
+            status: currentStatus === 'completed' ? 'pending' : 'completed'
+          };
+          return { ...item, recommendations: updatedRecommendations };
+        }
+        return item;
+      })
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -192,6 +234,7 @@ export default function MonitoringPage() {
           Экспорт
         </Button>
       </div>
+      
       
       <Card>
         <CardHeader className="pb-3">
@@ -384,9 +427,43 @@ export default function MonitoringPage() {
                   <ListTodo className="h-5 w-5 text-compGreen-500" />
                   Рекомендации
                 </h3>
-                <ul className="space-y-2 list-disc pl-5">
+                <ul className="space-y-3 pl-0 list-none">
                   {selectedLegislation.recommendations.map((rec, index) => (
-                    <li key={index}>{rec}</li>
+                    <li key={index} className={`flex items-start p-3 rounded-md ${rec.status === 'completed' ? 'bg-green-50' : 'bg-gray-50'}`}>
+                      <div className="flex-shrink-0 mt-0.5 mr-3">
+                        <button 
+                          className={`w-5 h-5 rounded-full flex items-center justify-center ${
+                            rec.status === 'completed' 
+                              ? 'bg-green-500 text-white' 
+                              : 'border-2 border-gray-300'
+                          }`}
+                          onClick={() => handleToggleRecommendationStatus(selectedLegislation.id, index)}
+                        >
+                          {rec.status === 'completed' && <CheckCircle className="h-3 w-3" />}
+                        </button>
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-sm ${rec.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
+                          {rec.text}
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">Ответственный:</span>
+                          <Select 
+                            value={rec.responsible} 
+                            onValueChange={(value) => handleRecommendationResponsibleChange(selectedLegislation.id, index, value)}
+                          >
+                            <SelectTrigger className="h-7 text-xs min-w-[200px]">
+                              <SelectValue placeholder="Назначить ответственного" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {responsiblePersons.map(person => (
+                                <SelectItem key={person} value={person}>{person}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </li>
                   ))}
                 </ul>
               </div>

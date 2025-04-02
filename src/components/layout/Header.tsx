@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Bell, Search, User } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 import NotificationBell from '../common/NotificationBell';
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +11,11 @@ interface HeaderProps {
 
 export default function Header({ sidebarCollapsed }: HeaderProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
   
   return (
     <header 
@@ -37,7 +42,10 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
         <div className="flex items-center gap-4">
           <NotificationBell />
           
-          <div className="flex items-center gap-3 rounded-full bg-secondary px-4 py-2 shadow-sm">
+          <div 
+            className="flex items-center gap-3 rounded-full bg-secondary px-4 py-2 shadow-sm cursor-pointer hover:bg-secondary/80 transition-colors"
+            onClick={handleProfileClick}
+          >
             <span className="text-sm font-medium text-secondary-foreground">Ильина А.</span>
             <div className="h-8 w-8 rounded-full bg-compGreen-500 text-white flex items-center justify-center shadow-md">
               <User className="h-4 w-4" />
