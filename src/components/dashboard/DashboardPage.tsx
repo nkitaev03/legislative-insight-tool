@@ -26,6 +26,8 @@ import {
   Radar,
   ResponsiveContainer
 } from 'recharts';
+import BusinessProcessMap from './BusinessProcessMap';
+import InteractiveChecklist from '../common/InteractiveChecklist';
 
 const riskData = [
   { name: 'Высокий', value: 15, color: '#f44336' },
@@ -80,6 +82,41 @@ const tasks = [
   },
 ];
 
+// Checklist items for the interactive checklist
+const checklistItems = [
+  {
+    id: '1',
+    text: 'Обновить политику конфиденциальности в соответствии с новыми требованиями',
+    completed: false,
+    responsible: 'Иванов И.И.'
+  },
+  {
+    id: '2',
+    text: 'Провести аудит систем хранения персональных данных',
+    completed: true,
+    deadline: new Date('2023-05-30'),
+    responsible: 'Петрова А.С.'
+  },
+  {
+    id: '3',
+    text: 'Назначить ответственного за защиту персональных данных',
+    completed: false,
+    reminders: true,
+    responsible: 'Смирнова Е.В.'
+  },
+  {
+    id: '4',
+    text: 'Внедрить систему контроля доступа к конфиденциальным данным',
+    completed: false,
+    deadline: new Date('2023-06-15')
+  },
+  {
+    id: '5',
+    text: 'Обновить договоры с контрагентами с учетом новых требований',
+    completed: false
+  }
+];
+
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
 
@@ -112,6 +149,7 @@ export default function DashboardPage() {
         <TabsList>
           <TabsTrigger value="overview">Обзор</TabsTrigger>
           <TabsTrigger value="tasks">Задачи</TabsTrigger>
+          <TabsTrigger value="process-map">Карта процессов</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
@@ -213,6 +251,15 @@ export default function DashboardPage() {
             </Card>
           </div>
 
+          {/* Interactive Checklist */}
+          <div className="grid grid-cols-1 gap-6">
+            <InteractiveChecklist 
+              title="План устранения рисков несоответствия"
+              description="Выполните следующие шаги для минимизации рисков"
+              items={checklistItems}
+            />
+          </div>
+
           {/* Latest Risk Alerts */}
           <Card>
             <CardHeader>
@@ -259,10 +306,10 @@ export default function DashboardPage() {
                       task.status === 'completed' 
                         ? 'bg-muted/50' 
                         : task.risk === 'high' 
-                          ? 'bg-red-50' 
+                          ? 'bg-red-50 dark:bg-red-950/20' 
                           : task.risk === 'medium' 
-                            ? 'bg-amber-50' 
-                            : 'bg-emerald-50'
+                            ? 'bg-amber-50 dark:bg-amber-950/20' 
+                            : 'bg-emerald-50 dark:bg-emerald-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -288,7 +335,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       {task.status !== 'completed' && (
-                        <button className="text-xs bg-white border border-border px-3 py-1 rounded hover:bg-muted">
+                        <button className="text-xs bg-background border border-border px-3 py-1 rounded hover:bg-muted">
                           {task.status === 'in-progress' ? 'Выполнить' : 'Начать'}
                         </button>
                       )}
@@ -298,6 +345,10 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="process-map" className="space-y-4">
+          <BusinessProcessMap />
         </TabsContent>
       </Tabs>
     </div>

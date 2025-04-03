@@ -5,44 +5,68 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 157 65% 10%;
-
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 157 65% 10%;
-
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 157 65% 10%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 142 72% 29%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 142 72% 29%;
+    --radius: 0.5rem;
+    --compGreen-50: 142, 100%, 95%;
+    --compGreen-500: 142, 72%, 29%;
+    --compBlue-50: 210, 70%, 95%;
+    --compBlue-500: 210, 70%, 50%;
+    --compBlue-700: 210, 70%, 30%;
+    --compOrange-50: 32, 100%, 95%;
+    --compOrange-500: 32, 98%, 56%;
+    --compOrange-700: 32, 98%, 36%;
+    --compPurple-50: 270, 70%, 95%;
+    --compPurple-500: 270, 60%, 50%;
+  }
 
-    --primary: 142 70% 35%;
-    --primary-foreground: 156 65% 98%;
-
-    --secondary: 193 80% 94%;
-    --secondary-foreground: 195 70% 35%;
-
-    --muted: 142 12% 92%;
-    --muted-foreground: 157 20% 40%;
-
-    --accent: 195 70% 50%;
-    --accent-foreground: 156 65% 98%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 142 30% 85%;
-    --input: 142 30% 85%;
-    --ring: 142 70% 35%;
-
-    --radius: 1rem;
-
-    --sidebar-background: 142 70% 16%;
-    --sidebar-foreground: 156 65% 98%;
-    --sidebar-primary: 142 65% 30%;
-    --sidebar-primary-foreground: 156 65% 98%;
-    --sidebar-accent: 142 30% 22%;
-    --sidebar-accent-foreground: 156 65% 98%;
-    --sidebar-border: 142 30% 22%;
-    --sidebar-ring: 142 65% 30%;
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 142 72% 29%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142 72% 29%;
+    --compGreen-50: 142, 70%, 15%;
+    --compGreen-500: 142, 72%, 40%;
+    --compBlue-50: 210, 70%, 15%;
+    --compBlue-500: 210, 70%, 50%;
+    --compBlue-700: 210, 70%, 70%;
+    --compOrange-50: 32, 80%, 15%;
+    --compOrange-500: 32, 98%, 56%;
+    --compOrange-700: 32, 98%, 76%;
+    --compPurple-50: 270, 70%, 15%;
+    --compPurple-500: 270, 60%, 60%;
   }
 }
 
@@ -56,48 +80,12 @@
   }
 }
 
-@layer utilities {
-  .risk-high {
-    @apply bg-red-500 text-white;
-  }
-  .risk-medium {
-    @apply bg-compOrange-500 text-white;
-  }
-  .risk-low {
-    @apply bg-compGreen-500 text-white;
-  }
+.bg-mesh-gradient {
+  background-image: radial-gradient(at top right, hsla(var(--primary), 0.15), transparent 50%),
+                    radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.15), transparent 50%);
+}
 
-  .card-hover {
-    @apply transition-all duration-200 hover:shadow-card-hover hover:translate-y-[-2px];
-  }
-
-  .gradient-border {
-    border-radius: var(--radius);
-    position: relative;
-  }
-  
-  .gradient-border::after {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, #3cc585, #2aa7ff);
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
-  .bg-mesh-gradient {
-    background-color: hsla(0, 0%, 100%, .4);
-    background-image: 
-      radial-gradient(at 80% 100%, hsla(142, 70%, 60%, 0.4) 0px, transparent 50%),
-      radial-gradient(at 0% 0%, hsla(195, 70%, 60%, 0.3) 0px, transparent 50%);
-  }
+.dark .bg-mesh-gradient {
+  background-image: radial-gradient(at top right, hsla(var(--primary), 0.25), transparent 50%),
+                    radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.25), transparent 50%);
 }

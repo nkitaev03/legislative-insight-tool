@@ -4,13 +4,15 @@ import { Bell, Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NotificationBell from '../common/NotificationBell';
 import { Button } from '@/components/ui/button';
+import VoiceSearch from '../common/VoiceSearch';
+import { ThemeToggle } from '../theme/ThemeToggle';
+import QuickTaskAssignment from '../common/QuickTaskAssignment';
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
 }
 
 export default function Header({ sidebarCollapsed }: HeaderProps) {
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   
   const handleProfileClick = () => {
@@ -19,27 +21,20 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
   
   return (
     <header 
-      className={`fixed top-0 right-0 h-16 bg-white border-b border-border z-20 transition-all duration-300 ${
+      className={`fixed top-0 right-0 h-16 bg-background border-b border-border z-20 transition-all duration-300 ${
         sidebarCollapsed ? 'left-16' : 'left-64'
       }`}
     >
       <div className="h-full flex items-center justify-between px-6">
         <div className="flex-1">
-          <div className="relative max-w-md">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">
-              <Search className="h-4 w-4" />
-            </div>
-            <input
-              type="text"
-              placeholder="Поиск по документам, рекомендациям..."
-              className="w-full rounded-full border border-input bg-background pl-10 pr-4 py-2 text-sm transition-all duration-200 focus:ring-2 focus:ring-accent/50 focus:border-accent outline-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          <div className="flex items-center gap-4">
+            <VoiceSearch onSearch={(query) => console.log('Search query:', query)} />
+            <QuickTaskAssignment buttonVariant="outline" buttonSize="sm" />
           </div>
         </div>
         
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <NotificationBell />
           
           <div 
