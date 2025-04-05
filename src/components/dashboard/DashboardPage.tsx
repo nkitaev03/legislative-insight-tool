@@ -8,7 +8,8 @@ import {
   Clock,
   Shield,
   CalendarClock,
-  AlertCircle
+  AlertCircle,
+  User
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -50,35 +51,40 @@ const tasks = [
     title: 'Обновить политику конфиденциальности', 
     deadline: '18.05.2023', 
     risk: 'high',
-    status: 'pending'
+    status: 'pending',
+    responsible: 'Иванов И.И.'
   },
   { 
     id: 2, 
     title: 'Провести аудит договоров с контрагентами', 
     deadline: '24.05.2023', 
     risk: 'medium',
-    status: 'in-progress'
+    status: 'in-progress',
+    responsible: 'Петрова А.С.'
   },
   { 
     id: 3, 
     title: 'Обновить внутренние регламенты', 
     deadline: '02.06.2023', 
     risk: 'medium',
-    status: 'pending'
+    status: 'pending',
+    responsible: 'Смирнова Е.В.'
   },
   { 
     id: 4, 
     title: 'Прохождение обязательного обучения', 
     deadline: '15.06.2023', 
     risk: 'low',
-    status: 'completed'
+    status: 'completed',
+    responsible: 'Соколов Д.М.'
   },
   { 
     id: 5, 
     title: 'Подготовка отчета о соответствии', 
     deadline: '30.06.2023', 
     risk: 'low',
-    status: 'pending'
+    status: 'pending',
+    responsible: 'Козлов А.И.'
   },
 ];
 
@@ -108,19 +114,21 @@ const checklistItems = [
     id: '4',
     text: 'Внедрить систему контроля доступа к конфиденциальным данным',
     completed: false,
-    deadline: new Date('2023-06-15')
+    deadline: new Date('2023-06-15'),
+    responsible: 'Соколов Д.М.'
   },
   {
     id: '5',
     text: 'Обновить договоры с контрагентами с учетом новых требований',
-    completed: false
+    completed: false,
+    responsible: 'Козлов А.И.'
   }
 ];
 
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -146,10 +154,10 @@ export default function DashboardPage() {
       </div>
       
       <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="overview">Обзор</TabsTrigger>
-          <TabsTrigger value="tasks">Задачи</TabsTrigger>
-          <TabsTrigger value="process-map">Карта процессов</TabsTrigger>
+        <TabsList className="bg-background border">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Обзор</TabsTrigger>
+          <TabsTrigger value="tasks" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Задачи</TabsTrigger>
+          <TabsTrigger value="process-map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Карта процессов</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
@@ -189,8 +197,8 @@ export default function DashboardPage() {
 
           {/* Risk Distribution Charts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
+            <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+              <CardHeader className="pb-2">
                 <CardTitle>Распределение рисков</CardTitle>
                 <CardDescription>По уровню важности</CardDescription>
               </CardHeader>
@@ -226,8 +234,8 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
+            <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+              <CardHeader className="pb-2">
                 <CardTitle>Типы рисков</CardTitle>
                 <CardDescription>Распределение по категориям</CardDescription>
               </CardHeader>
@@ -261,19 +269,19 @@ export default function DashboardPage() {
           </div>
 
           {/* Latest Risk Alerts */}
-          <Card>
-            <CardHeader>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
               <CardTitle>Последние предупреждения</CardTitle>
               <CardDescription>Новые и важные комплаенс-риски</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { title: 'Новый законопроект о защите данных', level: 'high', date: '12.05.2023', desc: 'Требуется анализ влияния на бизнес-процессы' },
-                  { title: 'Изменение требований к отчетности', level: 'medium', date: '10.05.2023', desc: 'Необходимо обновить внутренние документы' },
-                  { title: 'Обновление антимонопольного законодательства', level: 'medium', date: '05.05.2023', desc: 'Требуется пересмотр договоров с партнерами' },
+                  { title: 'Новый законопроект о защите данных', level: 'high', date: '12.05.2023', desc: 'Требуется анализ влияния на бизнес-процессы', responsible: 'Иванов И.И.' },
+                  { title: 'Изменение требований к отчетности', level: 'medium', date: '10.05.2023', desc: 'Необходимо обновить внутренние документы', responsible: 'Петрова А.С.' },
+                  { title: 'Обновление антимонопольного законодательства', level: 'medium', date: '05.05.2023', desc: 'Требуется пересмотр договоров с партнерами', responsible: 'Смирнова Е.В.' },
                 ].map((alert, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40">
+                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors">
                     <div className="mt-1">
                       <RiskIndicator level={alert.level as 'low' | 'medium' | 'high'} size="md" />
                     </div>
@@ -283,6 +291,10 @@ export default function DashboardPage() {
                         <span className="text-xs text-muted-foreground">{alert.date}</span>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">{alert.desc}</p>
+                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
+                        <User className="h-3 w-3" />
+                        <span>Ответственный: {alert.responsible}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -292,24 +304,24 @@ export default function DashboardPage() {
         </TabsContent>
         
         <TabsContent value="tasks" className="space-y-4">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
               <CardTitle>Приоритетные задачи</CardTitle>
               <CardDescription>Задачи, требующие выполнения</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-1">
+              <div className="space-y-2">
                 {tasks.map((task) => (
                   <div 
                     key={task.id} 
-                    className={`flex items-center justify-between p-3 rounded-lg ${
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
                       task.status === 'completed' 
                         ? 'bg-muted/50' 
                         : task.risk === 'high' 
-                          ? 'bg-red-50 dark:bg-red-950/20' 
+                          ? 'bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/30' 
                           : task.risk === 'medium' 
-                            ? 'bg-amber-50 dark:bg-amber-950/20' 
-                            : 'bg-emerald-50 dark:bg-emerald-950/20'
+                            ? 'bg-amber-50 dark:bg-amber-950/20 hover:bg-amber-100 dark:hover:bg-amber-950/30' 
+                            : 'bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/30'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -329,13 +341,17 @@ export default function DashboardPage() {
                             <CalendarClock className="h-3 w-3" />
                             <span>Срок: {task.deadline}</span>
                           </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <User className="h-3 w-3" />
+                            <span>Ответственный: {task.responsible}</span>
+                          </div>
                           <RiskIndicator level={task.risk as 'low' | 'medium' | 'high'} size="sm" />
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       {task.status !== 'completed' && (
-                        <button className="text-xs bg-background border border-border px-3 py-1 rounded hover:bg-muted">
+                        <button className="text-xs bg-background border border-border px-3 py-1 rounded hover:bg-muted transition-colors">
                           {task.status === 'in-progress' ? 'Выполнить' : 'Начать'}
                         </button>
                       )}

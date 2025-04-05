@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
-import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock } from 'lucide-react';
+import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock, FileUp, FileCheck } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import FileUploader from '../common/FileUploader';
+import { Separator } from '@/components/ui/separator';
 
 interface CompanyInfo {
   name: string;
@@ -87,15 +89,16 @@ export default function ProfilePage() {
       </div>
       
       <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="personal">Личная информация</TabsTrigger>
-          <TabsTrigger value="company">Информация о компании</TabsTrigger>
-          <TabsTrigger value="responsibilities">Ответственные по законам</TabsTrigger>
-          <TabsTrigger value="settings">Настройки</TabsTrigger>
+        <TabsList className="bg-background border">
+          <TabsTrigger value="personal" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Личная информация</TabsTrigger>
+          <TabsTrigger value="company" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Информация о компании</TabsTrigger>
+          <TabsTrigger value="company-files" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Документы</TabsTrigger>
+          <TabsTrigger value="responsibilities" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Ответственные</TabsTrigger>
+          <TabsTrigger value="settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Настройки</TabsTrigger>
         </TabsList>
         
         <TabsContent value="personal" className="space-y-4">
-          <Card>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
               <CardTitle>Персональный профиль</CardTitle>
               <CardDescription>Информация о владельце аккаунта</CardDescription>
@@ -107,7 +110,7 @@ export default function ProfilePage() {
                     <AvatarImage src="" />
                     <AvatarFallback className="text-2xl bg-compGreen-500 text-white">ИП</AvatarFallback>
                   </Avatar>
-                  <button className="text-sm px-3 py-1 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600">
+                  <button className="text-sm px-3 py-1 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600 transition-colors">
                     Изменить фото
                   </button>
                 </div>
@@ -144,7 +147,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   
-                  <button className="w-full mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600">
+                  <button className="w-full mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600 transition-colors">
                     Редактировать профиль
                   </button>
                 </div>
@@ -154,8 +157,8 @@ export default function ProfilePage() {
         </TabsContent>
         
         <TabsContent value="company" className="space-y-4">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
               <CardTitle>Информация о компании</CardTitle>
               <CardDescription>Данные вашей организации</CardDescription>
             </CardHeader>
@@ -191,16 +194,58 @@ export default function ProfilePage() {
                 </div>
               </div>
               
-              <button className="w-full mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600">
+              <button className="w-full mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600 transition-colors">
                 Редактировать информацию
               </button>
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="company-files" className="space-y-4">
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
+              <CardTitle>Документы компании</CardTitle>
+              <CardDescription>Загрузите и управляйте документами</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Tabs defaultValue="business" className="space-y-4">
+                <TabsList className="bg-muted/50 w-full grid grid-cols-3 h-auto p-1">
+                  <TabsTrigger value="business" className="py-2">Бизнес-планы</TabsTrigger>
+                  <TabsTrigger value="finance" className="py-2">Финансы</TabsTrigger>
+                  <TabsTrigger value="legal" className="py-2">Юридические</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="business" className="space-y-4">
+                  <FileUploader 
+                    title="Бизнес-планы и прототипы"
+                    accepted=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.png"
+                    maxSize={15}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="finance" className="space-y-4">
+                  <FileUploader 
+                    title="Финансовые документы"
+                    accepted=".pdf,.xls,.xlsx,.csv"
+                    maxSize={15}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="legal" className="space-y-4">
+                  <FileUploader 
+                    title="Юридические документы"
+                    accepted=".pdf,.doc,.docx"
+                    maxSize={15}
+                  />
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </TabsContent>
         
         <TabsContent value="responsibilities" className="space-y-4">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
               <CardTitle>Ответственные по законам</CardTitle>
               <CardDescription>Назначение ответственных сотрудников</CardDescription>
             </CardHeader>
@@ -252,7 +297,7 @@ export default function ProfilePage() {
                   </div>
                   <button 
                     onClick={handleAddResponsible}
-                    className="mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600"
+                    className="mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600 transition-colors"
                   >
                     Добавить
                   </button>
@@ -271,18 +316,18 @@ export default function ProfilePage() {
                     </thead>
                     <tbody>
                       {responsibleLaws.map((item) => (
-                        <tr key={item.id} className="border-b">
+                        <tr key={item.id} className="border-b hover:bg-muted/30 transition-colors">
                           <td className="p-2">{item.law}</td>
                           <td className="p-2">{item.department}</td>
                           <td className="p-2">{item.responsible}</td>
                           <td className="p-2">{item.deadline}</td>
                           <td className="p-2">
                             <div className="flex gap-2">
-                              <button className="p-1 text-blue-500 hover:text-blue-700">
+                              <button className="p-1 text-blue-500 hover:text-blue-700 transition-colors">
                                 Изменить
                               </button>
                               <button 
-                                className="p-1 text-red-500 hover:text-red-700"
+                                className="p-1 text-red-500 hover:text-red-700 transition-colors"
                                 onClick={() => setResponsibleLaws(responsibleLaws.filter(law => law.id !== item.id))}
                               >
                                 Удалить
@@ -300,8 +345,8 @@ export default function ProfilePage() {
         </TabsContent>
         
         <TabsContent value="settings" className="space-y-4">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader className="pb-2">
               <CardTitle>Настройки</CardTitle>
               <CardDescription>Настройки личного кабинета</CardDescription>
             </CardHeader>
@@ -335,7 +380,7 @@ export default function ProfilePage() {
               <div>
                 <h3 className="text-lg font-medium">Безопасность</h3>
                 <div className="mt-2">
-                  <button className="w-full py-2 border rounded-md flex items-center justify-center gap-2 hover:bg-muted/50">
+                  <button className="w-full py-2 border rounded-md flex items-center justify-center gap-2 hover:bg-muted/50 transition-colors">
                     <Shield className="h-4 w-4" />
                     <span>Изменить пароль</span>
                   </button>

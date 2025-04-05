@@ -11,7 +11,7 @@
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 142 72% 29%;
+    --primary: 142 76% 36%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
@@ -23,10 +23,10 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 142 72% 29%;
+    --ring: 142 76% 36%;
     --radius: 0.5rem;
     --compGreen-50: 142, 100%, 95%;
-    --compGreen-500: 142, 72%, 29%;
+    --compGreen-500: 142, 76%, 36%;
     --compBlue-50: 210, 70%, 95%;
     --compBlue-500: 210, 70%, 50%;
     --compBlue-700: 210, 70%, 30%;
@@ -44,7 +44,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 72% 29%;
+    --primary: 142 70% 45%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
@@ -56,9 +56,9 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 142 72% 29%;
+    --ring: 142 70% 45%;
     --compGreen-50: 142, 70%, 15%;
-    --compGreen-500: 142, 72%, 40%;
+    --compGreen-500: 142, 70%, 45%;
     --compBlue-50: 210, 70%, 15%;
     --compBlue-500: 210, 70%, 50%;
     --compBlue-700: 210, 70%, 70%;
@@ -88,4 +88,30 @@
 .dark .bg-mesh-gradient {
   background-image: radial-gradient(at top right, hsla(var(--primary), 0.25), transparent 50%),
                     radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.25), transparent 50%);
+}
+
+.hover-card {
+  @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.tab-content-enter {
+  @apply opacity-0;
+  transform: translateY(10px);
+}
+
+.tab-content-enter-active {
+  @apply opacity-100;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.tab-content-exit {
+  @apply opacity-100;
+  transform: translateY(0);
+}
+
+.tab-content-exit-active {
+  @apply opacity-0;
+  transform: translateY(10px);
+  transition: opacity 300ms, transform 300ms;
 }
