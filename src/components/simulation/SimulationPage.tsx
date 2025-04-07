@@ -26,7 +26,7 @@ export default function SimulationPage() {
     // Fetch risks from monitoring module and add risk categories
     const risks = getRisksFromMonitoring();
     
-    // Assign risk categories based on the risk type
+    // Assign risk categories based on the risk title or description
     const categorizedRisks = risks.map(risk => {
       // Determine risk category based on risk title or description
       let riskCategory: RiskCategory = 'operational';
@@ -78,7 +78,7 @@ export default function SimulationPage() {
           max,
           percentile90,
           percentile95,
-          riskCategory: risk.riskCategory || 'operational'
+          riskCategory: risk.riskCategory || 'operational' // Default to operational if not specified
         };
       });
       

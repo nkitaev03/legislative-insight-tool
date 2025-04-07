@@ -3,7 +3,7 @@ import { LegislationItem, NewsItem } from '../monitoring/types';
 
 export type RiskCategory = 'financial' | 'operational' | 'legal' | 'strategic' | 'reputational';
 
-export type RiskData = LegislationItem | NewsItem | {
+export type RiskData = (LegislationItem | NewsItem | {
   id: string;
   title: string;
   date: string;
@@ -17,7 +17,8 @@ export type RiskData = LegislationItem | NewsItem | {
   risks: string[];
   recommendations: { text: string; responsible: string; status: 'pending' | 'completed' }[];
   financialImpact: { min: number; max: number; expected: number };
-  riskCategory: RiskCategory;
+}) & {
+  riskCategory?: RiskCategory;
 };
 
 export interface SimulationResult {
