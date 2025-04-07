@@ -24,9 +24,9 @@ import BusinessProcessMap from './BusinessProcessMap';
 import InteractiveChecklist from '../common/InteractiveChecklist';
 
 const riskData = [
-  { name: 'Высокий', value: 15, color: '#f44336' },
+  { name: 'Высокий', value: 25, color: '#f44336' },
   { name: 'Средний', value: 30, color: '#ff9800' },
-  { name: 'Низкий', value: 55, color: '#2a9e31' },
+  { name: 'Низкий', value: 45, color: '#2a9e31' },
 ];
 
 // Checklist items for the interactive checklist
@@ -301,39 +301,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Latest Risk Alerts */}
-          <Card className="hover-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Важные предупреждения</CardTitle>
-              <CardDescription>Требуют внимания</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {[
-                  { title: 'Новый законопроект о защите данных', level: 'high', date: '12.05.2023', desc: 'Требуется анализ влияния на бизнес-процессы', responsible: 'Иванов И.И.' },
-                  { title: 'Изменение требований к отчетности', level: 'medium', date: '10.05.2023', desc: 'Необходимо обновить внутренние документы', responsible: 'Петрова А.С.' },
-                ].map((alert, idx) => (
-                  <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors">
-                    <div className="mt-1">
-                      <RiskIndicator level={alert.level as 'low' | 'medium' | 'high'} size="md" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium">{alert.title}</h4>
-                        <span className="text-xs text-muted-foreground">{alert.date}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">{alert.desc}</p>
-                      <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
-                        <User className="h-3 w-3" />
-                        <span>Ответственный: {alert.responsible}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
         
         <TabsContent value="tasks" className="space-y-4">

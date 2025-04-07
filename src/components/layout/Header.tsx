@@ -41,18 +41,6 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-3">
-            <Button variant="secondary" size="sm" className="rounded-xl">
-              Зарегистрировать событие
-            </Button>
-            <Button variant="secondary" size="sm" className="rounded-xl">
-              Выявить новые риски
-            </Button>
-            <Button variant="secondary" size="sm" className="rounded-xl">
-              Запросить аналитику
-            </Button>
-          </div>
-          
           <ThemeToggle />
           <NotificationBell />
           
