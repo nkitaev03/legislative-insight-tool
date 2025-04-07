@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -400,7 +399,7 @@ export default function MonitoringPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Мониторинг законодательства</h1>
+        <h1 className="text-2xl font-semibold">Мониторинг законодательства и новостей</h1>
         <Button variant="outline" className="gap-2">
           <Download className="h-4 w-4" />
           Экспорт
@@ -481,7 +480,6 @@ export default function MonitoringPage() {
             <>
               {filteredLegislation.length > 0 && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-medium">Законодательные изменения</h2>
                   <LegislationList 
                     items={filteredLegislation} 
                     onOpenDialog={setOpenDialogId}
