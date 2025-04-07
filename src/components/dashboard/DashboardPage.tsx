@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
   BarChart3,
@@ -7,7 +6,8 @@ import {
   CheckCircle,
   Clock,
   User,
-  CalendarClock
+  CalendarClock,
+  ArrowUpRight
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -134,19 +134,88 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Управление рисками</h1>
+        <h1 className="text-xl md:text-2xl font-semibold">
+          <span className="mr-2">👋</span>
+          Привет, Анна!
+        </h1>
+      </div>
+
+      <div className="bg-secondary/40 rounded-xl p-6">
+        <h2 className="text-lg font-medium mb-4">Я оценил ситуацию и собрал всё самое важное</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="feature-card">
+            <div className="flex items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Законодательство</span>
+                  <span>•</span>
+                  <span className="text-orange-500">Повышенные риски</span>
+                </div>
+                <h3 className="font-medium mb-1">Обработка персональных данных</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Ужесточились требования к обработке персональных данных и существенно выросли штрафы за выявленные нарушения.
+                </p>
+                <button className="feature-button">
+                  Обновить оборудование
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="feature-card">
+            <div className="flex items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Новость</span>
+                  <span>•</span>
+                  <span className="text-orange-500">Повышенные риски</span>
+                </div>
+                <h3 className="font-medium mb-1">Магазин-склад закрыт Роспотребнадзором</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Невский районный суд Петербурга закрыл магазин-склад из-за нарушений санитарных требований.
+                </p>
+                <button className="feature-button">
+                  Защитить пользователей
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="feature-card">
+            <div className="flex items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                  <span>Мера</span>
+                  <span>•</span>
+                  <span className="text-orange-500">Просрочено на 14 дней</span>
+                </div>
+                <h3 className="font-medium mb-1">Немного задержались с этой мерой</h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Если не навёрстать упущенное, возможны задержки в других процессах. Давай не допустим эффекта домино.
+                </p>
+                <button className="feature-button">
+                  Исправить ситуацию
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
         <TabsList className="bg-background border">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Обзор</TabsTrigger>
-          <TabsTrigger value="tasks" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Задачи</TabsTrigger>
-          <TabsTrigger value="process-map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">Карта процессов</TabsTrigger>
+          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Обзор</TabsTrigger>
+          <TabsTrigger value="tasks" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Задачи</TabsTrigger>
+          <TabsTrigger value="process-map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Карта процессов</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
           {/* Metrics Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard 
               title="Новые изменения"
               value="12"
@@ -180,13 +249,13 @@ export default function DashboardPage() {
           </div>
 
           {/* Risk Distribution Chart */}
-          <div className="grid grid-cols-1 gap-6">
-            <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="hover-card">
               <CardHeader className="pb-2">
-                <CardTitle>Распределение рисков</CardTitle>
+                <CardTitle className="text-lg">Распределение рисков</CardTitle>
                 <CardDescription>По уровню важности</CardDescription>
               </CardHeader>
-              <CardContent className="h-80">
+              <CardContent className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPieChart>
                     <Pie
@@ -194,7 +263,7 @@ export default function DashboardPage() {
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
-                      outerRadius={120}
+                      outerRadius={90}
                       fill="#8884d8"
                       paddingAngle={5}
                       dataKey="value"
@@ -217,21 +286,26 @@ export default function DashboardPage() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Interactive Checklist */}
-          <div className="grid grid-cols-1 gap-6">
-            <InteractiveChecklist 
-              title="План устранения рисков"
-              description="Приоритетные задачи для минимизации рисков"
-              items={checklistItems}
-            />
+            {/* Interactive Checklist */}
+            <Card className="hover-card">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg">План устранения рисков</CardTitle>
+                <CardDescription>Приоритетные задачи</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <InteractiveChecklist 
+                  items={checklistItems.slice(0, 3)}
+                  compact
+                />
+              </CardContent>
+            </Card>
           </div>
 
           {/* Latest Risk Alerts */}
-          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+          <Card className="hover-card">
             <CardHeader className="pb-2">
-              <CardTitle>Важные предупреждения</CardTitle>
+              <CardTitle className="text-lg">Важные предупреждения</CardTitle>
               <CardDescription>Требуют внимания</CardDescription>
             </CardHeader>
             <CardContent>
@@ -239,7 +313,6 @@ export default function DashboardPage() {
                 {[
                   { title: 'Новый законопроект о защите данных', level: 'high', date: '12.05.2023', desc: 'Требуется анализ влияния на бизнес-процессы', responsible: 'Иванов И.И.' },
                   { title: 'Изменение требований к отчетности', level: 'medium', date: '10.05.2023', desc: 'Необходимо обновить внутренние документы', responsible: 'Петрова А.С.' },
-                  { title: 'Обновление антимонопольного законодательства', level: 'medium', date: '05.05.2023', desc: 'Требуется пересмотр договоров с партнерами', responsible: 'Смирнова Е.В.' },
                 ].map((alert, idx) => (
                   <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/40 hover:bg-muted/60 transition-colors">
                     <div className="mt-1">

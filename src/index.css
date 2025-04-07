@@ -6,30 +6,30 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 210 20% 25%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 210 20% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 151 100% 33%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 210 20% 25%;
+    --primary: 173 83% 50%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 191 90% 95%;
+    --secondary-foreground: 173 83% 30%;
+    --muted: 170 20% 95%;
+    --muted-foreground: 215 16% 50%;
+    --accent: 173 83% 95%;
+    --accent-foreground: 173 83% 30%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 151 100% 33%;
-    --radius: 0.5rem;
-    --compGreen-50: 151, 100%, 95%;
-    --compGreen-500: 151, 100%, 33%;
-    --compBlue-50: 210, 70%, 95%;
-    --compBlue-500: 210, 70%, 50%;
-    --compBlue-700: 210, 70%, 30%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 173 83% 50%;
+    --radius: 0.75rem;
+    --compGreen-50: 173, 83%, 95%;
+    --compGreen-500: 173, 83%, 50%;
+    --compBlue-50: 193, 75%, 95%;
+    --compBlue-500: 193, 75%, 50%;
+    --compBlue-700: 193, 75%, 30%;
     --compOrange-50: 32, 100%, 95%;
     --compOrange-500: 32, 98%, 56%;
     --compOrange-700: 32, 98%, 36%;
@@ -38,30 +38,30 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 151 70% 45%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --background: 215 25% 15%;
+    --foreground: 210 20% 98%;
+    --card: 215 25% 18%;
+    --card-foreground: 210 20% 98%;
+    --popover: 215 25% 18%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 173 70% 45%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 173 30% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 173 30% 20%;
+    --muted-foreground: 210 20% 80%;
+    --accent: 173 30% 25%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 151 70% 45%;
-    --compGreen-50: 151, 70%, 15%;
-    --compGreen-500: 151, 70%, 45%;
-    --compBlue-50: 210, 70%, 15%;
-    --compBlue-500: 210, 70%, 50%;
-    --compBlue-700: 210, 70%, 70%;
+    --border: 215 25% 25%;
+    --input: 215 25% 25%;
+    --ring: 173 70% 45%;
+    --compGreen-50: 173, 70%, 15%;
+    --compGreen-500: 173, 70%, 45%;
+    --compBlue-50: 193, 70%, 15%;
+    --compBlue-500: 193, 70%, 50%;
+    --compBlue-700: 193, 70%, 70%;
     --compOrange-50: 32, 80%, 15%;
     --compOrange-500: 32, 98%, 56%;
     --compOrange-700: 32, 98%, 76%;
@@ -81,17 +81,17 @@
 }
 
 .bg-mesh-gradient {
+  background-image: radial-gradient(at top right, hsla(var(--primary), 0.05), transparent 50%),
+                    radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.05), transparent 50%);
+}
+
+.dark .bg-mesh-gradient {
   background-image: radial-gradient(at top right, hsla(var(--primary), 0.15), transparent 50%),
                     radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.15), transparent 50%);
 }
 
-.dark .bg-mesh-gradient {
-  background-image: radial-gradient(at top right, hsla(var(--primary), 0.25), transparent 50%),
-                    radial-gradient(at bottom left, hsla(var(--compBlue-500), 0.25), transparent 50%);
-}
-
 .hover-card {
-  @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+  @apply bg-white dark:bg-card shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl border border-border;
 }
 
 .tab-content-enter {
@@ -114,4 +114,24 @@
   @apply opacity-0;
   transform: translateY(10px);
   transition: opacity 300ms, transform 300ms;
+}
+
+.risk-card {
+  @apply bg-white dark:bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-4 flex items-start gap-3 border border-border;
+}
+
+.metric-card {
+  @apply bg-white dark:bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-200 p-5 border border-border;
+}
+
+.feature-button {
+  @apply rounded-xl text-sm px-5 py-2.5 bg-secondary text-secondary-foreground hover:bg-secondary/80 flex items-center gap-2 transition-colors;
+}
+
+.feature-card {
+  @apply bg-white dark:bg-card rounded-xl shadow-sm border border-border p-4;
+}
+
+.status-dot {
+  @apply w-2 h-2 rounded-full;
 }

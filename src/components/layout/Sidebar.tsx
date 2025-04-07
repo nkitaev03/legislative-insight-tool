@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   User,
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,14 +26,14 @@ const SidebarItem = ({ icon: Icon, text, path, isCollapsed, active }: SidebarIte
     <Link
       to={path}
       className={cn(
-        "flex items-center gap-3 rounded-md my-1 px-3 py-2.5 text-sm transition-all duration-200",
+        "flex items-center gap-3 rounded-lg my-1 px-3 py-2.5 text-sm transition-all duration-200",
         isCollapsed ? "justify-center" : "justify-start",
         active 
-          ? "bg-white/20 text-white shadow-inner" 
-          : "text-white/90 hover:bg-white/10 hover:text-white"
+          ? "bg-primary/10 text-primary font-medium" 
+          : "text-foreground/70 hover:bg-muted hover:text-foreground"
       )}
     >
-      <Icon className={cn("h-5 w-5", active && "text-white")} />
+      <Icon className={cn("h-5 w-5", active && "text-primary")} />
       {!isCollapsed && <span>{text}</span>}
     </Link>
   );
@@ -43,7 +44,7 @@ export default function Sidebar() {
   const location = useLocation();
 
   const navigationItems = [
-    { icon: BarChart3, text: "Дашборд", path: "/" },
+    { icon: Home, text: "Главная", path: "/" },
     { icon: FileSearch, text: "Мониторинг", path: "/monitoring" },
     { icon: Play, text: "Симуляция", path: "/simulation" },
     { icon: Clipboard, text: "Аудит", path: "/audit" },
@@ -53,25 +54,28 @@ export default function Sidebar() {
   return (
     <div 
       className={cn(
-        "flex flex-col h-screen fixed top-0 left-0 z-30 transition-all duration-300 border-r border-white/10",
+        "flex flex-col h-screen fixed top-0 left-0 z-30 transition-all duration-300 border-r border-border bg-white dark:bg-card",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       <div 
         className={cn(
-          "h-16 flex items-center justify-between px-4 border-b border-white/10",
+          "h-16 flex items-center justify-between px-4 border-b border-border",
           isCollapsed && "justify-center"
         )}
-        style={{ background: "linear-gradient(135deg, #00a652, #008a43)" }}
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/4bee6142-1b43-4f44-8ecd-fd2eaec8fd6f.png" alt="СБЕР ОРМ Logo" className="h-8" />
+            <img 
+              src="/lovable-uploads/4bee6142-1b43-4f44-8ecd-fd2eaec8fd6f.png" 
+              alt="СБЕР ОРМ Logo" 
+              className="h-8" 
+            />
           </div>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="text-white/80 p-1.5 rounded-md hover:bg-white/10 transition-colors"
+          className="text-muted-foreground p-1.5 rounded-md hover:bg-muted transition-colors"
           data-testid="sidebar-toggle"
         >
           {isCollapsed ? (
@@ -82,10 +86,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      <div 
-        className="flex-1 overflow-auto py-6 px-3"
-        style={{ background: "linear-gradient(180deg, #00a652, #007a3d)" }}
-      >
+      <div className="flex-1 overflow-auto py-6 px-3">
         <nav className="space-y-2">
           {navigationItems.map((item) => (
             <SidebarItem
@@ -102,15 +103,14 @@ export default function Sidebar() {
       
       <div 
         className={cn(
-          "p-4 border-t border-white/10",
+          "p-4 border-t border-border",
           isCollapsed ? "text-center" : ""
         )}
-        style={{ background: "linear-gradient(0deg, #006435, #007a3d)" }}
       >
         {!isCollapsed && (
-          <div className="text-xs text-white/60 flex items-center justify-between">
+          <div className="text-xs text-muted-foreground flex items-center justify-between">
             <span>Версия 1.0.0</span>
-            <span className="px-2 py-0.5 rounded bg-white/20 text-white text-xs">Beta</span>
+            <span className="px-2 py-0.5 rounded bg-primary/10 text-primary text-xs">Beta</span>
           </div>
         )}
       </div>
