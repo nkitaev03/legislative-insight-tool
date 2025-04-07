@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '@/components/layout/Sidebar';
@@ -73,8 +72,8 @@ export default function Index() {
         {
           id: "ma1",
           title: "Обновить правила размещения рекламы",
-          description: "Пересмотреть и актуализировать внутренние правила размещения рекламы с учетом последних изменений в законодательстве.",
-          status: "in-progress",
+          description: "Пересмотреть и актуализировать внутренние правила размещения рекламы с учетом последних изменениями в законодательстве.",
+          status: "in-progress" as const,
           dueDate: "15.05.2025",
           assignedTo: "Отдел маркетинга"
         },
@@ -82,7 +81,7 @@ export default function Index() {
           id: "ma2",
           title: "Разработать процедуру согласования",
           description: "Создать и внедрить процедуру обязательного согласования рекламных материалов с юридическим отделом.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "01.06.2025",
           assignedTo: "Юридический отдел"
         }
@@ -108,7 +107,7 @@ export default function Index() {
           id: "sa1",
           title: "Улучшить систему документирования сделок",
           description: "Внедрить автоматизированную систему контроля за полнотой документирования всех сделок.",
-          status: "completed",
+          status: "completed" as const,
           dueDate: "01.04.2025",
           assignedTo: "Отдел продаж"
         }
@@ -150,7 +149,7 @@ export default function Index() {
           id: "fa1",
           title: "Обновить учетную политику",
           description: "Пересмотреть и актуализировать учетную политику в соответствии с последними изменениями в МСФО.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "01.07.2025",
           assignedTo: "Финансовый директор"
         },
@@ -158,7 +157,7 @@ export default function Index() {
           id: "fa2",
           title: "Внедрить автоматизированную систему",
           description: "Внедрить современную автоматизированную систему финансового учета и отчетности.",
-          status: "in-progress",
+          status: "in-progress" as const,
           dueDate: "31.12.2025",
           assignedTo: "ИТ-отдел"
         },
@@ -166,7 +165,7 @@ export default function Index() {
           id: "fa3",
           title: "Разработать систему контроля сроков",
           description: "Создать систему мониторинга и контроля сроков подачи отчетности с назначением ответственных лиц.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "15.07.2025",
           assignedTo: "Главный бухгалтер"
         }
@@ -216,7 +215,7 @@ export default function Index() {
           id: "pa1",
           title: "Внедрить систему управления документацией",
           description: "Внедрить современную систему управления документацией с контролем версий и автоматическим отслеживанием изменений.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "01.09.2025",
           assignedTo: "ИТ-отдел"
         },
@@ -224,7 +223,7 @@ export default function Index() {
           id: "pa2",
           title: "Разработать процессы закупок",
           description: "Создать и утвердить формализованные процессы проведения закупок и выбора поставщиков.",
-          status: "in-progress",
+          status: "in-progress" as const,
           dueDate: "15.08.2025",
           assignedTo: "Отдел закупок"
         },
@@ -232,7 +231,7 @@ export default function Index() {
           id: "pa3",
           title: "Разработать политику по конфликтам интересов",
           description: "Разработать и внедрить политику по выявлению и управлению конфликтами интересов.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "01.10.2025",
           assignedTo: "Юридический отдел"
         },
@@ -240,7 +239,7 @@ export default function Index() {
           id: "pa4",
           title: "Усовершенствовать систему внутреннего контроля",
           description: "Провести аудит и усовершенствовать систему внутреннего контроля для более эффективного выявления нарушений.",
-          status: "pending",
+          status: "pending" as const,
           dueDate: "31.12.2025",
           assignedTo: "Отдел внутреннего контроля"
         }
