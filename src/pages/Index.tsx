@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Play, Clipboard, User } from 'lucide-react';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import DashboardPage from '@/components/dashboard/DashboardPage';
 import MonitoringPage from '@/components/monitoring/MonitoringPage';
+import SimulationPage from '@/components/simulation/SimulationPage';
 import ProfilePage from '@/components/profile/ProfilePage';
 import ChatSupport from '@/components/common/ChatSupport';
 import { useToast } from '@/components/ui/use-toast';
@@ -57,26 +56,7 @@ export default function Index() {
       case '/monitoring':
         return <MonitoringPage />;
       case '/simulation':
-        return (
-          <div className="p-6 space-y-4">
-            <h1 className="text-2xl font-semibold">Симуляция</h1>
-            <div className="bg-mesh-gradient rounded-lg p-8 text-center shadow-md">
-              <div className="max-w-md mx-auto space-y-4">
-                <div className="h-24 w-24 bg-compBlue-500 rounded-full mx-auto flex items-center justify-center">
-                  <Play className="h-10 w-10 text-white" />
-                </div>
-                <h2 className="text-xl font-medium">Симулятор воздействия законодательных изменений</h2>
-                <p className="text-muted-foreground">
-                  Здесь вы сможете моделировать влияние изменений в законодательстве на ваш бизнес и 
-                  тестировать различные сценарии реагирования.
-                </p>
-                <button className="px-4 py-2 bg-compBlue-500 text-white rounded-full hover:bg-compBlue-600 transition-colors">
-                  Начать симуляцию
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+        return <SimulationPage />;
       case '/audit':
         return (
           <div className="p-6 space-y-4">
@@ -84,7 +64,11 @@ export default function Index() {
             <div className="bg-mesh-gradient rounded-lg p-8 text-center shadow-md">
               <div className="max-w-md mx-auto space-y-4">
                 <div className="h-24 w-24 bg-compPurple-500 rounded-full mx-auto flex items-center justify-center">
-                  <Clipboard className="h-10 w-10 text-white" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10">
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <path d="m9 14 2 2 4-4"></path>
+                  </svg>
                 </div>
                 <h2 className="text-xl font-medium">Интеллектуальная система аудита</h2>
                 <p className="text-muted-foreground">

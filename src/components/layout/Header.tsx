@@ -30,7 +30,7 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input 
                 type="text" 
-                placeholder="Я твой ИИ помощник" 
+                placeholder="Поиск по документам" 
                 className="pl-9 pr-4 h-10 rounded-xl border-border bg-background"
               />
             </div>

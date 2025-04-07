@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,9 +25,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { LegislationItem, NewsItem } from './types';
+import LegislationList from './LegislationList';
+import NewsList from './NewsList';
 
 // Extended legislation data with risks, recommendations, and responsible person
-const initialLegislationChanges = [
+const initialLegislationChanges: LegislationItem[] = [
   {
     id: '1',
     title: 'Об изменениях в Федеральном законе "О защите персональных данных"',
@@ -47,7 +51,12 @@ const initialLegislationChanges = [
       { text: 'Обновить политику обработки персональных данных до 01.06.2023', responsible: '', status: 'pending' },
       { text: 'Провести аудит систем хранения данных клиентов', responsible: '', status: 'pending' },
       { text: 'Назначить ответственного за защиту персональных данных', responsible: '', status: 'pending' }
-    ]
+    ],
+    financialImpact: {
+      min: 100000,
+      max: 500000,
+      expected: 350000
+    }
   },
   {
     id: '2',
@@ -69,7 +78,12 @@ const initialLegislationChanges = [
       { text: 'Обновить систему учета рабочего времени', responsible: '', status: 'pending' },
       { text: 'Провести обучение HR-специалистов', responsible: '', status: 'pending' },
       { text: 'Внести изменения в правила внутреннего трудового распорядка', responsible: '', status: 'pending' }
-    ]
+    ],
+    financialImpact: {
+      min: 50000,
+      max: 200000,
+      expected: 120000
+    }
   },
   {
     id: '3',
@@ -91,7 +105,12 @@ const initialLegislationChanges = [
       { text: 'Провести анализ возможности применения новых льгот', responsible: '', status: 'pending' },
       { text: 'Обновить учетную политику организации', responsible: '', status: 'pending' },
       { text: 'Подготовить документы для подтверждения права на льготы', responsible: '', status: 'pending' }
-    ]
+    ],
+    financialImpact: {
+      min: -300000,
+      max: 0,
+      expected: -150000
+    }
   },
   {
     id: '4',
@@ -113,7 +132,12 @@ const initialLegislationChanges = [
       { text: 'Изучить новые требования к маркировке', responsible: '', status: 'pending' },
       { text: 'Обновить дизайн упаковки', responsible: '', status: 'pending' },
       { text: 'Провести обучение персонала отдела качества', responsible: '', status: 'pending' }
-    ]
+    ],
+    financialImpact: {
+      min: 20000,
+      max: 80000,
+      expected: 45000
+    }
   },
   {
     id: '5',
@@ -135,8 +159,98 @@ const initialLegislationChanges = [
       { text: 'Зарегистрироваться в системе "Честный ЗНАК"', responsible: '', status: 'pending' },
       { text: 'Приобрести оборудование для считывания кодов маркировки', responsible: '', status: 'pending' },
       { text: 'Обновить учетную систему для работы с маркированными товарами', responsible: '', status: 'pending' }
-    ]
+    ],
+    financialImpact: {
+      min: 100000,
+      max: 300000,
+      expected: 180000
+    }
   },
+];
+
+// News data
+const initialNewsItems: NewsItem[] = [
+  {
+    id: '1',
+    title: 'Центробанк поднял ключевую ставку до 16%',
+    date: '15.05.2023',
+    description: 'Банк России объявил о повышении ключевой ставки на 2 процентных пункта. Решение принято в связи с ускорением инфляции и необходимостью стабилизации курса рубля.',
+    category: 'Экономика',
+    source: 'Центральный Банк РФ',
+    sourceUrl: 'https://cbr.ru/example1',
+    risk: 'high',
+    isNew: true,
+    responsible: '',
+    risks: [
+      'Удорожание кредитных ресурсов для бизнеса',
+      'Снижение маржинальности по долгосрочным контрактам',
+      'Рост стоимости обслуживания кредитного портфеля'
+    ],
+    recommendations: [
+      { text: 'Пересмотреть инвестиционные планы на ближайший квартал', responsible: '', status: 'pending' },
+      { text: 'Провести анализ кредитного портфеля компании', responsible: '', status: 'pending' },
+      { text: 'Обновить финансовую модель с учетом новых ставок', responsible: '', status: 'pending' }
+    ],
+    financialImpact: {
+      min: 200000,
+      max: 750000,
+      expected: 450000
+    }
+  },
+  {
+    id: '2',
+    title: 'Рост цен на энергоносители в 2023 году',
+    date: '10.05.2023',
+    description: 'Аналитики прогнозируют рост цен на электроэнергию и газ для промышленных предприятий на 15-20% в текущем году. Основные причины - инфляция и обновление тарифной политики.',
+    category: 'Энергетика',
+    source: 'Министерство энергетики',
+    sourceUrl: 'https://minenergo.gov.ru/example2',
+    risk: 'medium',
+    isNew: true,
+    responsible: '',
+    risks: [
+      'Увеличение себестоимости продукции',
+      'Снижение конкурентоспособности на внешних рынках',
+      'Необходимость пересмотра цен для конечных потребителей'
+    ],
+    recommendations: [
+      { text: 'Внедрить энергосберегающие технологии на производстве', responsible: '', status: 'pending' },
+      { text: 'Заключить долгосрочные контракты с поставщиками энергии', responsible: '', status: 'pending' },
+      { text: 'Разработать план оптимизации энергопотребления', responsible: '', status: 'pending' }
+    ],
+    financialImpact: {
+      min: 300000,
+      max: 500000,
+      expected: 420000
+    }
+  },
+  {
+    id: '3',
+    title: 'Новые требования к экологической отчетности',
+    date: '28.04.2023',
+    description: 'Росприроднадзор опубликовал разъяснения по составлению экологической отчетности за 2023 год. Изменения коснутся всех промышленных предприятий с объемом выбросов свыше установленных лимитов.',
+    category: 'Экология',
+    source: 'Росприроднадзор',
+    sourceUrl: 'https://rpn.gov.ru/example3',
+    risk: 'low',
+    isNew: false,
+    responsible: '',
+    risks: [
+      'Штрафы за несвоевременную подачу отчетности',
+      'Приостановление деятельности при грубых нарушениях',
+      'Дополнительные затраты на оборудование для мониторинга'
+    ],
+    recommendations: [
+      { text: 'Обучить персонал новым требованиям отчетности', responsible: '', status: 'pending' },
+      { text: 'Провести аудит текущих выбросов', responsible: '', status: 'pending' },
+      { text: 'Обновить программное обеспечение для учета выбросов', responsible: '', status: 'pending' }
+    ],
+    financialImpact: {
+      min: 50000,
+      max: 150000,
+      expected: 90000
+    }
+  }
 ];
 
 // List of available responsible persons
@@ -156,13 +270,16 @@ export default function MonitoringPage() {
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
   const [editResponsibleId, setEditResponsibleId] = useState<string | null>(null);
   const [legislationChanges, setLegislationChanges] = useState(initialLegislationChanges);
+  const [newsItems, setNewsItems] = useState(initialNewsItems);
   const { toast } = useToast();
   
   // Find the selected legislation for dialog
   const selectedLegislation = legislationChanges.find(item => item.id === openDialogId);
+  const selectedNews = newsItems.find(item => item.id === openDialogId);
+  const selectedItem = selectedLegislation || selectedNews;
   
-  // Filter items based on search, risk level and date
-  const filteredItems = legislationChanges.filter(item => {
+  // Filter legislation items based on search, risk level and date
+  const filteredLegislation = legislationChanges.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                         item.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRisk = selectedRisk === 'all' || item.risk === selectedRisk;
@@ -173,32 +290,70 @@ export default function MonitoringPage() {
     return matchesSearch && matchesRisk && matchesDate;
   });
 
-  const handleResponsibleChange = (itemId: string, newResponsible: string) => {
-    setLegislationChanges(prev => 
-      prev.map(item => 
-        item.id === itemId 
-          ? { ...item, responsible: newResponsible } 
-          : item
-      )
-    );
+  // Filter news items based on search, risk level and date
+  const filteredNews = newsItems.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRisk = selectedRisk === 'all' || item.risk === selectedRisk;
+    const matchesDate = selectedDate === 'all' || 
+                        (selectedDate === 'recent' && new Date(item.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) ||
+                        (selectedDate === 'older' && new Date(item.date) <= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+    
+    return matchesSearch && matchesRisk && matchesDate;
+  });
+
+  const handleResponsibleChange = (itemId: string, newResponsible: string, isNews: boolean = false) => {
+    if (isNews) {
+      setNewsItems(prev => 
+        prev.map(item => 
+          item.id === itemId 
+            ? { ...item, responsible: newResponsible } 
+            : item
+        )
+      );
+    } else {
+      setLegislationChanges(prev => 
+        prev.map(item => 
+          item.id === itemId 
+            ? { ...item, responsible: newResponsible } 
+            : item
+        )
+      );
+    }
     setEditResponsibleId(null);
   };
 
   // Handle recommendation responsible change
-  const handleRecommendationResponsibleChange = (itemId: string, recIndex: number, newResponsible: string) => {
-    setLegislationChanges(prev => 
-      prev.map(item => {
-        if (item.id === itemId) {
-          const updatedRecommendations = [...item.recommendations];
-          updatedRecommendations[recIndex] = {
-            ...updatedRecommendations[recIndex],
-            responsible: newResponsible
-          };
-          return { ...item, recommendations: updatedRecommendations };
-        }
-        return item;
-      })
-    );
+  const handleRecommendationResponsibleChange = (itemId: string, recIndex: number, newResponsible: string, isNews: boolean = false) => {
+    if (isNews) {
+      setNewsItems(prev => 
+        prev.map(item => {
+          if (item.id === itemId) {
+            const updatedRecommendations = [...item.recommendations];
+            updatedRecommendations[recIndex] = {
+              ...updatedRecommendations[recIndex],
+              responsible: newResponsible
+            };
+            return { ...item, recommendations: updatedRecommendations };
+          }
+          return item;
+        })
+      );
+    } else {
+      setLegislationChanges(prev => 
+        prev.map(item => {
+          if (item.id === itemId) {
+            const updatedRecommendations = [...item.recommendations];
+            updatedRecommendations[recIndex] = {
+              ...updatedRecommendations[recIndex],
+              responsible: newResponsible
+            };
+            return { ...item, recommendations: updatedRecommendations };
+          }
+          return item;
+        })
+      );
+    }
 
     toast({
       title: "Ответственный назначен",
@@ -208,21 +363,38 @@ export default function MonitoringPage() {
   };
 
   // Toggle recommendation status
-  const handleToggleRecommendationStatus = (itemId: string, recIndex: number) => {
-    setLegislationChanges(prev => 
-      prev.map(item => {
-        if (item.id === itemId) {
-          const updatedRecommendations = [...item.recommendations];
-          const currentStatus = updatedRecommendations[recIndex].status;
-          updatedRecommendations[recIndex] = {
-            ...updatedRecommendations[recIndex],
-            status: currentStatus === 'completed' ? 'pending' : 'completed'
-          };
-          return { ...item, recommendations: updatedRecommendations };
-        }
-        return item;
-      })
-    );
+  const handleToggleRecommendationStatus = (itemId: string, recIndex: number, isNews: boolean = false) => {
+    if (isNews) {
+      setNewsItems(prev => 
+        prev.map(item => {
+          if (item.id === itemId) {
+            const updatedRecommendations = [...item.recommendations];
+            const currentStatus = updatedRecommendations[recIndex].status;
+            updatedRecommendations[recIndex] = {
+              ...updatedRecommendations[recIndex],
+              status: currentStatus === 'completed' ? 'pending' : 'completed'
+            };
+            return { ...item, recommendations: updatedRecommendations };
+          }
+          return item;
+        })
+      );
+    } else {
+      setLegislationChanges(prev => 
+        prev.map(item => {
+          if (item.id === itemId) {
+            const updatedRecommendations = [...item.recommendations];
+            const currentStatus = updatedRecommendations[recIndex].status;
+            updatedRecommendations[recIndex] = {
+              ...updatedRecommendations[recIndex],
+              status: currentStatus === 'completed' ? 'pending' : 'completed'
+            };
+            return { ...item, recommendations: updatedRecommendations };
+          }
+          return item;
+        })
+      );
+    }
   };
 
   return (
@@ -234,7 +406,6 @@ export default function MonitoringPage() {
           Экспорт
         </Button>
       </div>
-      
       
       <Card>
         <CardHeader className="pb-3">
@@ -296,87 +467,46 @@ export default function MonitoringPage() {
       <Tabs defaultValue="all">
         <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
           <TabsTrigger value="all">Все изменения</TabsTrigger>
-          <TabsTrigger value="new" className="relative">
-            Новые
+          <TabsTrigger value="laws">Законы</TabsTrigger>
+          <TabsTrigger value="news" className="relative">
+            Новости
             <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
               2
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value="tracked">Отслеживаемые</TabsTrigger>
         </TabsList>
         
-        <div className="mt-6 space-y-4">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
-              <Card key={item.id} className={item.isNew ? 'border-l-4 border-l-compOrange-500' : ''}>
-                <CardContent className="p-0">
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-medium text-lg flex items-center gap-2">
-                          {item.title}
-                          {item.isNew && (
-                            <Badge variant="outline" className="text-xs bg-compOrange-50 text-compOrange-700 border-compOrange-200">
-                              Новое
-                            </Badge>
-                          )}
-                        </h3>
-                        <div className="text-sm text-muted-foreground mt-1">
-                          От {item.date} • {item.source}
-                        </div>
-                      </div>
-                      <RiskIndicator level={item.risk as 'low' | 'medium' | 'high'} showLabel />
-                    </div>
-                    <p className="text-sm mt-3">{item.description}</p>
-                    <div className="mt-4 flex flex-wrap gap-2 items-center">
-                      <Badge variant="secondary">{item.category}</Badge>
-                      
-                      {/* Responsible Person with inline edit functionality */}
-                      <div className="flex items-center gap-1 ml-2">
-                        <User className="h-3.5 w-3.5 text-muted-foreground" />
-                        
-                        {editResponsibleId === item.id ? (
-                          <Select 
-                            value={item.responsible} 
-                            onValueChange={(value) => handleResponsibleChange(item.id, value)}
-                            onOpenChange={(open) => {
-                              if (!open) setEditResponsibleId(null);
-                            }}
-                          >
-                            <SelectTrigger className="h-7 text-xs w-[250px]">
-                              <SelectValue placeholder="Выберите ответственного" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {responsiblePersons.map(person => (
-                                <SelectItem key={person} value={person}>{person}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <span 
-                            className="text-sm text-muted-foreground cursor-pointer hover:text-foreground hover:underline"
-                            onClick={() => setEditResponsibleId(item.id)}
-                          >
-                            {item.responsible || "Назначить ответственного"}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="p-3 flex justify-end gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => setOpenDialogId(item.id)}
-                    >
-                      <AlertCircle className="mr-2 h-4 w-4" />
-                      Подробнее
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+        <TabsContent value="all" className="mt-6 space-y-4">
+          {filteredLegislation.length > 0 || filteredNews.length > 0 ? (
+            <>
+              {filteredLegislation.length > 0 && (
+                <div className="space-y-4">
+                  <h2 className="text-lg font-medium">Законодательные изменения</h2>
+                  <LegislationList 
+                    items={filteredLegislation} 
+                    onOpenDialog={setOpenDialogId}
+                    onEditResponsible={setEditResponsibleId}
+                    editResponsibleId={editResponsibleId}
+                    handleResponsibleChange={handleResponsibleChange}
+                    responsiblePersons={responsiblePersons}
+                  />
+                </div>
+              )}
+              
+              {filteredNews.length > 0 && (
+                <div className="space-y-4 mt-8">
+                  <h2 className="text-lg font-medium">Новости и события</h2>
+                  <NewsList 
+                    items={filteredNews} 
+                    onOpenDialog={setOpenDialogId}
+                    onEditResponsible={setEditResponsibleId}
+                    editResponsibleId={editResponsibleId}
+                    handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
+                    responsiblePersons={responsiblePersons}
+                  />
+                </div>
+              )}
+            </>
           ) : (
             <div className="text-center p-8 border border-dashed rounded-lg">
               <p className="text-muted-foreground">
@@ -384,20 +514,58 @@ export default function MonitoringPage() {
               </p>
             </div>
           )}
-        </div>
+        </TabsContent>
+
+        <TabsContent value="laws" className="mt-6 space-y-4">
+          {filteredLegislation.length > 0 ? (
+            <LegislationList 
+              items={filteredLegislation} 
+              onOpenDialog={setOpenDialogId}
+              onEditResponsible={setEditResponsibleId}
+              editResponsibleId={editResponsibleId}
+              handleResponsibleChange={handleResponsibleChange}
+              responsiblePersons={responsiblePersons}
+            />
+          ) : (
+            <div className="text-center p-8 border border-dashed rounded-lg">
+              <p className="text-muted-foreground">
+                Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
+              </p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="news" className="mt-6 space-y-4">
+          {filteredNews.length > 0 ? (
+            <NewsList 
+              items={filteredNews} 
+              onOpenDialog={setOpenDialogId}
+              onEditResponsible={setEditResponsibleId}
+              editResponsibleId={editResponsibleId}
+              handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
+              responsiblePersons={responsiblePersons}
+            />
+          ) : (
+            <div className="text-center p-8 border border-dashed rounded-lg">
+              <p className="text-muted-foreground">
+                Новости по заданным критериям не найдены. Попробуйте изменить параметры поиска.
+              </p>
+            </div>
+          )}
+        </TabsContent>
       </Tabs>
 
       {/* Legislation Detail Dialog */}
       <Dialog open={!!openDialogId} onOpenChange={(open) => !open && setOpenDialogId(null)}>
-        {selectedLegislation && (
+        {selectedItem && (
           <DialogContent className="max-w-2xl overflow-y-auto max-h-[85vh]">
             <DialogHeader>
               <DialogTitle className="text-xl flex items-center gap-2">
-                {selectedLegislation.title}
-                <RiskIndicator level={selectedLegislation.risk as 'low' | 'medium' | 'high'} size="sm" showLabel />
+                {selectedItem.title}
+                <RiskIndicator level={selectedItem.risk as 'low' | 'medium' | 'high'} size="sm" showLabel />
               </DialogTitle>
               <DialogDescription>
-                От {selectedLegislation.date} • {selectedLegislation.source}
+                От {selectedItem.date} • {selectedItem.source}
               </DialogDescription>
             </DialogHeader>
 
@@ -407,7 +575,7 @@ export default function MonitoringPage() {
                   <FileWarning className="h-5 w-5 text-compBlue-500" />
                   Описание
                 </h3>
-                <p>{selectedLegislation.description}</p>
+                <p>{selectedItem.description}</p>
               </div>
 
               <div>
@@ -416,7 +584,7 @@ export default function MonitoringPage() {
                   Риски для компании
                 </h3>
                 <ul className="space-y-2 list-disc pl-5">
-                  {selectedLegislation.risks.map((risk, index) => (
+                  {selectedItem.risks.map((risk, index) => (
                     <li key={index}>{risk}</li>
                   ))}
                 </ul>
@@ -428,7 +596,7 @@ export default function MonitoringPage() {
                   Рекомендации
                 </h3>
                 <ul className="space-y-3 pl-0 list-none">
-                  {selectedLegislation.recommendations.map((rec, index) => (
+                  {selectedItem.recommendations.map((rec, index) => (
                     <li key={index} className={`flex items-start p-3 rounded-md ${rec.status === 'completed' ? 'bg-green-50' : 'bg-gray-50'}`}>
                       <div className="flex-shrink-0 mt-0.5 mr-3">
                         <button 
@@ -437,7 +605,7 @@ export default function MonitoringPage() {
                               ? 'bg-green-500 text-white' 
                               : 'border-2 border-gray-300'
                           }`}
-                          onClick={() => handleToggleRecommendationStatus(selectedLegislation.id, index)}
+                          onClick={() => handleToggleRecommendationStatus(selectedItem.id, index, !!selectedNews)}
                         >
                           {rec.status === 'completed' && <CheckCircle className="h-3 w-3" />}
                         </button>
@@ -450,7 +618,7 @@ export default function MonitoringPage() {
                           <span className="text-xs text-muted-foreground">Ответственный:</span>
                           <Select 
                             value={rec.responsible} 
-                            onValueChange={(value) => handleRecommendationResponsibleChange(selectedLegislation.id, index, value)}
+                            onValueChange={(value) => handleRecommendationResponsibleChange(selectedItem.id, index, value, !!selectedNews)}
                           >
                             <SelectTrigger className="h-7 text-xs min-w-[200px]">
                               <SelectValue placeholder="Назначить ответственного" />
@@ -474,14 +642,14 @@ export default function MonitoringPage() {
                   Информация
                 </h3>
                 <div className="space-y-2">
-                  <p><strong>Дата публикации:</strong> {selectedLegislation.date}</p>
+                  <p><strong>Дата публикации:</strong> {selectedItem.date}</p>
                   
                   {/* Editable responsible person in dialog */}
                   <div className="flex items-center gap-2">
                     <strong>Ответственный:</strong>
                     <Select 
-                      value={selectedLegislation.responsible} 
-                      onValueChange={(value) => handleResponsibleChange(selectedLegislation.id, value)}
+                      value={selectedItem.responsible} 
+                      onValueChange={(value) => handleResponsibleChange(selectedItem.id, value, !!selectedNews)}
                     >
                       <SelectTrigger className="h-8 w-[250px]">
                         <SelectValue placeholder="Выберите ответственного" />
@@ -497,7 +665,7 @@ export default function MonitoringPage() {
                   <p className="flex items-center gap-2">
                     <strong>Источник:</strong>
                     <a 
-                      href={selectedLegislation.sourceUrl} 
+                      href={selectedItem.sourceUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-primary flex items-center gap-1 hover:underline"
