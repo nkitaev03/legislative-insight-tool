@@ -137,18 +137,29 @@ const AIAssistant: React.FC = () => {
       {!isOpen ? (
         <Button 
           onClick={() => setIsOpen(true)} 
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg"
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg p-0 overflow-hidden"
+          style={{ backgroundColor: '#2DD4BF', border: 'none' }}
         >
-          <Bot className="h-6 w-6" />
+          <img 
+            src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
+            alt="AI Assistant" 
+            className="h-10 w-10"
+          />
         </Button>
       ) : (
         <Card className="fixed bottom-6 right-6 w-[350px] md:w-[400px] shadow-lg z-50 border">
-          <CardHeader className="p-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Bot className="h-5 w-5" />
+          <CardHeader className="p-4 flex flex-row items-center justify-between" style={{ backgroundColor: '#2DD4BF' }}>
+            <CardTitle className="text-lg flex items-center gap-2 text-white">
+              <div className="w-6 h-6 overflow-hidden">
+                <img 
+                  src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
+                  alt="AI Assistant" 
+                  className="h-full w-full"
+                />
+              </div>
               AI-Помощник
             </CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="text-white hover:bg-white/20">
               <X className="h-4 w-4" />
             </Button>
           </CardHeader>
@@ -167,7 +178,13 @@ const AIAssistant: React.FC = () => {
                   >
                     <div className="flex items-center gap-2">
                       {message.sender === 'ai' ? (
-                        <Bot className="h-4 w-4" />
+                        <div className="w-4 h-4 overflow-hidden">
+                          <img 
+                            src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
+                            alt="AI Assistant" 
+                            className="h-full w-full"
+                          />
+                        </div>
                       ) : (
                         <User className="h-4 w-4" />
                       )}
@@ -213,7 +230,11 @@ const AIAssistant: React.FC = () => {
                 >
                   <Mic className="h-4 w-4" />
                 </Button>
-                <Button size="icon" onClick={handleSubmit}>
+                <Button 
+                  size="icon" 
+                  onClick={handleSubmit}
+                  style={{ backgroundColor: '#2DD4BF' }}
+                >
                   <SendHorizontal className="h-4 w-4" />
                 </Button>
               </div>
