@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -106,8 +107,9 @@ export default function AIAssistant() {
                   size="icon"
                   className="h-8 w-8"
                   onClick={() => {
-                    if ('webkitSpeechRecognition' in window) {
-                      const recognition = new webkitSpeechRecognition();
+                    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+                      const recognition = new SpeechRecognitionAPI();
                       recognition.continuous = false;
                       recognition.lang = 'ru-RU';
                       recognition.interimResults = false;

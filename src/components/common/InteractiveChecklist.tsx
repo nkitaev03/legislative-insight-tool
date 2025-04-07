@@ -26,15 +26,17 @@ interface ChecklistItem {
 }
 
 interface ChecklistProps {
-  title: string;
+  title?: string;
   description?: string;
   items: ChecklistItem[];
+  compact?: boolean; // Added compact prop
 }
 
 const InteractiveChecklist: React.FC<ChecklistProps> = ({ 
-  title, 
+  title = "Интерактивный чеклист", // Default title 
   description,
-  items: initialItems
+  items: initialItems,
+  compact = false // Default value
 }) => {
   const [items, setItems] = useState<ChecklistItem[]>(initialItems);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -100,10 +102,10 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-2">
+      <CardHeader className={cn("pb-2", compact && "p-4")}>
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="flex items-center">
+            <CardTitle className={cn("flex items-center", compact && "text-lg")}>
               {title}
               <Badge variant="outline" className="ml-2 bg-compBlue-50 text-compBlue-700">
                 {progress.completed}/{progress.total}
@@ -122,14 +124,15 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className={cn(compact && "p-4 pt-0")}>
         <ul className="space-y-2">
           {items.map((item) => (
             <li 
               key={item.id}
               className={cn(
                 "p-3 rounded-md flex items-start gap-3 transition-all duration-200",
-                item.completed ? "bg-muted/50" : "bg-card hover:bg-accent/5"
+                item.completed ? "bg-muted/50" : "bg-card hover:bg-accent/5",
+                compact && "p-2"
               )}
             >
               <Checkbox 
@@ -143,59 +146,78 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
                   htmlFor={`check-${item.id}`}
                   className={cn(
                     "font-medium cursor-pointer",
-                    item.completed && "line-through text-muted-foreground"
+                    item.completed && "line-through text-muted-foreground",
+                    compact && "text-sm"
                   )}
                 >
                   {item.text}
                 </label>
                 
-                {/* Meta information */}
-                <div className="flex flex-wrap gap-3 mt-2">
-                  {/* Deadline */}
-                  <Popover open={selectedItemId === item.id} onOpenChange={(open) => !open && setSelectedItemId(null)}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-xs"
-                        onClick={() => setSelectedItemId(item.id)}
-                      >
-                        <Clock className="h-3 w-3" />
-                        {item.deadline 
-                          ? format(item.deadline, 'dd.MM.yyyy', {locale: ru})
-                          : "Установить срок"
-                        }
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={item.deadline}
-                        onSelect={(date) => handleDateChange(item.id, date)}
-                        locale={ru}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  
-                  {/* Reminder toggle */}
-                  <Button
-                    variant={item.reminders ? "default" : "outline"}
-                    size="sm"
-                    className="h-7 gap-1 text-xs"
-                    onClick={() => toggleReminder(item.id)}
-                  >
-                    <Bell className="h-3 w-3" />
-                    {item.reminders ? "Уведомления включены" : "Напомнить"}
-                  </Button>
+                {/* Meta information - Hide details in compact mode */}
+                {!compact && (
+                  <div className="flex flex-wrap gap-3 mt-2">
+                    {/* Deadline */}
+                    <Popover open={selectedItemId === item.id} onOpenChange={(open) => !open && setSelectedItemId(null)}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 gap-1 text-xs"
+                          onClick={() => setSelectedItemId(item.id)}
+                        >
+                          <Clock className="h-3 w-3" />
+                          {item.deadline 
+                            ? format(item.deadline, 'dd.MM.yyyy', {locale: ru})
+                            : "Установить срок"
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={item.deadline}
+                          onSelect={(date) => handleDateChange(item.id, date)}
+                          locale={ru}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    
+                    {/* Reminder toggle */}
+                    <Button
+                      variant={item.reminders ? "default" : "outline"}
+                      size="sm"
+                      className="h-7 gap-1 text-xs"
+                      onClick={() => toggleReminder(item.id)}
+                    >
+                      <Bell className="h-3 w-3" />
+                      {item.reminders ? "Уведомления включены" : "Напомнить"}
+                    </Button>
 
-                  {/* Responsible person */}
-                  {item.responsible && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <User className="h-3 w-3" />
-                      <span>{item.responsible}</span>
-                    </div>
-                  )}
-                </div>
+                    {/* Responsible person */}
+                    {item.responsible && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <User className="h-3 w-3" />
+                        <span>{item.responsible}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Simple metadata for compact mode */}
+                {compact && item.responsible && (
+                  <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                    <User className="h-3 w-3" />
+                    <span>{item.responsible}</span>
+                    
+                    {item.deadline && (
+                      <>
+                        <span className="mx-1">•</span>
+                        <Clock className="h-3 w-3" />
+                        <span>{format(item.deadline, 'dd.MM.yyyy', {locale: ru})}</span>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </li>
           ))}
