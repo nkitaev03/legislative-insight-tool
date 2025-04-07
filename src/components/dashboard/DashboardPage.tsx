@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
   BarChart3,
@@ -240,7 +239,6 @@ export default function DashboardPage() {
       <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
         <TabsList className="bg-background border">
           <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Обзор</TabsTrigger>
-          <TabsTrigger value="tasks" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Задачи</TabsTrigger>
           <TabsTrigger value="process-map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Карта процессов</TabsTrigger>
         </TabsList>
         
@@ -445,66 +443,6 @@ export default function DashboardPage() {
                 items={checklistItems.slice(0, 3)}
                 compact
               />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="tasks" className="space-y-4">
-          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
-            <CardHeader className="pb-2">
-              <CardTitle>Приоритетные задачи</CardTitle>
-              <CardDescription>Задачи, требующие выполнения</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {tasks.map((task) => (
-                  <div 
-                    key={task.id} 
-                    className={`flex items-center justify-between p-3 rounded-lg transition-all duration-200 ${
-                      task.status === 'completed' 
-                        ? 'bg-muted/50' 
-                        : task.risk === 'high' 
-                          ? 'bg-red-50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/30' 
-                          : task.risk === 'medium' 
-                            ? 'bg-amber-50 dark:bg-amber-950/20 hover:bg-amber-100 dark:hover:bg-amber-950/30' 
-                            : 'bg-emerald-50 dark:bg-emerald-950/20 hover:bg-emerald-100 dark:hover:bg-emerald-950/30'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {task.status === 'completed' ? (
-                        <CheckCircle className="h-5 w-5 text-compGreen-500" />
-                      ) : task.risk === 'high' ? (
-                        <AlertTriangle className="h-5 w-5 text-red-500" />
-                      ) : task.risk === 'medium' ? (
-                        <AlertTriangle className="h-5 w-5 text-compOrange-500" />
-                      ) : (
-                        <CheckCircle className="h-5 w-5 text-compGreen-500" />
-                      )}
-                      <div>
-                        <p className={`font-medium ${task.status === 'completed' && 'text-muted-foreground line-through'}`}>{task.title}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <CalendarClock className="h-3 w-3" />
-                            <span>Срок: {task.deadline}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <User className="h-3 w-3" />
-                            <span>Отв.: {task.responsible}</span>
-                          </div>
-                          <RiskIndicator level={task.risk as 'low' | 'medium' | 'high'} size="sm" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {task.status !== 'completed' && (
-                        <button className="text-xs bg-background border border-border px-3 py-1 rounded hover:bg-muted transition-colors">
-                          {task.status === 'in-progress' ? 'Завершить' : 'Начать'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </TabsContent>

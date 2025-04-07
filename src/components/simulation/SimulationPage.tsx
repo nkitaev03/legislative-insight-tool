@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Play, BarChart3, ArrowRight, Download, RefreshCw } from 'lucide-react';
+import { Play, BarChart3, ArrowRight, Download, RefreshCw, Upload, FileSpreadsheet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
@@ -12,28 +12,42 @@ import RiskIndicator from '../common/RiskIndicator';
 import MonteCarloSimulator from './MonteCarloSimulator';
 import RiskImpactChart from './RiskImpactChart';
 import { getRisksFromMonitoring } from './utils';
-import { RiskData } from './types';
+import { RiskData, RiskCategory, SimulationResult } from './types';
 
 export default function SimulationPage() {
   const [simulationRun, setSimulationRun] = useState(false);
   const [simulationInProgress, setSimulationInProgress] = useState(false);
   const [companyRisks, setCompanyRisks] = useState<RiskData[]>([]);
-  const [simulationResults, setSimulationResults] = useState<Array<{
-    riskId: string;
-    title: string;
-    simulations: number[];
-    mean: number;
-    median: number;
-    min: number;
-    max: number;
-    percentile90: number;
-    percentile95: number;
-  }>>([]);
+  const [simulationResults, setSimulationResults] = useState<SimulationResult[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [hasFinancialReport, setHasFinancialReport] = useState(false);
   
   useEffect(() => {
-    // Fetch risks from monitoring module
+    // Fetch risks from monitoring module and add risk categories
     const risks = getRisksFromMonitoring();
-    setCompanyRisks(risks);
+    
+    // Assign risk categories based on the risk type
+    const categorizedRisks = risks.map(risk => {
+      // Determine risk category based on risk title or description
+      let riskCategory: RiskCategory = 'operational';
+      
+      if (risk.title.toLowerCase().includes('финанс') || risk.description.toLowerCase().includes('финанс')) {
+        riskCategory = 'financial';
+      } else if (risk.title.toLowerCase().includes('закон') || risk.description.toLowerCase().includes('закон')) {
+        riskCategory = 'legal';
+      } else if (risk.title.toLowerCase().includes('репутац') || risk.description.toLowerCase().includes('репутац')) {
+        riskCategory = 'reputational';
+      } else if (risk.title.toLowerCase().includes('стратег') || risk.description.toLowerCase().includes('стратег')) {
+        riskCategory = 'strategic';
+      }
+      
+      return {
+        ...risk,
+        riskCategory
+      };
+    });
+    
+    setCompanyRisks(categorizedRisks);
   }, []);
 
   const runSimulation = () => {
@@ -63,7 +77,8 @@ export default function SimulationPage() {
           min,
           max,
           percentile90,
-          percentile95
+          percentile95,
+          riskCategory: risk.riskCategory || 'operational'
         };
       });
       
@@ -73,9 +88,85 @@ export default function SimulationPage() {
     }, 1500);
   };
 
+  const handleFinancialReportUpload = () => {
+    // Simulate file upload
+    setHasFinancialReport(true);
+    
+    // Add financial risks from report
+    const financialRisks: RiskData[] = [
+      {
+        id: 'fr1',
+        title: 'Снижение маржинальности из-за роста себестоимости',
+        date: '15.05.2023',
+        description: 'Обнаружен риск снижения рентабельности в 2 квартале из-за роста себестоимости на основные материалы.',
+        category: 'Финансы',
+        source: 'Финансовый отчет Q1 2023',
+        sourceUrl: '#',
+        risk: 'high',
+        isNew: true,
+        responsible: 'Иванов И.И., Финансовый директор',
+        risks: [
+          'Снижение маржинальности продукции на 5-8%',
+          'Уменьшение общей прибыли на 12-15%',
+          'Невыполнение плана по EBITDA'
+        ],
+        recommendations: [
+          { text: 'Пересмотреть контракты с поставщиками', responsible: '', status: 'pending' },
+          { text: 'Оптимизировать логистические затраты', responsible: '', status: 'pending' },
+          { text: 'Рассмотреть альтернативные материалы', responsible: '', status: 'pending' }
+        ],
+        financialImpact: {
+          min: 350000,
+          max: 750000,
+          expected: 480000
+        },
+        riskCategory: 'financial'
+      },
+      {
+        id: 'fr2',
+        title: 'Рост кредитной нагрузки с повышением ставки ЦБ',
+        date: '16.05.2023',
+        description: 'Увеличение процентных платежей по кредитному портфелю компании из-за повышения ключевой ставки ЦБ.',
+        category: 'Финансы',
+        source: 'Финансовый отчет Q1 2023',
+        sourceUrl: '#',
+        risk: 'medium',
+        isNew: true,
+        responsible: 'Иванов И.И., Финансовый директор',
+        risks: [
+          'Увеличение расходов на обслуживание долга',
+          'Снижение доступности новых кредитных линий',
+          'Рост стоимости финансирования инвестиционных проектов'
+        ],
+        recommendations: [
+          { text: 'Рефинансировать действующие кредиты с фиксированной ставкой', responsible: '', status: 'pending' },
+          { text: 'Разработать план снижения долговой нагрузки', responsible: '', status: 'pending' }
+        ],
+        financialImpact: {
+          min: 200000,
+          max: 450000,
+          expected: 300000
+        },
+        riskCategory: 'financial'
+      }
+    ];
+    
+    setCompanyRisks(prev => [...prev, ...financialRisks]);
+  };
+
   const getTotalRiskExposure = () => {
     if (!simulationResults.length) return 0;
     return simulationResults.reduce((total, result) => total + result.percentile95, 0);
+  };
+
+  const filteredResults = selectedCategory === 'all' 
+    ? simulationResults 
+    : simulationResults.filter(result => result.riskCategory === selectedCategory);
+
+  const getCategoryTotalExposure = (category: RiskCategory) => {
+    return simulationResults
+      .filter(result => result.riskCategory === category)
+      .reduce((total, result) => total + result.percentile95, 0);
   };
 
   return (
@@ -83,6 +174,12 @@ export default function SimulationPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Симуляция рисков</h1>
         <div className="flex gap-2">
+          {!hasFinancialReport && (
+            <Button variant="outline" className="gap-2" onClick={handleFinancialReportUpload}>
+              <Upload className="h-4 w-4" />
+              Загрузить фин. отчет
+            </Button>
+          )}
           {simulationRun && (
             <Button variant="outline" className="gap-2">
               <Download className="h-4 w-4" />
@@ -129,6 +226,17 @@ export default function SimulationPage() {
                   Запустите симуляцию, чтобы рассчитать финансовое воздействие каждого риска на бизнес с 
                   учетом вероятностных распределений.
                 </p>
+                {!hasFinancialReport && (
+                  <Alert className="bg-compBlue-50 border-compBlue-200 text-compBlue-800 mt-4">
+                    <AlertTitle className="flex items-center gap-2">
+                      <FileSpreadsheet className="h-4 w-4" />
+                      Финансовая отчетность не загружена
+                    </AlertTitle>
+                    <AlertDescription className="text-compBlue-700">
+                      Загрузите финансовую отчетность компании для более точного анализа финансовых рисков
+                    </AlertDescription>
+                  </Alert>
+                )}
                 <div className="flex gap-2 mt-4">
                   <Button variant="outline">Подробнее о методе</Button>
                   <Button 
@@ -165,47 +273,91 @@ export default function SimulationPage() {
             </CardContent>
           </Card>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Распределение рисков</CardTitle>
+                <CardTitle>Распределение рисков по категориям</CardTitle>
                 <CardDescription>
                   Финансовое воздействие рисков (95-й процентиль)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {(['financial', 'operational', 'legal', 'strategic', 'reputational'] as RiskCategory[]).map(category => {
+                    const exposure = getCategoryTotalExposure(category);
+                    const percentage = simulationResults.length 
+                      ? (exposure / getTotalRiskExposure()) * 100 
+                      : 0;
+                    
+                    let color = '';
+                    switch(category) {
+                      case 'financial': color = 'bg-red-500'; break;
+                      case 'operational': color = 'bg-blue-500'; break;
+                      case 'legal': color = 'bg-purple-500'; break;
+                      case 'strategic': color = 'bg-amber-500'; break;
+                      case 'reputational': color = 'bg-green-500'; break;
+                    }
+                    
+                    return (
+                      <div key={category} className="bg-muted/30 p-4 rounded-lg">
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium capitalize">
+                            {category === 'financial' ? 'Финансовые' : 
+                             category === 'operational' ? 'Операционные' :
+                             category === 'legal' ? 'Юридические' :
+                             category === 'strategic' ? 'Стратегические' : 'Репутационные'}
+                          </span>
+                          <span className="text-sm font-medium">{percentage.toFixed(1)}%</span>
+                        </div>
+                        <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full ${color}`} 
+                            style={{ width: `${percentage}%` }}
+                          ></div>
+                        </div>
+                        <div className="mt-1 text-right text-sm text-muted-foreground">
+                          {exposure.toLocaleString('ru-RU')} ₽
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Распределение воздействия</CardTitle>
+                <CardDescription>
+                  Распределение финансовых потерь
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
                 <RiskImpactChart simulationResults={simulationResults} />
               </CardContent>
             </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Суммарное распределение</CardTitle>
-                <CardDescription>
-                  Распределение финансовых потерь
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-muted-foreground">График суммарного распределения потерь</p>
-                </div>
-              </CardContent>
-            </Card>
           </div>
           
-          <Tabs defaultValue="table">
-            <TabsList>
-              <TabsTrigger value="table">Таблица результатов</TabsTrigger>
-              <TabsTrigger value="details">Подробный анализ</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="all" className="mt-6">
+            <div className="flex justify-between items-center">
+              <TabsList>
+                <TabsTrigger value="all">Все риски</TabsTrigger>
+                <TabsTrigger value="financial">Финансовые</TabsTrigger>
+                <TabsTrigger value="operational">Операционные</TabsTrigger>
+                <TabsTrigger value="legal">Юридические</TabsTrigger>
+                <TabsTrigger value="strategic">Стратегические</TabsTrigger>
+                <TabsTrigger value="reputational">Репутационные</TabsTrigger>
+              </TabsList>
+            </div>
             
-            <TabsContent value="table" className="mt-6">
+            <TabsContent value="all" className="mt-6">
               <Card>
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Риск</TableHead>
+                        <TableHead>Категория</TableHead>
                         <TableHead>Ожидаемое воздействие</TableHead>
                         <TableHead>95-й процентиль</TableHead>
                         <TableHead>Минимум</TableHead>
@@ -219,6 +371,20 @@ export default function SimulationPage() {
                         return (
                           <TableRow key={result.riskId}>
                             <TableCell className="font-medium">{result.title}</TableCell>
+                            <TableCell>
+                              <Badge className={
+                                result.riskCategory === 'financial' ? 'bg-red-500' :
+                                result.riskCategory === 'operational' ? 'bg-blue-500' :
+                                result.riskCategory === 'legal' ? 'bg-purple-500' :
+                                result.riskCategory === 'strategic' ? 'bg-amber-500' :
+                                'bg-green-500'
+                              }>
+                                {result.riskCategory === 'financial' ? 'Финансовый' : 
+                                 result.riskCategory === 'operational' ? 'Операционный' :
+                                 result.riskCategory === 'legal' ? 'Юридический' :
+                                 result.riskCategory === 'strategic' ? 'Стратегический' : 'Репутационный'}
+                              </Badge>
+                            </TableCell>
                             <TableCell>{result.mean.toLocaleString('ru-RU')} ₽</TableCell>
                             <TableCell className="font-medium">{result.percentile95.toLocaleString('ru-RU')} ₽</TableCell>
                             <TableCell>{result.min.toLocaleString('ru-RU')} ₽</TableCell>
@@ -231,6 +397,7 @@ export default function SimulationPage() {
                       })}
                       <TableRow className="bg-muted/50">
                         <TableCell className="font-medium">Общее воздействие</TableCell>
+                        <TableCell></TableCell>
                         <TableCell>
                           {simulationResults.reduce((sum, r) => sum + r.mean, 0).toLocaleString('ru-RU')} ₽
                         </TableCell>
@@ -247,61 +414,62 @@ export default function SimulationPage() {
               </Card>
             </TabsContent>
             
-            <TabsContent value="details" className="mt-6 space-y-6">
-              {simulationResults.map((result) => {
-                const risk = companyRisks.find(r => r.id === result.riskId);
-                if (!risk) return null;
-                
-                return (
-                  <Card key={result.riskId}>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle>{risk.title}</CardTitle>
-                          <CardDescription className="mt-1">
-                            {risk.category} • Источник: {risk.source}
-                          </CardDescription>
-                        </div>
-                        <RiskIndicator level={risk.risk} showLabel />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <h4 className="text-sm font-medium mb-2">Описание риска</h4>
-                        <p className="text-sm text-muted-foreground">{risk.description}</p>
-                      </div>
-                      <Separator />
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <h4 className="text-sm font-medium mb-1">Ожидаемое воздействие</h4>
-                          <p className="text-lg font-bold">{result.mean.toLocaleString('ru-RU')} ₽</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium mb-1">95-й процентиль</h4>
-                          <p className="text-lg font-bold text-red-600">{result.percentile95.toLocaleString('ru-RU')} ₽</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium mb-1">Диапазон воздействия</h4>
-                          <p className="text-sm">
-                            от <span className="font-bold">{result.min.toLocaleString('ru-RU')} ₽</span> до <span className="font-bold">{result.max.toLocaleString('ru-RU')} ₽</span>
-                          </p>
-                        </div>
-                      </div>
-                      <Alert className="bg-blue-50 text-blue-800 border-blue-200">
-                        <AlertTitle className="text-blue-800">Рекомендации по снижению риска</AlertTitle>
-                        <AlertDescription className="text-blue-700">
-                          <ul className="list-disc pl-5 mt-2 space-y-1">
-                            {risk.recommendations.map((rec, idx) => (
-                              <li key={idx}>{rec.text}</li>
-                            ))}
-                          </ul>
-                        </AlertDescription>
-                      </Alert>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </TabsContent>
+            {(['financial', 'operational', 'legal', 'strategic', 'reputational'] as RiskCategory[]).map(category => (
+              <TabsContent key={category} value={category} className="mt-6">
+                <Card>
+                  <CardContent className="p-0">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Риск</TableHead>
+                          <TableHead>Ожидаемое воздействие</TableHead>
+                          <TableHead>95-й процентиль</TableHead>
+                          <TableHead>Минимум</TableHead>
+                          <TableHead>Максимум</TableHead>
+                          <TableHead className="text-right">Уровень риска</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {simulationResults
+                          .filter(result => result.riskCategory === category)
+                          .map((result) => {
+                            const risk = companyRisks.find(r => r.id === result.riskId);
+                            return (
+                              <TableRow key={result.riskId}>
+                                <TableCell className="font-medium">{result.title}</TableCell>
+                                <TableCell>{result.mean.toLocaleString('ru-RU')} ₽</TableCell>
+                                <TableCell className="font-medium">{result.percentile95.toLocaleString('ru-RU')} ₽</TableCell>
+                                <TableCell>{result.min.toLocaleString('ru-RU')} ₽</TableCell>
+                                <TableCell>{result.max.toLocaleString('ru-RU')} ₽</TableCell>
+                                <TableCell className="text-right">
+                                  {risk && <RiskIndicator level={risk.risk} showLabel />}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        {simulationResults.filter(result => result.riskCategory === category).length > 0 && (
+                          <TableRow className="bg-muted/50">
+                            <TableCell className="font-medium">Итого по категории</TableCell>
+                            <TableCell>
+                              {simulationResults
+                                .filter(result => result.riskCategory === category)
+                                .reduce((sum, r) => sum + r.mean, 0)
+                                .toLocaleString('ru-RU')} ₽
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {getCategoryTotalExposure(category).toLocaleString('ru-RU')} ₽
+                            </TableCell>
+                            <TableCell>-</TableCell>
+                            <TableCell>-</TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            ))}
           </Tabs>
         </>
       )}
