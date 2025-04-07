@@ -62,12 +62,11 @@ export default function Sidebar() {
           "h-16 flex items-center justify-between px-4 border-b border-white/10",
           isCollapsed && "justify-center"
         )}
-        style={{ background: "linear-gradient(135deg, #1cb16b, #11905a)" }}
+        style={{ background: "linear-gradient(135deg, #00a652, #008a43)" }}
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/7a95b305-97a9-4461-a20f-4599b4bff0a2.png" alt="НОРМ Logo" className="h-8 w-8" />
-            <div className="text-white font-bold text-lg">НОРМ</div>
+            <img src="/lovable-uploads/4bee6142-1b43-4f44-8ecd-fd2eaec8fd6f.png" alt="СБЕР ОРМ Logo" className="h-8" />
           </div>
         )}
         <button
@@ -85,7 +84,7 @@ export default function Sidebar() {
 
       <div 
         className="flex-1 overflow-auto py-6 px-3"
-        style={{ background: "linear-gradient(180deg, #1cb16b, #11774a)" }}
+        style={{ background: "linear-gradient(180deg, #00a652, #007a3d)" }}
       >
         <nav className="space-y-2">
           {navigationItems.map((item) => (
@@ -106,7 +105,7 @@ export default function Sidebar() {
           "p-4 border-t border-white/10",
           isCollapsed ? "text-center" : ""
         )}
-        style={{ background: "linear-gradient(0deg, #116445, #117a4d)" }}
+        style={{ background: "linear-gradient(0deg, #006435, #007a3d)" }}
       >
         {!isCollapsed && (
           <div className="text-xs text-white/60 flex items-center justify-between">

@@ -6,10 +6,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Shield,
-  CalendarClock,
-  AlertCircle,
-  User
+  User,
+  CalendarClock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,11 +18,6 @@ import {
   Pie,
   Cell,
   Legend,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
   ResponsiveContainer
 } from 'recharts';
 import BusinessProcessMap from './BusinessProcessMap';
@@ -36,13 +29,41 @@ const riskData = [
   { name: 'Низкий', value: 55, color: '#2a9e31' },
 ];
 
-const risksByType = [
-  { subject: 'Операционные', A: 85, fullMark: 100 },
-  { subject: 'Юридические', A: 65, fullMark: 100 },
-  { subject: 'Финансовые', A: 40, fullMark: 100 },
-  { subject: 'Регуляторные', A: 90, fullMark: 100 },
-  { subject: 'Репутационные', A: 30, fullMark: 100 },
-  { subject: 'Стратегические', A: 45, fullMark: 100 },
+// Checklist items for the interactive checklist
+const checklistItems = [
+  {
+    id: '1',
+    text: 'Обновить политику конфиденциальности в соответствии с новыми требованиями',
+    completed: false,
+    responsible: 'Иванов И.И.'
+  },
+  {
+    id: '2',
+    text: 'Провести аудит систем хранения персональных данных',
+    completed: true,
+    deadline: new Date('2023-05-30'),
+    responsible: 'Петрова А.С.'
+  },
+  {
+    id: '3',
+    text: 'Назначить ответственного за защиту персональных данных',
+    completed: false,
+    reminders: true,
+    responsible: 'Смирнова Е.В.'
+  },
+  {
+    id: '4',
+    text: 'Внедрить систему контроля доступа к конфиденциальным данным',
+    completed: false,
+    deadline: new Date('2023-06-15'),
+    responsible: 'Соколов Д.М.'
+  },
+  {
+    id: '5',
+    text: 'Обновить договоры с контрагентами с учетом новых требований',
+    completed: false,
+    responsible: 'Козлов А.И.'
+  }
 ];
 
 const tasks = [
@@ -88,43 +109,6 @@ const tasks = [
   },
 ];
 
-// Checklist items for the interactive checklist
-const checklistItems = [
-  {
-    id: '1',
-    text: 'Обновить политику конфиденциальности в соответствии с новыми требованиями',
-    completed: false,
-    responsible: 'Иванов И.И.'
-  },
-  {
-    id: '2',
-    text: 'Провести аудит систем хранения персональных данных',
-    completed: true,
-    deadline: new Date('2023-05-30'),
-    responsible: 'Петрова А.С.'
-  },
-  {
-    id: '3',
-    text: 'Назначить ответственного за защиту персональных данных',
-    completed: false,
-    reminders: true,
-    responsible: 'Смирнова Е.В.'
-  },
-  {
-    id: '4',
-    text: 'Внедрить систему контроля доступа к конфиденциальным данным',
-    completed: false,
-    deadline: new Date('2023-06-15'),
-    responsible: 'Соколов Д.М.'
-  },
-  {
-    id: '5',
-    text: 'Обновить договоры с контрагентами с учетом новых требований',
-    completed: false,
-    responsible: 'Козлов А.И.'
-  }
-];
-
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
 
@@ -150,7 +134,7 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Обзор комплаенс-рисков</h1>
+        <h1 className="text-2xl font-semibold">Управление рисками</h1>
       </div>
       
       <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
@@ -164,7 +148,7 @@ export default function DashboardPage() {
           {/* Metrics Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <MetricCard 
-              title="Изменения в НПА"
+              title="Новые изменения"
               value="12"
               icon={<FileText className="h-5 w-5" />}
               description="За последние 30 дней"
@@ -172,31 +156,31 @@ export default function DashboardPage() {
               variant="warning"
             />
             <MetricCard 
-              title="Комплаенс-риски"
+              title="Уровень риска"
               value="45%"
               icon={<AlertTriangle className="h-5 w-5" />}
-              description="Общий уровень"
+              description="Общий показатель"
               trend={{ value: 5, isPositive: true }}
               variant="danger"
             />
             <MetricCard 
-              title="Выполненные задачи"
+              title="Закрытые задачи"
               value="68%"
               icon={<CheckCircle className="h-5 w-5" />}
-              description="18 из 26 задач"
+              description="18 из 26"
               trend={{ value: 12, isPositive: true }}
               variant="success"
             />
             <MetricCard 
-              title="Следующий дедлайн"
+              title="Ближайший срок"
               value="5 дней"
               icon={<Clock className="h-5 w-5" />}
               description="До 18.05.2023"
             />
           </div>
 
-          {/* Risk Distribution Charts */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Risk Distribution Chart */}
+          <div className="grid grid-cols-1 gap-6">
             <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardHeader className="pb-2">
                 <CardTitle>Распределение рисков</CardTitle>
@@ -233,37 +217,13 @@ export default function DashboardPage() {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-
-            <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
-              <CardHeader className="pb-2">
-                <CardTitle>Типы рисков</CardTitle>
-                <CardDescription>Распределение по категориям</CardDescription>
-              </CardHeader>
-              <CardContent className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={risksByType}>
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#888', fontSize: 12 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                    <Radar
-                      name="Уровень риска"
-                      dataKey="A"
-                      stroke="#1cb16b"
-                      fill="#1cb16b"
-                      fillOpacity={0.6}
-                    />
-                    <Legend />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Interactive Checklist */}
           <div className="grid grid-cols-1 gap-6">
             <InteractiveChecklist 
-              title="План устранения рисков несоответствия"
-              description="Выполните следующие шаги для минимизации рисков"
+              title="План устранения рисков"
+              description="Приоритетные задачи для минимизации рисков"
               items={checklistItems}
             />
           </div>
@@ -271,8 +231,8 @@ export default function DashboardPage() {
           {/* Latest Risk Alerts */}
           <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardHeader className="pb-2">
-              <CardTitle>Последние предупреждения</CardTitle>
-              <CardDescription>Новые и важные комплаенс-риски</CardDescription>
+              <CardTitle>Важные предупреждения</CardTitle>
+              <CardDescription>Требуют внимания</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -328,11 +288,11 @@ export default function DashboardPage() {
                       {task.status === 'completed' ? (
                         <CheckCircle className="h-5 w-5 text-compGreen-500" />
                       ) : task.risk === 'high' ? (
-                        <AlertCircle className="h-5 w-5 text-red-500" />
+                        <AlertTriangle className="h-5 w-5 text-red-500" />
                       ) : task.risk === 'medium' ? (
                         <AlertTriangle className="h-5 w-5 text-compOrange-500" />
                       ) : (
-                        <Shield className="h-5 w-5 text-compGreen-500" />
+                        <CheckCircle className="h-5 w-5 text-compGreen-500" />
                       )}
                       <div>
                         <p className={`font-medium ${task.status === 'completed' && 'text-muted-foreground line-through'}`}>{task.title}</p>
@@ -343,7 +303,7 @@ export default function DashboardPage() {
                           </div>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <User className="h-3 w-3" />
-                            <span>Ответственный: {task.responsible}</span>
+                            <span>Отв.: {task.responsible}</span>
                           </div>
                           <RiskIndicator level={task.risk as 'low' | 'medium' | 'high'} size="sm" />
                         </div>
@@ -352,7 +312,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2">
                       {task.status !== 'completed' && (
                         <button className="text-xs bg-background border border-border px-3 py-1 rounded hover:bg-muted transition-colors">
-                          {task.status === 'in-progress' ? 'Выполнить' : 'Начать'}
+                          {task.status === 'in-progress' ? 'Завершить' : 'Начать'}
                         </button>
                       )}
                     </div>
