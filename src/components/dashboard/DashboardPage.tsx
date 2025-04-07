@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import {
   BarChart3,
@@ -7,26 +8,76 @@ import {
   Clock,
   User,
   CalendarClock,
-  ArrowUpRight
+  ArrowUpRight,
+  DollarSign,
+  Percent,
+  TrendingUp,
+  TrendingDown,
+  LineChart
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricCard from '../common/MetricCard';
 import RiskIndicator from '../common/RiskIndicator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   PieChart as RechartsPieChart,
   Pie,
   Cell,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  LineChart as RechartsLineChart,
+  Line,
+  Area,
+  AreaChart
 } from 'recharts';
 import BusinessProcessMap from './BusinessProcessMap';
 import InteractiveChecklist from '../common/InteractiveChecklist';
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 
 const riskData = [
   { name: 'Высокий', value: 25, color: '#f44336' },
   { name: 'Средний', value: 30, color: '#ff9800' },
   { name: 'Низкий', value: 45, color: '#2a9e31' },
+];
+
+// Financial forecast data
+const financialForecastData = [
+  { month: 'Янв', forecast: 5.2, actual: 5.4 },
+  { month: 'Фев', forecast: 5.6, actual: 5.7 },
+  { month: 'Мар', forecast: 5.8, actual: 5.9 },
+  { month: 'Апр', forecast: 6.1, actual: 5.8 },
+  { month: 'Май', forecast: 6.3, actual: 6.2 },
+  { month: 'Июн', forecast: 6.5, actual: 6.3 },
+  { month: 'Июл', forecast: 6.7, actual: 6.5 },
+  { month: 'Авг', forecast: 6.9, actual: null },
+  { month: 'Сен', forecast: 7.1, actual: null },
+  { month: 'Окт', forecast: 7.3, actual: null },
+  { month: 'Ноя', forecast: 7.5, actual: null },
+  { month: 'Дек', forecast: 7.7, actual: null },
+];
+
+// Macro parameters impact data
+const macroParametersData = [
+  { parameter: 'Ставка ЦБ', current: '16%', impact: 'высокое', change: '+2%', trend: 'up' },
+  { parameter: 'Инфляция', current: '7.4%', impact: 'среднее', change: '-0.3%', trend: 'down' },
+  { parameter: 'Цена нефти', current: '$85', impact: 'среднее', change: '+$3', trend: 'up' },
+  { parameter: 'Курс USD/RUB', current: '92₽', impact: 'высокое', change: '+2.5₽', trend: 'up' },
+  { parameter: 'Объем рынка', current: '1.2T₽', impact: 'низкое', change: '+4%', trend: 'up' },
+];
+
+// Risk impact data for bar chart
+const riskImpactData = [
+  { category: 'Финансовые', high: 14, medium: 8, low: 6 },
+  { category: 'Юридические', high: 8, medium: 12, low: 5 },
+  { category: 'Операционные', high: 5, medium: 9, low: 15 },
+  { category: 'Технологические', high: 7, medium: 11, low: 9 },
 ];
 
 // Checklist items for the interactive checklist
@@ -112,31 +163,11 @@ const tasks = [
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
 
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-    const RADIAN = Math.PI / 180;
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text 
-        x={x} 
-        y={y} 
-        fill="white" 
-        textAnchor={x > cx ? 'start' : 'end'} 
-        dominantBaseline="central"
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
-
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-xl md:text-2xl font-semibold">
-          <span className="mr-2">👋</span>
-          Привет, Анна!
+          Панель управления
         </h1>
       </div>
 
@@ -214,93 +245,208 @@ export default function DashboardPage() {
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
-          {/* Metrics Row */}
+          {/* Financial Metrics Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <MetricCard 
-              title="Новые изменения"
-              value="12"
-              icon={<FileText className="h-5 w-5" />}
-              description="За последние 30 дней"
-              trend={{ value: 8, isPositive: false }}
-              variant="warning"
-            />
-            <MetricCard 
-              title="Уровень риска"
-              value="45%"
-              icon={<AlertTriangle className="h-5 w-5" />}
-              description="Общий показатель"
-              trend={{ value: 5, isPositive: true }}
-              variant="danger"
-            />
-            <MetricCard 
-              title="Закрытые задачи"
-              value="68%"
-              icon={<CheckCircle className="h-5 w-5" />}
-              description="18 из 26"
-              trend={{ value: 12, isPositive: true }}
+              title="Прибыль Q2 2023"
+              value="12.7M₽"
+              icon={<DollarSign className="h-5 w-5" />}
+              description="План: 12.4M₽"
+              trend={{ value: 8, isPositive: true }}
               variant="success"
             />
             <MetricCard 
-              title="Ближайший срок"
-              value="5 дней"
-              icon={<Clock className="h-5 w-5" />}
-              description="До 18.05.2023"
+              title="Маржинальность"
+              value="18.2%"
+              icon={<Percent className="h-5 w-5" />}
+              description="Прошлый квартал: 17.5%"
+              trend={{ value: 4, isPositive: true }}
+              variant="success"
+            />
+            <MetricCard 
+              title="Операционные расходы"
+              value="9.2M₽"
+              icon={<TrendingDown className="h-5 w-5" />}
+              description="План: 9.5M₽"
+              trend={{ value: 3, isPositive: true }}
+              variant="success"
+            />
+            <MetricCard 
+              title="Оценка рисков"
+              value="78.4M₽"
+              icon={<AlertTriangle className="h-5 w-5" />}
+              description="Потенциальные убытки"
+              trend={{ value: 12, isPositive: false }}
+              variant="danger"
             />
           </div>
 
-          {/* Risk Distribution Chart */}
+          {/* Financial Forecast Chart */}
+          <Card className="hover-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Финансовый прогноз</CardTitle>
+              <CardDescription>Влияние макропараметров на финансовые показатели</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={financialForecastData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <defs>
+                      <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#1eaedb" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#1eaedb" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="month" />
+                    <YAxis 
+                      tickFormatter={(value) => `${value}M₽`}
+                      domain={['dataMin - 0.5', 'dataMax + 0.5']}
+                    />
+                    <Tooltip 
+                      formatter={(value) => [`${value}M₽`, '']}
+                      labelFormatter={(label) => `${label} 2023`}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="actual" 
+                      stroke="#8884d8" 
+                      strokeWidth={2}
+                      fillOpacity={1} 
+                      fill="url(#colorActual)" 
+                      name="Факт"
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="forecast" 
+                      stroke="#1eaedb" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      fillOpacity={1} 
+                      fill="url(#colorForecast)" 
+                      name="Прогноз"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Macro Parameters and Risk Distribution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Macro Parameters */}
             <Card className="hover-card">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Распределение рисков</CardTitle>
-                <CardDescription>По уровню важности</CardDescription>
+                <CardTitle className="text-lg">Макропараметры</CardTitle>
+                <CardDescription>Ключевые показатели и их влияние</CardDescription>
               </CardHeader>
-              <CardContent className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsPieChart>
-                    <Pie
-                      data={riskData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      fill="#8884d8"
-                      paddingAngle={5}
-                      dataKey="value"
-                      labelLine={false}
-                      label={renderCustomizedLabel}
-                    >
-                      {riskData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
+              <CardContent>
+                <div className="space-y-3">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Параметр</TableHead>
+                        <TableHead>Значение</TableHead>
+                        <TableHead>Изменение</TableHead>
+                        <TableHead>Влияние</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {macroParametersData.map((param, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">{param.parameter}</TableCell>
+                          <TableCell>{param.current}</TableCell>
+                          <TableCell>
+                            <span className={`flex items-center ${param.trend === 'up' ? 'text-red-500' : 'text-green-500'}`}>
+                              {param.change}
+                              {param.trend === 'up' ? <TrendingUp className="h-3 w-3 ml-1" /> : <TrendingDown className="h-3 w-3 ml-1" />}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              param.impact === 'высокое' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
+                              param.impact === 'среднее' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
+                              'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                            }`}>
+                              {param.impact}
+                            </span>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </Pie>
-                    <Legend 
-                      layout="horizontal" 
-                      verticalAlign="bottom" 
-                      align="center"
-                      formatter={(value, entry, index) => (
-                        <span className="text-sm font-medium">{value}</span>
-                      )}
-                    />
-                  </RechartsPieChart>
-                </ResponsiveContainer>
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
 
-            {/* Interactive Checklist */}
+            {/* Risk Impact Chart (replacing pie chart) */}
             <Card className="hover-card">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">План устранения рисков</CardTitle>
-                <CardDescription>Приоритетные задачи</CardDescription>
+                <CardTitle className="text-lg">Распределение рисков</CardTitle>
+                <CardDescription>По категориям и уровням важности</CardDescription>
               </CardHeader>
-              <CardContent>
-                <InteractiveChecklist 
-                  items={checklistItems.slice(0, 3)}
-                  compact
-                />
+              <CardContent className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={riskImpactData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    barSize={20}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="category" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value, name) => {
+                        return [value, name === 'high' ? 'Высокий' : name === 'medium' ? 'Средний' : 'Низкий'];
+                      }}
+                    />
+                    <Legend 
+                      formatter={(value) => (
+                        value === 'high' ? 'Высокий' : 
+                        value === 'medium' ? 'Средний' : 'Низкий'
+                      )}
+                    />
+                    <Bar 
+                      dataKey="high" 
+                      stackId="a" 
+                      fill="#f44336" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="medium" 
+                      stackId="a" 
+                      fill="#ff9800"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="low" 
+                      stackId="a" 
+                      fill="#2a9e31"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
+
+          {/* Interactive Checklist */}
+          <Card className="hover-card">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">План устранения рисков</CardTitle>
+              <CardDescription>Приоритетные задачи</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <InteractiveChecklist 
+                items={checklistItems.slice(0, 3)}
+                compact
+              />
+            </CardContent>
+          </Card>
         </TabsContent>
         
         <TabsContent value="tasks" className="space-y-4">

@@ -1,12 +1,9 @@
 
 import React from 'react';
-import { Bell, Search, User } from 'lucide-react';
+import { Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NotificationBell from '../common/NotificationBell';
-import { Button } from '@/components/ui/button';
-import VoiceSearch from '../common/VoiceSearch';
 import { ThemeToggle } from '../theme/ThemeToggle';
-import QuickTaskAssignment from '../common/QuickTaskAssignment';
 import { Input } from '@/components/ui/input';
 
 interface HeaderProps {
