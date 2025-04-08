@@ -12,13 +12,15 @@ import {
   Percent,
   TrendingUp,
   TrendingDown,
-  LineChart
+  LineChart,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import MetricCard from '../common/MetricCard';
 import RiskIndicator from '../common/RiskIndicator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   PieChart as RechartsPieChart,
   Pie,
@@ -39,6 +41,7 @@ import {
 import BusinessProcessMap from './BusinessProcessMap';
 import InteractiveChecklist from '../common/InteractiveChecklist';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import FinancialForecastChart from '../simulation/FinancialForecastChart';
 
 const riskData = [
   { name: 'Высокий', value: 25, color: '#f44336' },
@@ -161,6 +164,77 @@ const tasks = [
 
 export default function DashboardPage() {
   const [tab, setTab] = useState('overview');
+  const [metricChartOpen, setMetricChartOpen] = useState(false);
+  const [selectedMetric, setSelectedMetric] = useState<{
+    title: string;
+    data: any[];
+    dataKey: string;
+    color: string;
+    formatter?: (value: any) => string;
+  } | null>(null);
+
+  // Define chart data for each metric
+  const metricCharts = {
+    profit: {
+      title: "Динамика прибыли",
+      data: [
+        { month: 'Янв', value: 9.2 },
+        { month: 'Фев', value: 10.1 },
+        { month: 'Мар', value: 10.8 },
+        { month: 'Апр', value: 11.5 },
+        { month: 'Май', value: 11.9 },
+        { month: 'Июн', value: 12.7 }
+      ],
+      dataKey: "value",
+      color: "#10b981",
+      formatter: (value: number) => `${value}M₽`
+    },
+    margin: {
+      title: "Динамика маржинальности",
+      data: [
+        { month: 'Янв', value: 15.8 },
+        { month: 'Фев', value: 16.2 },
+        { month: 'Мар', value: 16.9 },
+        { month: 'Апр', value: 17.3 },
+        { month: 'Май', value: 17.8 },
+        { month: 'Июн', value: 18.2 }
+      ],
+      dataKey: "value",
+      color: "#8884d8",
+      formatter: (value: number) => `${value}%`
+    },
+    expenses: {
+      title: "Операционные расходы",
+      data: [
+        { month: 'Янв', value: 9.8 },
+        { month: 'Фев', value: 9.7 },
+        { month: 'Мар', value: 9.6 },
+        { month: 'Апр', value: 9.4 },
+        { month: 'Май', value: 9.3 },
+        { month: 'Июн', value: 9.2 }
+      ],
+      dataKey: "value",
+      color: "#ef4444",
+      formatter: (value: number) => `${value}M₽`
+    },
+    risks: {
+      title: "Оценка рисков",
+      data: [
+        { category: 'Финансовые', value: 32.1 },
+        { category: 'Операционные', value: 18.7 },
+        { category: 'Юридические', value: 15.2 },
+        { category: 'Рыночные', value: 12.4 }
+      ],
+      dataKey: "value",
+      color: "#f59e0b",
+      formatter: (value: number) => `${value}M₽`
+    }
+  };
+
+  const handleMetricCardClick = (metricType: 'profit' | 'margin' | 'expenses' | 'risks') => {
+    setSelectedMetric(metricCharts[metricType]);
+    setMetricChartOpen(true);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -245,38 +319,46 @@ export default function DashboardPage() {
         <TabsContent value="overview" className="space-y-6">
           {/* Financial Metrics Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard 
-              title="Прибыль Q2 2023"
-              value="12.7M₽"
-              icon={<DollarSign className="h-5 w-5" />}
-              description="План: 12.4M₽"
-              trend={{ value: 8, isPositive: true }}
-              variant="success"
-            />
-            <MetricCard 
-              title="Маржинальность"
-              value="18.2%"
-              icon={<Percent className="h-5 w-5" />}
-              description="Прошлый квартал: 17.5%"
-              trend={{ value: 4, isPositive: true }}
-              variant="success"
-            />
-            <MetricCard 
-              title="Операционные расходы"
-              value="9.2M₽"
-              icon={<TrendingDown className="h-5 w-5" />}
-              description="План: 9.5M₽"
-              trend={{ value: 3, isPositive: true }}
-              variant="success"
-            />
-            <MetricCard 
-              title="Оценка рисков"
-              value="78.4M₽"
-              icon={<AlertTriangle className="h-5 w-5" />}
-              description="Потенциальные убытки"
-              trend={{ value: 12, isPositive: false }}
-              variant="danger"
-            />
+            <div onClick={() => handleMetricCardClick('profit')} className="cursor-pointer">
+              <MetricCard 
+                title="Прибыль Q2 2023"
+                value="12.7M₽"
+                icon={<DollarSign className="h-5 w-5" />}
+                description="План: 12.4M₽"
+                trend={{ value: 8, isPositive: true }}
+                variant="success"
+              />
+            </div>
+            <div onClick={() => handleMetricCardClick('margin')} className="cursor-pointer">
+              <MetricCard 
+                title="Маржинальность"
+                value="18.2%"
+                icon={<Percent className="h-5 w-5" />}
+                description="Прошлый квартал: 17.5%"
+                trend={{ value: 4, isPositive: true }}
+                variant="success"
+              />
+            </div>
+            <div onClick={() => handleMetricCardClick('expenses')} className="cursor-pointer">
+              <MetricCard 
+                title="Операционные расходы"
+                value="9.2M₽"
+                icon={<TrendingDown className="h-5 w-5" />}
+                description="План: 9.5M₽"
+                trend={{ value: 3, isPositive: true }}
+                variant="success"
+              />
+            </div>
+            <div onClick={() => handleMetricCardClick('risks')} className="cursor-pointer">
+              <MetricCard 
+                title="Оценка рисков"
+                value="78.4M₽"
+                icon={<AlertTriangle className="h-5 w-5" />}
+                description="Потенциальные убытки"
+                trend={{ value: 12, isPositive: false }}
+                variant="danger"
+              />
+            </div>
           </div>
 
           {/* Financial Forecast Chart */}
@@ -451,6 +533,63 @@ export default function DashboardPage() {
           <BusinessProcessMap />
         </TabsContent>
       </Tabs>
+
+      {/* Metric Chart Dialog */}
+      <Dialog open={metricChartOpen} onOpenChange={setMetricChartOpen}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogTitle>{selectedMetric?.title}</DialogTitle>
+            <button 
+              onClick={() => setMetricChartOpen(false)}
+              className="rounded-full p-1 hover:bg-muted"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </DialogHeader>
+          <div className="h-[400px] mt-4">
+            {selectedMetric && (
+              selectedMetric.title === "Оценка рисков" ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={selectedMetric.data}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="category" />
+                    <YAxis tickFormatter={(value) => `${value}M₽`} />
+                    <Tooltip formatter={(value) => [`${value}M₽`, 'Потенциальные убытки']} />
+                    <Bar 
+                      dataKey={selectedMetric.dataKey} 
+                      fill={selectedMetric.color}
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={selectedMetric.data}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => selectedMetric.formatter ? selectedMetric.formatter(value) : value} />
+                    <Tooltip formatter={(value) => [selectedMetric.formatter ? selectedMetric.formatter(value) : value, '']} />
+                    <Line 
+                      type="monotone" 
+                      dataKey={selectedMetric.dataKey} 
+                      stroke={selectedMetric.color}
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

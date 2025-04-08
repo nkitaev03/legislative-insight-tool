@@ -89,9 +89,8 @@ const RiskHeatmapChart: React.FC<RiskHeatmapChartProps> = ({
           }}
           className="relative"
         >
-          {/* Wrap all children in a single React Fragment */}
-          <>
-            {/* Vertical "Вероятность" label positioned outside the grid */}
+          <div className="flex flex-col">
+            {/* Vertical "Вероятность" label positioned on the left side but outside the grid */}
             <div className="flex mb-2">
               <div className="w-24 flex items-center justify-end pr-2">
                 <span className="font-medium text-sm text-muted-foreground">Вероятность</span>
@@ -175,7 +174,7 @@ const RiskHeatmapChart: React.FC<RiskHeatmapChartProps> = ({
                 </React.Fragment>
               ))}
             </div>
-          </>
+          </div>
         </ChartContainer>
       </CardContent>
     </Card>

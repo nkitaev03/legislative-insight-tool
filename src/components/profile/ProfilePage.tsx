@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock, FileUp, FileCheck, Globe, Users, ShoppingBag } from 'lucide-react';
+import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock, FileUp, FileCheck, Globe, Users, ShoppingBag, X, Plus } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import FileUploader from '../common/FileUploader';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface CompanyInfo {
   name: string;
@@ -72,6 +75,51 @@ export default function ProfilePage() {
     responsible: '',
     deadline: ''
   });
+
+  const [newProduct, setNewProduct] = useState('');
+  const [newClient, setNewClient] = useState('');
+  
+  const handleAddProduct = () => {
+    if (newProduct.trim()) {
+      setCompanyInfo({
+        ...companyInfo,
+        products: [...companyInfo.products, newProduct.trim()]
+      });
+      setNewProduct('');
+      toast.success('Продукт добавлен');
+    }
+  };
+  
+  const handleRemoveProduct = (index: number) => {
+    const updatedProducts = [...companyInfo.products];
+    updatedProducts.splice(index, 1);
+    setCompanyInfo({
+      ...companyInfo,
+      products: updatedProducts
+    });
+    toast.success('Продукт удален');
+  };
+  
+  const handleAddClient = () => {
+    if (newClient.trim()) {
+      setCompanyInfo({
+        ...companyInfo,
+        clients: [...companyInfo.clients, newClient.trim()]
+      });
+      setNewClient('');
+      toast.success('Клиент добавлен');
+    }
+  };
+  
+  const handleRemoveClient = (index: number) => {
+    const updatedClients = [...companyInfo.clients];
+    updatedClients.splice(index, 1);
+    setCompanyInfo({
+      ...companyInfo,
+      clients: updatedClients
+    });
+    toast.success('Клиент удален');
+  };
 
   const handleAddResponsible = () => {
     if (newResponsible.law && newResponsible.responsible) {
@@ -210,10 +258,29 @@ export default function ProfilePage() {
                   <label className="text-sm font-medium text-muted-foreground">Продукты и услуги</label>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {companyInfo.products.map((product, idx) => (
-                      <div key={idx} className="px-3 py-1 bg-primary/10 rounded-full text-sm">
+                      <div key={idx} className="px-3 py-1 bg-primary/10 rounded-full text-sm flex items-center gap-1">
                         {product}
+                        <button 
+                          onClick={() => handleRemoveProduct(idx)} 
+                          className="hover:text-destructive p-1 rounded-full"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                    <Input
+                      placeholder="Добавить продукт или услугу"
+                      value={newProduct}
+                      onChange={(e) => setNewProduct(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddProduct()}
+                      className="flex-1"
+                    />
+                    <Button onClick={handleAddProduct} size="sm">
+                      <Plus className="h-4 w-4 mr-1" />
+                      Добавить
+                    </Button>
                   </div>
                 </div>
                 
@@ -221,10 +288,29 @@ export default function ProfilePage() {
                   <label className="text-sm font-medium text-muted-foreground">Клиенты</label>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {companyInfo.clients.map((client, idx) => (
-                      <div key={idx} className="px-3 py-1 bg-blue-100 rounded-full text-sm">
+                      <div key={idx} className="px-3 py-1 bg-blue-100 rounded-full text-sm flex items-center gap-1">
                         {client}
+                        <button 
+                          onClick={() => handleRemoveClient(idx)} 
+                          className="hover:text-destructive p-1 rounded-full"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                    <Input
+                      placeholder="Добавить клиента"
+                      value={newClient}
+                      onChange={(e) => setNewClient(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddClient()}
+                      className="flex-1"
+                    />
+                    <Button onClick={handleAddClient} size="sm">
+                      <Plus className="h-4 w-4 mr-1" />
+                      Добавить
+                    </Button>
                   </div>
                 </div>
                 
@@ -238,7 +324,7 @@ export default function ProfilePage() {
               </div>
               
               <button className="w-full mt-4 px-4 py-2 bg-compGreen-500 text-white rounded-md hover:bg-compGreen-600 transition-colors">
-                Редактировать информацию
+                Сохранить изменения
               </button>
             </CardContent>
           </Card>
