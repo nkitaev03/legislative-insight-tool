@@ -8,7 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import { ThemeProvider } from "./hooks/use-theme";
-import AIAssistant from "./components/common/AIAssistant";
+import EnhancedAIAssistant from "./components/common/EnhancedAIAssistant";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +35,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <AIAssistant />
+          <EnhancedAIAssistant />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

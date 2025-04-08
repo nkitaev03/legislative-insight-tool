@@ -35,6 +35,14 @@
     --compOrange-700: 32, 98%, 36%;
     --compPurple-50: 270, 70%, 95%;
     --compPurple-500: 270, 60%, 50%;
+    --sidebar-background: 214 32% 99%;
+    --sidebar-foreground: 210 20% 25%;
+    --sidebar-primary: 173 83% 50%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 173 83% 95%;
+    --sidebar-accent-foreground: 173 83% 30%;
+    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-ring: 173 83% 50%;
   }
 
   .dark {
@@ -67,6 +75,14 @@
     --compOrange-700: 32, 98%, 76%;
     --compPurple-50: 270, 70%, 15%;
     --compPurple-500: 270, 60%, 60%;
+    --sidebar-background: 215 25% 12%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 173 70% 45%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 173 30% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 25% 20%;
+    --sidebar-ring: 173 70% 45%;
   }
 }
 
@@ -78,6 +94,56 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+/* Interactive Animation Classes */
+@layer utilities {
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+  
+  .hover-card {
+    @apply bg-white dark:bg-card shadow-sm hover:shadow-md transition-shadow duration-200 rounded-xl border border-border;
+  }
+  
+  .hover-card-lift {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-md;
+  }
+
+  .pulse-animation {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .slide-in-right {
+    animation: slideInRight 0.3s ease-in-out;
+  }
+  
+  .slide-in-left {
+    animation: slideInLeft 0.3s ease-in-out;
+  }
+
+  .glass-morphism {
+    @apply backdrop-blur-xl bg-white/80 dark:bg-black/30 border border-white/20 dark:border-white/10;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 .bg-mesh-gradient {
@@ -134,4 +200,61 @@
 
 .status-dot {
   @apply w-2 h-2 rounded-full;
+}
+
+/* Interactive Tooltip Styles */
+.tooltip-container {
+  @apply relative inline-block;
+}
+
+.tooltip-text {
+  @apply invisible absolute z-10 w-48 rounded-md bg-popover text-popover-foreground text-sm py-2 px-3 shadow-md;
+  @apply opacity-0 transition-opacity duration-300;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip-container:hover .tooltip-text {
+  @apply visible opacity-100;
+}
+
+/* Draggable Widget Styles */
+.draggable-widget {
+  @apply cursor-grab active:cursor-grabbing;
+}
+
+.widget-placeholder {
+  @apply border-2 border-dashed border-primary/50 rounded-xl bg-primary/5 flex items-center justify-center;
+}
+
+/* Interactive Chart Hover Effects */
+.chart-hover-area {
+  @apply cursor-pointer transition-opacity;
+}
+
+.chart-hover-area:hover {
+  @apply opacity-80;
+}
+
+/* Interactive Business Process Map */
+.process-area {
+  @apply transition-all duration-300;
+}
+
+.process-area:hover {
+  @apply shadow-lg transform scale-105 z-10;
+}
+
+/* Guided Tour Styles */
+.tour-highlight {
+  @apply relative z-10 ring-2 ring-primary ring-offset-2 ring-offset-background;
+}
+
+.tour-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+}
+
+.tour-tooltip {
+  @apply absolute z-50 bg-popover text-popover-foreground p-4 rounded-lg shadow-lg max-w-xs;
 }
