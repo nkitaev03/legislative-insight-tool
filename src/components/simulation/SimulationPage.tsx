@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Play, BarChart3, ArrowRight, Download, RefreshCw, Upload, FileSpreadsheet, Layers } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -125,7 +124,7 @@ export default function SimulationPage() {
     setTimeout(() => {
       const selectedRisks = companyRisks.filter(risk => parameters.selectedRisks.includes(risk.id));
       
-      const results = selectedRisks.map(risk => {
+      const results: SimulationResult[] = selectedRisks.map(risk => {
         let minValue = risk.financialImpact.min;
         let maxValue = risk.financialImpact.max;
         
@@ -156,6 +155,9 @@ export default function SimulationPage() {
         const percentile95 = simulator.calculatePercentile(simulations, 95);
         const percentile99 = simulator.calculatePercentile(simulations, parameters.confidenceLevel);
         
+        // Ensure the scenarioType is properly typed
+        const scenarioType = parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom' as const;
+        
         return {
           riskId: risk.id,
           title: risk.title,
@@ -169,16 +171,16 @@ export default function SimulationPage() {
           percentile99,
           riskCategory: risk.riskCategory || 'operational',
           scenarioName: parameters.stressTestCoefficient > 1.0 ? 'Стресс-тест' : 'Пользовательский сценарий',
-          scenarioType: parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom' as const
+          scenarioType
         };
       });
       
       // Create a new scenario
-      const scenarioType = parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom';
-      const newScenario = {
+      const scenarioType = parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom' as const;
+      const newScenario: SimulationScenario = {
         id: `scenario-${simulationScenarios.length + 1}`,
         name: scenarioType === 'stress' ? 'Стресс-тест' : 'Пользовательский сценарий',
-        type: scenarioType as 'stress' | 'custom',
+        type: scenarioType,
         results,
         parameters: {
           simulationRuns: parameters.simulationRuns,

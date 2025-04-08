@@ -5,6 +5,7 @@
 export default class MonteCarloSimulator {
   private minValue: number;
   private maxValue: number;
+  public distributionType: "normal" | "triangular" | "uniform" = "triangular";
   
   /**
    * Create a Monte Carlo simulator with defined range
@@ -28,12 +29,30 @@ export default class MonteCarloSimulator {
     
     // Run specified number of iterations
     for (let i = 0; i < iterations; i++) {
-      // Generate a random value using triangular distribution
-      const randomValue = this.triangularDistribution(
-        this.minValue,
-        this.maxValue,
-        (this.minValue + this.maxValue) / 2 // Mode at the middle for simplicity
-      );
+      let randomValue: number;
+      
+      // Use the appropriate distribution based on the distributionType
+      switch (this.distributionType) {
+        case "normal":
+          randomValue = this.normalDistribution(
+            this.minValue,
+            this.maxValue
+          );
+          break;
+        case "uniform":
+          randomValue = this.uniformDistribution(
+            this.minValue,
+            this.maxValue
+          );
+          break;
+        case "triangular":
+        default:
+          randomValue = this.triangularDistribution(
+            this.minValue,
+            this.maxValue,
+            (this.minValue + this.maxValue) / 2 // Mode at the middle for simplicity
+          );
+      }
       
       results.push(randomValue);
     }
@@ -54,6 +73,33 @@ export default class MonteCarloSimulator {
     } else {
       return max - Math.sqrt((1 - u) * (max - min) * (max - mode));
     }
+  }
+  
+  /**
+   * Uniform distribution random number generator
+   */
+  private uniformDistribution(min: number, max: number): number {
+    return min + Math.random() * (max - min);
+  }
+  
+  /**
+   * Normal distribution random number generator using Box-Muller transform
+   */
+  private normalDistribution(min: number, max: number): number {
+    // Use mean and standard deviation based on min/max
+    const mean = (min + max) / 2;
+    const stdDev = (max - min) / 6; // 99.7% of values within min-max range
+    
+    // Box-Muller transform
+    const u1 = Math.random();
+    const u2 = Math.random();
+    const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    
+    // Transform to our desired mean and standard deviation
+    let result = mean + z0 * stdDev;
+    
+    // Clamp result to min-max range
+    return Math.max(min, Math.min(max, result));
   }
   
   /**
