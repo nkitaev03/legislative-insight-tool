@@ -5,7 +5,7 @@ export type ChartType = 'bar' | 'line' | 'pie' | 'heatmap';
 
 export interface DashboardWidget {
   id: string;
-  type: 'kpi' | 'notifications' | 'riskReport' | 'complianceStatus' | 'recentChanges' | 'upcomingDeadlines';
+  type: 'kpi' | 'notifications' | 'riskReport' | 'complianceStatus' | 'recentChanges' | 'upcomingDeadlines' | 'riskHeatmap';
   title: string;
   size: WidgetSize;
   position?: WidgetPosition;

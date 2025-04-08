@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Play, BarChart3, ArrowRight, Download, RefreshCw, Upload, FileSpreadsheet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -13,6 +12,8 @@ import MonteCarloSimulator from './MonteCarloSimulator';
 import RiskImpactChart from './RiskImpactChart';
 import { getRisksFromMonitoring } from './utils';
 import { RiskData, RiskCategory, SimulationResult } from './types';
+import GuidedTour from '../common/GuidedTour';
+import InteractiveTooltip from '../common/InteractiveTooltip';
 
 export default function SimulationPage() {
   const [simulationRun, setSimulationRun] = useState(false);
@@ -22,6 +23,34 @@ export default function SimulationPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [hasFinancialReport, setHasFinancialReport] = useState(false);
   
+  // Add tour steps for the simulation page
+  const tourSteps = [
+    {
+      target: '[data-tour="simulation-header"]',
+      title: 'Симуляция рисков',
+      content: 'Здесь вы можете запустить моделирование по методу Монте-Карло для анализа финансового воздействия рисков.',
+      position: 'bottom' as const,
+    },
+    {
+      target: '[data-tour="simulation-button"]',
+      title: 'Запуск симуляции',
+      content: 'Нажмите на эту кнопку для запуска симуляции методом Монте-Карло.',
+      position: 'left' as const,
+    },
+    {
+      target: '[data-tour="financial-upload"]',
+      title: 'Загрузка финансового отчета',
+      content: 'Загрузите финансовый отчет для получения более точных результатов анализа.',
+      position: 'bottom' as const,
+    },
+    {
+      target: '[data-tour="risk-chart"]',
+      title: 'Интерактивный график рисков',
+      content: 'На этом графике вы можете увидеть финансовое воздействие рисков. Наведите на столбцы для получения подробной информации или нажмите для детального анализа.',
+      position: 'top' as const,
+    },
+  ];
+
   useEffect(() => {
     // Fetch risks from monitoring module and add risk categories
     const risks = getRisksFromMonitoring();
@@ -163,7 +192,7 @@ export default function SimulationPage() {
     ? simulationResults 
     : simulationResults.filter(result => result.riskCategory === selectedCategory);
 
-  const getCategoryTotalExposure = (category: RiskCategory) => {
+    const getCategoryTotalExposure = (category: RiskCategory) => {
     return simulationResults
       .filter(result => result.riskCategory === category)
       .reduce((total, result) => total + result.percentile95, 0);
@@ -171,11 +200,25 @@ export default function SimulationPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">Симуляция рисков</h1>
+      <GuidedTour steps={tourSteps} />
+      
+      <div className="flex justify-between items-center" data-tour="simulation-header">
+        <h1 className="text-2xl font-semibold">
+          Симуляция рисков
+          <InteractiveTooltip 
+            content={
+              <div className="space-y-2">
+                <p>Модуль симуляции позволяет оценить финансовое воздействие идентифицированных рисков с использованием метода Монте-Карло.</p>
+                <p>Этот метод позволяет получить более точные результаты, учитывая вероятностное распределение возможных исходов.</p>
+              </div>
+            }
+          >
+            <span className="ml-2" />
+          </InteractiveTooltip>
+        </h1>
         <div className="flex gap-2">
           {!hasFinancialReport && (
-            <Button variant="outline" className="gap-2" onClick={handleFinancialReportUpload}>
+            <Button variant="outline" className="gap-2" onClick={handleFinancialReportUpload} data-tour="financial-upload">
               <Upload className="h-4 w-4" />
               Загрузить фин. отчет
             </Button>
@@ -190,6 +233,7 @@ export default function SimulationPage() {
             onClick={runSimulation} 
             disabled={simulationInProgress || companyRisks.length === 0}
             className="gap-2"
+            data-tour="simulation-button"
           >
             {simulationInProgress ? (
               <>
@@ -200,6 +244,10 @@ export default function SimulationPage() {
               <>
                 <Play className="h-4 w-4" />
                 Запустить симуляцию
+                <InteractiveTooltip 
+                  content="Запускает 1000 итераций метода Монте-Карло для каждого риска"
+                  icon={false}
+                />
               </>
             )}
           </Button>
@@ -332,7 +380,7 @@ export default function SimulationPage() {
                   Распределение финансовых потерь
                 </CardDescription>
               </CardHeader>
-              <CardContent className="h-80">
+              <CardContent className="h-80" data-tour="risk-chart">
                 <RiskImpactChart simulationResults={simulationResults} />
               </CardContent>
             </Card>
