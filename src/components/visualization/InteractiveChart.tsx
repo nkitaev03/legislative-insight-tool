@@ -108,10 +108,9 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   key={key}
                   dataKey={key} 
                   fill={colors[index % colors.length]} 
-                  // Fixed: Using proper event handler that gets the correct payload type
-                  onMouseOver={(props) => {
-                    if (props && props.payload) {
-                      handleMouseOver(props.payload);
+                  onMouseOver={(data) => {
+                    if (data && data.payload) {
+                      handleMouseOver(data.payload);
                     }
                   }}
                 />
@@ -138,10 +137,10 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   stroke={colors[index % colors.length]}
                   fill={colors[index % colors.length]}
                   fillOpacity={0.3}
-                  // Fixed: Using proper event handler with correct parameter structure
-                  onMouseOver={(props) => {
-                    if (props && props.payload) {
-                      handleMouseOver(props.payload);
+                  // Use a named function to avoid type issues with anonymous functions
+                  onMouseEnter={(data) => {
+                    if (data && data.payload) {
+                      handleMouseOver(data.payload);
                     }
                   }}
                 />
@@ -170,8 +169,7 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                 fill="#8884d8"
                 dataKey="value"
                 label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                // Fixed: Using the correct event handler for Pie components
-                onMouseOver={(_, index) => {
+                onMouseEnter={(_, index) => {
                   if (index >= 0 && index < data.length) {
                     handleMouseOver(data[index]);
                   }
