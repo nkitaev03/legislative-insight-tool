@@ -89,90 +89,93 @@ const RiskHeatmapChart: React.FC<RiskHeatmapChartProps> = ({
           }}
           className="relative"
         >
-          {/* Vertical "Вероятность" label positioned outside the grid */}
-          <div className="flex mb-2">
-            <div className="w-24 flex items-center justify-end pr-2">
-              <span className="font-medium text-sm text-muted-foreground">Вероятность</span>
-            </div>
-            <div className="flex-1"></div>
-          </div>
-          
-          <div className="grid grid-cols-5 gap-1">
-            {/* Empty cell for top-left corner */}
-            <div className=""></div>
-            
-            {/* Impact headers */}
-            {impactLabels.map((label, index) => (
-              <div key={`impact-${index}`} className="text-center mb-2">
-                <span className="text-xs font-medium">{label}</span>
+          {/* Wrap all children in a single React Fragment */}
+          <>
+            {/* Vertical "Вероятность" label positioned outside the grid */}
+            <div className="flex mb-2">
+              <div className="w-24 flex items-center justify-end pr-2">
+                <span className="font-medium text-sm text-muted-foreground">Вероятность</span>
               </div>
-            ))}
-
-            {/* Matrix */}
-            {probabilityLabels.map((probLabel, probIndex) => (
-              <React.Fragment key={`prob-row-${probIndex}`}>
-                {/* Probability label */}
-                <div className="text-right pr-2 flex items-center justify-end h-full">
-                  <span className="text-xs">{probLabel}</span>
+              <div className="flex-1"></div>
+            </div>
+            
+            <div className="grid grid-cols-5 gap-1">
+              {/* Empty cell for top-left corner */}
+              <div className=""></div>
+              
+              {/* Impact headers */}
+              {impactLabels.map((label, index) => (
+                <div key={`impact-${index}`} className="text-center mb-2">
+                  <span className="text-xs font-medium">{label}</span>
                 </div>
-                
-                {/* Risk cells */}
-                {impactLabels.map((_, impactIndex) => {
-                  const cellRisks = matrix[3 - probIndex][impactIndex];
-                  const cellScore = (4 - probIndex) * (impactIndex + 1);
+              ))}
+
+              {/* Matrix */}
+              {probabilityLabels.map((probLabel, probIndex) => (
+                <React.Fragment key={`prob-row-${probIndex}`}>
+                  {/* Probability label */}
+                  <div className="text-right pr-2 flex items-center justify-end h-full">
+                    <span className="text-xs">{probLabel}</span>
+                  </div>
                   
-                  return (
-                    <div 
-                      key={`cell-${probIndex}-${impactIndex}`}
-                      className={`relative p-2 min-h-16 border rounded-md ${getColor(4 - probIndex, impactIndex + 1)}`}
-                    >
-                      {cellRisks.length > 0 ? (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div 
-                                className="w-full h-full cursor-pointer"
-                                onClick={() => cellRisks.length === 1 && onRiskSelect?.(cellRisks[0])}
-                              >
-                                <div className="text-center font-medium">
-                                  {cellRisks.length}
-                                </div>
-                                {cellRisks.length <= 2 && (
-                                  <div className="text-xs truncate mt-1">
-                                    {cellRisks.map(risk => risk.name).join(", ")}
+                  {/* Risk cells */}
+                  {impactLabels.map((_, impactIndex) => {
+                    const cellRisks = matrix[3 - probIndex][impactIndex];
+                    const cellScore = (4 - probIndex) * (impactIndex + 1);
+                    
+                    return (
+                      <div 
+                        key={`cell-${probIndex}-${impactIndex}`}
+                        className={`relative p-2 min-h-16 border rounded-md ${getColor(4 - probIndex, impactIndex + 1)}`}
+                      >
+                        {cellRisks.length > 0 ? (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div 
+                                  className="w-full h-full cursor-pointer"
+                                  onClick={() => cellRisks.length === 1 && onRiskSelect?.(cellRisks[0])}
+                                >
+                                  <div className="text-center font-medium">
+                                    {cellRisks.length}
                                   </div>
-                                )}
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <div className="p-2">
-                                <p className="font-medium mb-1">Риски в этом квадранте:</p>
-                                <ul className="space-y-1 text-sm max-h-[200px] overflow-y-auto">
-                                  {cellRisks.map(risk => (
-                                    <li 
-                                      key={risk.id} 
-                                      className="hover:bg-muted p-1 rounded cursor-pointer"
-                                      onClick={() => onRiskSelect?.(risk)}
-                                    >
-                                      {risk.name}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      ) : (
-                        <div className="text-center text-muted-foreground text-xs">
-                          {cellScore}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </React.Fragment>
-            ))}
-          </div>
+                                  {cellRisks.length <= 2 && (
+                                    <div className="text-xs truncate mt-1">
+                                      {cellRisks.map(risk => risk.name).join(", ")}
+                                    </div>
+                                  )}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <div className="p-2">
+                                  <p className="font-medium mb-1">Риски в этом квадранте:</p>
+                                  <ul className="space-y-1 text-sm max-h-[200px] overflow-y-auto">
+                                    {cellRisks.map(risk => (
+                                      <li 
+                                        key={risk.id} 
+                                        className="hover:bg-muted p-1 rounded cursor-pointer"
+                                        onClick={() => onRiskSelect?.(risk)}
+                                      >
+                                        {risk.name}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ) : (
+                          <div className="text-center text-muted-foreground text-xs">
+                            {cellScore}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </React.Fragment>
+              ))}
+            </div>
+          </>
         </ChartContainer>
       </CardContent>
     </Card>
