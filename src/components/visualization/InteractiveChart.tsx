@@ -108,7 +108,7 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   key={key}
                   dataKey={key} 
                   fill={colors[index % colors.length]} 
-                  onMouseOver={(data) => {
+                  onMouseOver={(data: any) => {
                     if (data && data.payload) {
                       handleMouseOver(data.payload);
                     }
@@ -137,10 +137,12 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   stroke={colors[index % colors.length]}
                   fill={colors[index % colors.length]}
                   fillOpacity={0.3}
-                  // Use a named function to avoid type issues with anonymous functions
-                  onMouseEnter={(data) => {
-                    if (data && data.payload) {
-                      handleMouseOver(data.payload);
+                  // Using recharts-specific event handler
+                  activeDot={{
+                    onClick: (data: any) => {
+                      if (data && data.payload) {
+                        handleMouseOver(data.payload);
+                      }
                     }
                   }}
                 />
