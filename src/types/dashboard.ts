@@ -1,6 +1,7 @@
 
 export type WidgetSize = 'small' | 'medium' | 'large';
 export type WidgetPosition = { x: number; y: number };
+export type ChartType = 'bar' | 'line' | 'pie' | 'heatmap';
 
 export interface DashboardWidget {
   id: string;
@@ -9,6 +10,8 @@ export interface DashboardWidget {
   size: WidgetSize;
   position?: WidgetPosition;
   visible: boolean;
+  // Added for drag and drop functionality
+  isDragging?: boolean;
 }
 
 export interface UserDashboardPreferences {
@@ -39,4 +42,4 @@ export interface RiskScenario {
   description: string;
 }
 
-export type ChartType = 'bar' | 'line' | 'pie' | 'heatmap';
+// Now let's create components for the customizable dashboard
