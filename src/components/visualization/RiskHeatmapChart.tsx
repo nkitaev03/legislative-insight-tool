@@ -89,11 +89,17 @@ const RiskHeatmapChart: React.FC<RiskHeatmapChartProps> = ({
           }}
           className="relative"
         >
-          <div className="grid grid-cols-5 gap-1">
-            {/* Header for Impact */}
-            <div className="text-right rotate-90 ml-auto flex items-center justify-center h-full">
+          {/* Vertical "Вероятность" label positioned outside the grid */}
+          <div className="flex mb-2">
+            <div className="w-24 flex items-center justify-end pr-2">
               <span className="font-medium text-sm text-muted-foreground">Вероятность</span>
             </div>
+            <div className="flex-1"></div>
+          </div>
+          
+          <div className="grid grid-cols-5 gap-1">
+            {/* Empty cell for top-left corner */}
+            <div className=""></div>
             
             {/* Impact headers */}
             {impactLabels.map((label, index) => (
