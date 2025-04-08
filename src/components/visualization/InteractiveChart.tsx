@@ -108,7 +108,13 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   key={key}
                   dataKey={key} 
                   fill={colors[index % colors.length]} 
-                  onMouseOver={(data) => handleMouseOver(data.payload)}
+                  // Fix: We need to properly handle the onMouseOver event
+                  // The event is a MouseEvent, not containing payload directly
+                  onMouseOver={(e, datum) => {
+                    if (datum) {
+                      handleMouseOver(datum);
+                    }
+                  }}
                 />
               ))}
             </BarChart>
@@ -133,7 +139,12 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                   stroke={colors[index % colors.length]}
                   fill={colors[index % colors.length]}
                   fillOpacity={0.3}
-                  onMouseOver={(data) => handleMouseOver(data.payload)}
+                  // Fix: We need to properly handle the onMouseOver event
+                  onMouseOver={(e, datum) => {
+                    if (datum) {
+                      handleMouseOver(datum);
+                    }
+                  }}
                 />
               ))}
             </AreaChart>
@@ -160,7 +171,12 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
                 fill="#8884d8"
                 dataKey="value"
                 label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                onMouseOver={(data) => handleMouseOver(data)}
+                // Fix: We need to properly handle the onMouseOver event
+                onMouseOver={(e, index, data) => {
+                  if (data && index >= 0 && index < data.length) {
+                    handleMouseOver(data[index]);
+                  }
+                }}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
