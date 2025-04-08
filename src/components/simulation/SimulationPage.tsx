@@ -1,18 +1,22 @@
 
 import { useState, useEffect } from 'react';
-import { Play, BarChart3, ArrowRight, Download, RefreshCw, Upload, FileSpreadsheet } from 'lucide-react';
+import { Play, BarChart3, ArrowRight, Download, RefreshCw, Upload, FileSpreadsheet, Layers } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import RiskIndicator from '../common/RiskIndicator';
 import MonteCarloSimulator from './MonteCarloSimulator';
 import RiskImpactChart from './RiskImpactChart';
 import { getRisksFromMonitoring } from './utils';
-import { RiskData, RiskCategory, SimulationResult } from './types';
+import { RiskData, RiskCategory, SimulationResult, SimulationScenario } from './types';
+import SimulationParametersForm, { SimulationParameters } from './SimulationParametersForm';
+import RiskHeatmapChart from '../visualization/RiskHeatmapChart';
+import { RiskScenario } from '@/types/dashboard';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 export default function SimulationPage() {
   const [simulationRun, setSimulationRun] = useState(false);
@@ -21,6 +25,10 @@ export default function SimulationPage() {
   const [simulationResults, setSimulationResults] = useState<SimulationResult[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [hasFinancialReport, setHasFinancialReport] = useState(false);
+  const [showParametersForm, setShowParametersForm] = useState(false);
+  const [selectedRiskId, setSelectedRiskId] = useState<string | null>(null);
+  const [simulationScenarios, setSimulationScenarios] = useState<SimulationScenario[]>([]);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   
   useEffect(() => {
     // Fetch risks from monitoring module and add risk categories
@@ -67,6 +75,7 @@ export default function SimulationPage() {
         const max = Math.max(...simulations);
         const percentile90 = simulator.calculatePercentile(simulations, 90);
         const percentile95 = simulator.calculatePercentile(simulations, 95);
+        const percentile99 = simulator.calculatePercentile(simulations, 99);
         
         return {
           riskId: risk.id,
@@ -78,14 +87,115 @@ export default function SimulationPage() {
           max,
           percentile90,
           percentile95,
-          riskCategory: risk.riskCategory || 'operational' // Default to operational if not specified
+          percentile99,
+          riskCategory: risk.riskCategory || 'operational', // Default to operational if not specified
+          scenarioName: 'Базовый сценарий',
+          scenarioType: 'base' as const
         };
       });
       
       setSimulationResults(results);
       setSimulationInProgress(false);
       setSimulationRun(true);
+      
+      // Add this as the base scenario
+      setSimulationScenarios([{
+        id: 'base-scenario',
+        name: 'Базовый сценарий',
+        type: 'base',
+        results,
+        parameters: {
+          simulationRuns: 1000,
+          confidenceLevel: 95,
+          distributionType: 'triangular',
+          stressTestCoefficient: 1.0,
+          includeCorrelations: false
+        }
+      }]);
+      
+      toast.success('Симуляция успешно выполнена');
     }, 1500);
+  };
+
+  const runCustomSimulation = (parameters: SimulationParameters) => {
+    setSimulationInProgress(true);
+    setShowParametersForm(false);
+    
+    // Simulate asynchronous processing
+    setTimeout(() => {
+      const selectedRisks = companyRisks.filter(risk => parameters.selectedRisks.includes(risk.id));
+      
+      const results = selectedRisks.map(risk => {
+        let minValue = risk.financialImpact.min;
+        let maxValue = risk.financialImpact.max;
+        
+        // Apply custom parameter adjustments if available
+        if (parameters.customParameterAdjustments[risk.id]) {
+          minValue = parameters.customParameterAdjustments[risk.id].min;
+          maxValue = parameters.customParameterAdjustments[risk.id].max;
+        }
+        
+        // Apply stress test coefficient if applicable
+        if (parameters.stressTestCoefficient !== 1.0) {
+          maxValue = maxValue * parameters.stressTestCoefficient;
+        }
+        
+        const simulator = new MonteCarloSimulator(minValue, maxValue);
+        
+        // Use the distribution type from parameters
+        simulator.distributionType = parameters.distributionType;
+        
+        const simulations = simulator.runSimulations(parameters.simulationRuns);
+        
+        // Calculate statistics
+        const mean = simulator.calculateMean(simulations);
+        const median = simulator.calculateMedian(simulations);
+        const min = Math.min(...simulations);
+        const max = Math.max(...simulations);
+        const percentile90 = simulator.calculatePercentile(simulations, 90);
+        const percentile95 = simulator.calculatePercentile(simulations, 95);
+        const percentile99 = simulator.calculatePercentile(simulations, parameters.confidenceLevel);
+        
+        return {
+          riskId: risk.id,
+          title: risk.title,
+          simulations,
+          mean,
+          median,
+          min,
+          max,
+          percentile90,
+          percentile95,
+          percentile99,
+          riskCategory: risk.riskCategory || 'operational',
+          scenarioName: parameters.stressTestCoefficient > 1.0 ? 'Стресс-тест' : 'Пользовательский сценарий',
+          scenarioType: parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom' as const
+        };
+      });
+      
+      // Create a new scenario
+      const scenarioType = parameters.stressTestCoefficient > 1.0 ? 'stress' : 'custom';
+      const newScenario = {
+        id: `scenario-${simulationScenarios.length + 1}`,
+        name: scenarioType === 'stress' ? 'Стресс-тест' : 'Пользовательский сценарий',
+        type: scenarioType as 'stress' | 'custom',
+        results,
+        parameters: {
+          simulationRuns: parameters.simulationRuns,
+          confidenceLevel: parameters.confidenceLevel,
+          distributionType: parameters.distributionType,
+          stressTestCoefficient: parameters.stressTestCoefficient,
+          includeCorrelations: parameters.includeCorrelations
+        }
+      };
+      
+      setSimulationScenarios([...simulationScenarios, newScenario]);
+      setSimulationResults(results);
+      setSimulationInProgress(false);
+      setSimulationRun(true);
+      
+      toast.success(`${newScenario.name} успешно выполнен`);
+    }, 2000);
   };
 
   const handleFinancialReportUpload = () => {
@@ -152,21 +262,52 @@ export default function SimulationPage() {
     ];
     
     setCompanyRisks(prev => [...prev, ...financialRisks]);
+    toast.success('Финансовый отчет успешно загружен');
   };
 
-  const getTotalRiskExposure = () => {
-    if (!simulationResults.length) return 0;
-    return simulationResults.reduce((total, result) => total + result.percentile95, 0);
+  const getTotalRiskExposure = (results = simulationResults) => {
+    if (!results.length) return 0;
+    return results.reduce((total, result) => total + result.percentile95, 0);
   };
 
   const filteredResults = selectedCategory === 'all' 
     ? simulationResults 
     : simulationResults.filter(result => result.riskCategory === selectedCategory);
 
-  const getCategoryTotalExposure = (category: RiskCategory) => {
-    return simulationResults
+  const getCategoryTotalExposure = (category: RiskCategory, results = simulationResults) => {
+    return results
       .filter(result => result.riskCategory === category)
       .reduce((total, result) => total + result.percentile95, 0);
+  };
+
+  const handleScenarioSelect = (scenarioId: string) => {
+    const scenario = simulationScenarios.find(s => s.id === scenarioId);
+    if (scenario) {
+      setSimulationResults(scenario.results);
+      toast.info(`Сценарий "${scenario.name}" загружен`);
+    }
+  };
+
+  const handleRiskSelect = (riskId: string) => {
+    setSelectedRiskId(riskId);
+  };
+
+  // Convert simulation results to risk scenarios for the heatmap
+  const getRiskScenarios = (): RiskScenario[] => {
+    return simulationResults.map(result => {
+      const risk = companyRisks.find(r => r.id === result.riskId);
+      // Calculate probability and impact on a 0-1 scale
+      const normalizedImpact = Math.min(result.percentile95 / 1000000, 1);
+      return {
+        id: result.riskId,
+        name: result.title,
+        probability: risk?.risk === 'high' ? 0.8 : 
+                    risk?.risk === 'medium' ? 0.5 : 0.2,
+        impact: normalizedImpact,
+        category: risk?.category || '',
+        description: risk?.description || ''
+      };
+    });
   };
 
   return (
@@ -180,14 +321,34 @@ export default function SimulationPage() {
               Загрузить фин. отчет
             </Button>
           )}
+          
           {simulationRun && (
-            <Button variant="outline" className="gap-2">
-              <Download className="h-4 w-4" />
-              Экспорт отчета
-            </Button>
+            <>
+              <Button 
+                variant="outline" 
+                className="gap-2"
+                onClick={() => setShowHeatmap(true)}
+              >
+                <Layers className="h-4 w-4" />
+                Карта рисков
+              </Button>
+              <Button 
+                variant="outline" 
+                className="gap-2"
+                onClick={() => setShowParametersForm(true)}
+              >
+                <BarChart3 className="h-4 w-4" />
+                Настройки симуляции
+              </Button>
+              <Button variant="outline" className="gap-2">
+                <Download className="h-4 w-4" />
+                Экспорт отчета
+              </Button>
+            </>
           )}
+          
           <Button 
-            onClick={runSimulation} 
+            onClick={simulationRun ? () => setShowParametersForm(true) : runSimulation} 
             disabled={simulationInProgress || companyRisks.length === 0}
             className="gap-2"
           >
@@ -199,7 +360,7 @@ export default function SimulationPage() {
             ) : (
               <>
                 <Play className="h-4 w-4" />
-                Запустить симуляцию
+                {simulationRun ? "Новая симуляция" : "Запустить симуляцию"}
               </>
             )}
           </Button>
@@ -238,7 +399,9 @@ export default function SimulationPage() {
                   </Alert>
                 )}
                 <div className="flex gap-2 mt-4">
-                  <Button variant="outline">Подробнее о методе</Button>
+                  <Button variant="outline" onClick={() => setShowParametersForm(true)}>
+                    Настроить параметры
+                  </Button>
                   <Button 
                     onClick={runSimulation}
                     disabled={simulationInProgress || companyRisks.length === 0}
@@ -254,13 +417,37 @@ export default function SimulationPage() {
 
       {simulationRun && (
         <>
+          {simulationScenarios.length > 1 && (
+            <div className="mb-4">
+              <div className="text-sm font-medium mb-2">Сценарии симуляции:</div>
+              <div className="flex gap-2 flex-wrap">
+                {simulationScenarios.map(scenario => (
+                  <Button 
+                    key={scenario.id} 
+                    variant={simulationResults === scenario.results ? "default" : "outline"}
+                    size="sm" 
+                    onClick={() => handleScenarioSelect(scenario.id)}
+                    className={scenario.type === 'stress' ? "border-orange-200 bg-orange-50 text-orange-800" : ""}
+                  >
+                    {scenario.name}
+                    {scenario.type === 'stress' && 
+                      <Badge variant="outline" className="ml-2 text-xs">
+                        ×{scenario.parameters.stressTestCoefficient.toFixed(1)}
+                      </Badge>
+                    }
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <Card className="bg-compGreen-50 border-compGreen-200">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <h3 className="text-lg font-medium text-compGreen-800">Анализ рисков успешно выполнен</h3>
                   <p className="text-compGreen-700 mt-1">
-                    Выполнено 1000 симуляций для каждого риска методом Монте-Карло
+                    Выполнено {simulationResults.length > 0 && simulationResults[0].simulations.length} симуляций для каждого риска методом Монте-Карло
                   </p>
                 </div>
                 <div className="text-right">
@@ -333,7 +520,10 @@ export default function SimulationPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
-                <RiskImpactChart simulationResults={simulationResults} />
+                <RiskImpactChart 
+                  simulationResults={simulationResults} 
+                  onRiskSelect={handleRiskSelect}
+                />
               </CardContent>
             </Card>
           </div>
@@ -369,8 +559,16 @@ export default function SimulationPage() {
                       {simulationResults.map((result) => {
                         const risk = companyRisks.find(r => r.id === result.riskId);
                         return (
-                          <TableRow key={result.riskId}>
-                            <TableCell className="font-medium">{result.title}</TableCell>
+                          <TableRow 
+                            key={result.riskId}
+                            className={selectedRiskId === result.riskId ? "bg-blue-50 hover:bg-blue-100" : ""}
+                          >
+                            <TableCell 
+                              className="font-medium cursor-pointer hover:text-blue-600" 
+                              onClick={() => handleRiskSelect(result.riskId)}
+                            >
+                              {result.title}
+                            </TableCell>
                             <TableCell>
                               <Badge className={
                                 result.riskCategory === 'financial' ? 'bg-red-500' :
@@ -435,8 +633,16 @@ export default function SimulationPage() {
                           .map((result) => {
                             const risk = companyRisks.find(r => r.id === result.riskId);
                             return (
-                              <TableRow key={result.riskId}>
-                                <TableCell className="font-medium">{result.title}</TableCell>
+                              <TableRow 
+                                key={result.riskId}
+                                className={selectedRiskId === result.riskId ? "bg-blue-50 hover:bg-blue-100" : ""}
+                              >
+                                <TableCell 
+                                  className="font-medium cursor-pointer hover:text-blue-600" 
+                                  onClick={() => handleRiskSelect(result.riskId)}
+                                >
+                                  {result.title}
+                                </TableCell>
                                 <TableCell>{result.mean.toLocaleString('ru-RU')} ₽</TableCell>
                                 <TableCell className="font-medium">{result.percentile95.toLocaleString('ru-RU')} ₽</TableCell>
                                 <TableCell>{result.min.toLocaleString('ru-RU')} ₽</TableCell>
@@ -473,6 +679,40 @@ export default function SimulationPage() {
           </Tabs>
         </>
       )}
+
+      {/* Risk Heatmap Dialog */}
+      <Dialog open={showHeatmap} onOpenChange={setShowHeatmap}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Карта рисков: распределение по вероятности и воздействию</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <RiskHeatmapChart 
+              risks={getRiskScenarios()} 
+              onRiskSelect={(risk) => {
+                setSelectedRiskId(risk.id);
+                setShowHeatmap(false);
+              }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Simulation Parameters Dialog */}
+      <Dialog open={showParametersForm} onOpenChange={setShowParametersForm}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Настройка параметров симуляции</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            <SimulationParametersForm 
+              risks={companyRisks}
+              onRunSimulation={runCustomSimulation}
+              isRunning={simulationInProgress}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

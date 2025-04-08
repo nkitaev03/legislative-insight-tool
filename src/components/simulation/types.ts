@@ -31,5 +31,22 @@ export interface SimulationResult {
   max: number;
   percentile90: number;
   percentile95: number;
+  percentile99?: number;
   riskCategory: RiskCategory;
+  scenarioName?: string;
+  scenarioType?: 'base' | 'stress' | 'custom';
+}
+
+export interface SimulationScenario {
+  id: string;
+  name: string;
+  type: 'base' | 'stress' | 'custom';
+  results: SimulationResult[];
+  parameters: {
+    simulationRuns: number;
+    confidenceLevel: number;
+    distributionType: string;
+    stressTestCoefficient: number;
+    includeCorrelations: boolean;
+  };
 }
