@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import {
   BarChart3,
@@ -567,7 +568,7 @@ export default function DashboardPage() {
                 </ResponsiveContainer>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
+                  <RechartsLineChart
                     data={selectedMetric.data}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
@@ -583,7 +584,7 @@ export default function DashboardPage() {
                       dot={{ r: 4 }}
                       activeDot={{ r: 6 }}
                     />
-                  </LineChart>
+                  </RechartsLineChart>
                 </ResponsiveContainer>
               )
             )}
