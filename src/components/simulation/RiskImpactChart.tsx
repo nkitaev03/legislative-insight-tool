@@ -14,6 +14,11 @@ import {
   NameType, ValueType 
 } from 'recharts/types/component/DefaultTooltipContent';
 import InteractiveTooltip from '../common/InteractiveTooltip';
+import { SimulationResult } from './types';
+
+interface RiskImpactChartProps {
+  simulationResults?: SimulationResult[];
+}
 
 // Sample data for the chart
 const sampleScenarios: RiskScenario[] = [
@@ -33,7 +38,7 @@ const calculateRiskScore = (probability: number, impact: number) => {
 // Process data to include risk score
 const processedData = sampleScenarios.map(scenario => ({
   ...scenario,
-  riskScore: calculateRiskScore(scenario.probability, impact),
+  riskScore: calculateRiskScore(scenario.probability, scenario.impact),
   probabilityPercent: scenario.probability * 100,
   impact: scenario.impact
 }));
@@ -83,7 +88,7 @@ const getRiskColor = (score: number) => {
   return "#ef4444"; // critical - red
 };
 
-const RiskImpactChart: React.FC = () => {
+const RiskImpactChart: React.FC<RiskImpactChartProps> = ({ simulationResults }) => {
   const [activeTab, setActiveTab] = useState('distribution');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<RiskScenario | null>(null);
@@ -126,6 +131,87 @@ const RiskImpactChart: React.FC = () => {
     return ((currentValue - previousValue) / previousValue) * 100;
   };
 
+  // Create a visualization for simulation results if they're provided
+  const renderSimulationResultsChart = () => {
+    if (!simulationResults || simulationResults.length === 0) return null;
+    
+    // Prepare data for the chart
+    const chartData = simulationResults.map(result => ({
+      name: result.title.length > 20 ? result.title.substring(0, 20) + '...' : result.title,
+      value: result.percentile95,
+      fullTitle: result.title,
+      mean: result.mean,
+      min: result.min,
+      max: result.max,
+      riskCategory: result.riskCategory
+    }));
+    
+    return (
+      <div className="h-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            margin={{ top: 10, right: 30, left: 20, bottom: 70 }}
+            barSize={30}
+          >
+            <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+            <XAxis 
+              dataKey="name" 
+              tick={{ fontSize: 11 }}
+              angle={-45}
+              textAnchor="end"
+              height={80}
+            />
+            <YAxis 
+              label={{ 
+                value: 'Финансовое воздействие (₽)', 
+                angle: -90, 
+                position: 'insideLeft',
+                style: { textAnchor: 'middle', fontSize: 12 } 
+              }}
+              tickFormatter={(value) => new Intl.NumberFormat('ru-RU').format(value)}
+            />
+            <Tooltip 
+              content={({ active, payload }) => {
+                if (active && payload && payload.length) {
+                  const data = payload[0].payload;
+                  return (
+                    <div className="bg-background border p-3 rounded-lg shadow-md text-sm max-w-xs">
+                      <p className="font-medium mb-1">{data.fullTitle}</p>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2">
+                        <p>95% уровень:</p>
+                        <p className="text-right font-medium">{new Intl.NumberFormat('ru-RU').format(data.value)} ₽</p>
+                        <p>Среднее:</p>
+                        <p className="text-right">{new Intl.NumberFormat('ru-RU').format(data.mean)} ₽</p>
+                        <p>Мин-Макс:</p>
+                        <p className="text-right">{new Intl.NumberFormat('ru-RU').format(data.min)} - {new Intl.NumberFormat('ru-RU').format(data.max)} ₽</p>
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+            <Bar dataKey="value" name="95% уровень воздействия">
+              {chartData.map((entry, index) => (
+                <Cell 
+                  key={`cell-${index}`} 
+                  fill={
+                    entry.riskCategory === 'financial' ? '#ef4444' :
+                    entry.riskCategory === 'operational' ? '#3b82f6' :
+                    entry.riskCategory === 'legal' ? '#a855f7' :
+                    entry.riskCategory === 'strategic' ? '#f59e0b' :
+                    '#22c55e'
+                  } 
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  };
+
   return (
     <Card className="w-full">
       <CardHeader className="pb-2">
@@ -149,6 +235,9 @@ const RiskImpactChart: React.FC = () => {
           <TabsList className="mb-4">
             <TabsTrigger value="distribution">Распределение рисков</TabsTrigger>
             <TabsTrigger value="trends">Динамика</TabsTrigger>
+            {simulationResults && simulationResults.length > 0 && (
+              <TabsTrigger value="simulation">Результаты симуляции</TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="distribution" className="p-0">
@@ -330,6 +419,20 @@ const RiskImpactChart: React.FC = () => {
               </p>
             </div>
           </TabsContent>
+          
+          {simulationResults && simulationResults.length > 0 && (
+            <TabsContent value="simulation" className="p-0">
+              <div className="h-80">
+                {renderSimulationResultsChart()}
+              </div>
+              <div className="mt-4 p-3 bg-muted/20 rounded-lg border flex gap-2 items-center">
+                <AlertCircle size={16} className="text-muted-foreground" />
+                <p className="text-sm text-muted-foreground">
+                  График показывает 95-й процентиль возможных финансовых потерь по результатам симуляции Монте-Карло
+                </p>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </CardContent>
     </Card>
