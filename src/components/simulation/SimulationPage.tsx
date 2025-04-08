@@ -590,7 +590,7 @@ export default function SimulationPage() {
                             <TableCell>{result.min.toLocaleString('ru-RU')} ₽</TableCell>
                             <TableCell>{result.max.toLocaleString('ru-RU')} ₽</TableCell>
                             <TableCell className="text-right">
-                              {risk && <RiskIndicator level={risk.risk} showLabel />}
+                              {risk && <RiskIndicator level={risk.risk === 'critical' ? 'high' : risk.risk} showLabel />}
                             </TableCell>
                           </TableRow>
                         );
@@ -650,7 +650,7 @@ export default function SimulationPage() {
                                 <TableCell>{result.min.toLocaleString('ru-RU')} ₽</TableCell>
                                 <TableCell>{result.max.toLocaleString('ru-RU')} ₽</TableCell>
                                 <TableCell className="text-right">
-                                  {risk && <RiskIndicator level={risk.risk} showLabel />}
+                                  {risk && <RiskIndicator level={risk.risk === 'critical' ? 'high' : risk.risk} showLabel />}
                                 </TableCell>
                               </TableRow>
                             );
