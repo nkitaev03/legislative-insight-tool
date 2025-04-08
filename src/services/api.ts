@@ -1,4 +1,3 @@
-
 /**
  * API интеграция с бэкендом для платформы управления рисками
  */
@@ -178,7 +177,9 @@ export const riskApi = {
       headers: getHeaders()
     });
     
-    return handleResponse<PaginatedResponse<RiskData>>(response);
+    const result = await handleResponse<PaginatedResponse<RiskData>>(response);
+    // Return the data directly instead of the ApiResponse wrapper
+    return result.data;
   },
   
   // Получение одного риска по ID
@@ -254,7 +255,9 @@ export const legislationApi = {
       headers: getHeaders()
     });
     
-    return handleResponse<PaginatedResponse<LegislationItem>>(response);
+    const result = await handleResponse<PaginatedResponse<LegislationItem>>(response);
+    // Return the data directly instead of the ApiResponse wrapper
+    return result.data;
   },
   
   // Получение одного законодательного акта по ID
@@ -310,7 +313,9 @@ export const newsApi = {
       headers: getHeaders()
     });
     
-    return handleResponse<PaginatedResponse<NewsItem>>(response);
+    const result = await handleResponse<PaginatedResponse<NewsItem>>(response);
+    // Return the data directly instead of the ApiResponse wrapper
+    return result.data;
   },
   
   // Получение одной новости по ID
