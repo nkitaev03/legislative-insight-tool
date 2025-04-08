@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock, FileUp, FileCheck } from 'lucide-react';
+import { User, Building, Mail, Phone, MapPin, Shield, FileText, Settings, CalendarClock, FileUp, FileCheck, Globe, Users, ShoppingBag } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,6 +12,11 @@ interface CompanyInfo {
   email: string;
   phone: string;
   address: string;
+  business: string;
+  geography: string;
+  products: string[];
+  clients: string[];
+  market: string;
 }
 
 interface LawResponsibility {
@@ -30,7 +34,12 @@ export default function ProfilePage() {
     position: 'Генеральный директор',
     email: 'director@technoprom.ru',
     phone: '+7 (999) 123-45-67',
-    address: 'г. Москва, ул. Тверская, 1'
+    address: 'г. Москва, ул. Тверская, 1',
+    business: 'Разработка программного обеспечения',
+    geography: 'Россия, СНГ, Восточная Европа',
+    products: ['Облачные решения для бизнеса', 'ERP системы', 'CRM решения', 'Мобильные приложения'],
+    clients: ['Малый бизнес', 'Средний бизнес', 'Корпоративные клиенты'],
+    market: 'B2B, IT-решения для оптимизации бизнес-процессов'
   });
 
   const [responsibleLaws, setResponsibleLaws] = useState<LawResponsibility[]>([
@@ -172,10 +181,17 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">ИНН</label>
+                  <label className="text-sm font-medium text-muted-foreground">Деятельность</label>
                   <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span>7712345678</span>
+                    <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                    <span>{companyInfo.business}</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">География работы</label>
+                  <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
+                    <Globe className="h-4 w-4 text-muted-foreground" />
+                    <span>{companyInfo.geography}</span>
                   </div>
                 </div>
                 <div>
@@ -185,11 +201,38 @@ export default function ProfilePage() {
                     <span>{companyInfo.address}</span>
                   </div>
                 </div>
+              </div>
+              
+              <Separator className="my-4" />
+              
+              <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Отрасль</label>
+                  <label className="text-sm font-medium text-muted-foreground">Продукты и услуги</label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {companyInfo.products.map((product, idx) => (
+                      <div key={idx} className="px-3 py-1 bg-primary/10 rounded-full text-sm">
+                        {product}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Клиенты</label>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {companyInfo.clients.map((client, idx) => (
+                      <div key={idx} className="px-3 py-1 bg-blue-100 rounded-full text-sm">
+                        {client}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">Рынок</label>
                   <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
-                    <Building className="h-4 w-4 text-muted-foreground" />
-                    <span>Информационные технологии</span>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <span>{companyInfo.market}</span>
                   </div>
                 </div>
               </div>

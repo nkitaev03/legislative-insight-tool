@@ -61,6 +61,50 @@ export default class MonteCarloSimulator {
   }
   
   /**
+   * Creates a distribution histogram data from simulation results
+   * 
+   * @param results - Array of simulation results
+   * @param bins - Number of histogram bins to create
+   * @returns Object with bins and counts for visualization
+   */
+  createDistributionHistogram(results: number[], bins: number = 20): { binStart: number, binEnd: number, count: number, percentage: number }[] {
+    const min = Math.min(...results);
+    const max = Math.max(...results);
+    const range = max - min;
+    const binWidth = range / bins;
+    
+    // Initialize bins
+    const histogram: { binStart: number, binEnd: number, count: number, percentage: number }[] = [];
+    for (let i = 0; i < bins; i++) {
+      const binStart = min + i * binWidth;
+      const binEnd = binStart + binWidth;
+      histogram.push({
+        binStart,
+        binEnd,
+        count: 0,
+        percentage: 0
+      });
+    }
+    
+    // Count values in each bin
+    results.forEach(value => {
+      const binIndex = Math.min(
+        Math.floor((value - min) / binWidth),
+        bins - 1
+      );
+      histogram[binIndex].count++;
+    });
+    
+    // Calculate percentages
+    const total = results.length;
+    histogram.forEach(bin => {
+      bin.percentage = (bin.count / total) * 100;
+    });
+    
+    return histogram;
+  }
+  
+  /**
    * Triangular distribution random number generator
    * More realistic for financial risk simulation than uniform distribution
    */
@@ -135,5 +179,51 @@ export default class MonteCarloSimulator {
     const sorted = [...results].sort((a, b) => a - b);
     const index = Math.ceil((percentile / 100) * sorted.length) - 1;
     return Math.round(sorted[index]);
+  }
+  
+  /**
+   * Generate distribution data for visualization
+   */
+  generateDistributionData(results: number[], samples: number = 100): { x: number; y: number }[] {
+    const sorted = [...results].sort((a, b) => a - b);
+    const min = sorted[0];
+    const max = sorted[sorted.length - 1];
+    const step = (max - min) / samples;
+    
+    const data: { x: number; y: number }[] = [];
+    
+    for (let i = 0; i <= samples; i++) {
+      const x = min + i * step;
+      let y = 0;
+      
+      switch (this.distributionType) {
+        case "normal": {
+          const mean = this.calculateMean(results);
+          const stdDev = Math.sqrt(results.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / results.length);
+          const z = (x - mean) / stdDev;
+          y = (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow(z, 2));
+          break;
+        }
+        case "triangular": {
+          const mode = this.calculateMean(results); // Approximate mode with mean for visualization
+          if (x < min || x > max) {
+            y = 0;
+          } else if (x <= mode) {
+            y = 2 * (x - min) / ((max - min) * (mode - min));
+          } else {
+            y = 2 * (max - x) / ((max - min) * (max - mode));
+          }
+          break;
+        }
+        case "uniform": {
+          y = 1 / (max - min);
+          break;
+        }
+      }
+      
+      data.push({ x, y });
+    }
+    
+    return data;
   }
 }

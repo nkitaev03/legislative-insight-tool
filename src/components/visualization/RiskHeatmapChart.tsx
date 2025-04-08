@@ -138,10 +138,10 @@ const RiskHeatmapChart: React.FC<RiskHeatmapChartProps> = ({
                                 )}
                               </div>
                             </TooltipTrigger>
-                            <TooltipContent>
+                            <TooltipContent className="max-w-sm">
                               <div className="p-2">
                                 <p className="font-medium mb-1">Риски в этом квадранте:</p>
-                                <ul className="space-y-1 text-sm">
+                                <ul className="space-y-1 text-sm max-h-[200px] overflow-y-auto">
                                   {cellRisks.map(risk => (
                                     <li 
                                       key={risk.id} 
