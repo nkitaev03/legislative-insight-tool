@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { motion } from 'framer-motion';
 import { ChartContainer } from '@/components/ui/chart';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from 'recharts';
-import { Building, Briefcase, TrendingUp, Tag, FolderTree, Package, Users, FileText, ChevronDown, ChevronRight } from 'lucide-react';
+import { Building, Briefcase, TrendingUp, Tag, FolderTree, Package, Users, FileText, ChevronDown, ChevronRight, Info, CalendarClock, FileCheck, Globe, ShoppingBag } from 'lucide-react';
 
 interface CompanyDetailsCardProps {
   companyData: {
@@ -18,8 +18,10 @@ interface CompanyDetailsCardProps {
     macroIndicators: {
       name: string;
       value: number;
-      industry: number;
+      previous?: number;
+      industry?: number;
       unit: string;
+      change?: string;
     }[];
     brands: string[];
     subsidiaries: Subsidiary[];
@@ -127,7 +129,7 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyData }) 
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="general" className="space-y-4">
-          <TabsList className="w-full grid grid-cols-4 h-auto">
+          <TabsList className="w-full grid grid-cols-5 h-auto">
             <TabsTrigger value="general" className="py-2 flex gap-2 items-center">
               <Building className="h-4 w-4" />
               <span className="hidden sm:inline">Общая информация</span>
@@ -147,6 +149,11 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyData }) 
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Реквизиты</span>
               <span className="sm:hidden">Реквизиты</span>
+            </TabsTrigger>
+            <TabsTrigger value="additional" className="py-2 flex gap-2 items-center">
+              <Info className="h-4 w-4" />
+              <span className="hidden sm:inline">Дополнительно</span>
+              <span className="sm:hidden">Прочее</span>
             </TabsTrigger>
           </TabsList>
           
@@ -187,25 +194,35 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyData }) 
               <motion.div variants={childVariants} className="space-y-2">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-muted-foreground" />
-                  <h3 className="font-medium">Макроэкономические показатели по отрасли:</h3>
+                  <h3 className="font-medium">Макроэкономические показатели:</h3>
                 </div>
                 
-                <div className="h-64 w-full">
-                  <ChartContainer config={{ company: { color: '#8884d8' }, industry: { color: '#82ca9d' } }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={companyData.macroIndicators}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" angle={-45} textAnchor="end" height={60} />
-                        <YAxis />
-                        <Tooltip formatter={(value: any) => [`${value} ${companyData.macroIndicators.find(i => i.value === value || i.industry === value)?.unit || ''}`]} />
-                        <Bar dataKey="value" name="Компания" fill="var(--color-company)" />
-                        <Bar dataKey="industry" name="Среднее по отрасли" fill="var(--color-industry)" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
+                <div className="mt-2">
+                  <div className="grid grid-cols-1 gap-2">
+                    {companyData.macroIndicators.map((indicator, index) => (
+                      <div key={index} className="flex justify-between items-center p-3 bg-muted/30 rounded-md">
+                        <div className="font-medium">{indicator.name}</div>
+                        <div className="flex items-center gap-3">
+                          <div className="font-mono font-medium">{indicator.value}{indicator.unit}</div>
+                          {indicator.change && (
+                            <div className={`text-xs font-medium px-2 py-1 rounded-full flex items-center ${
+                              indicator.change.startsWith('+') ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'
+                            }`}>
+                              {indicator.change}
+                              {indicator.change.startsWith('+') ? 
+                                <svg className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                </svg> : 
+                                <svg className="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              }
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
@@ -257,16 +274,17 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyData }) 
                         <div className="h-64 w-full">
                           <ChartContainer config={{ ownership: { color: '#8884d8' } }}>
                             <ResponsiveContainer width="100%" height="100%">
-                              <LineChart
+                              <BarChart
                                 data={companyData.owners}
                                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                layout="vertical"
                               >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis unit="%" domain={[0, 100]} />
-                                <Tooltip formatter={(value: any) => `${value}%`} />
-                                <Line type="monotone" dataKey="share" stroke="var(--color-ownership)" activeDot={{ r: 8 }} />
-                              </LineChart>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                                <XAxis type="number" domain={[0, 100]} unit="%" />
+                                <YAxis type="category" dataKey="name" width={120} />
+                                <Tooltip formatter={(value: any) => [`${value}%`, 'Доля']} />
+                                <Bar dataKey="share" fill="#8884d8" radius={[0, 4, 4, 0]} />
+                              </BarChart>
                             </ResponsiveContainer>
                           </ChartContainer>
                         </div>
@@ -391,6 +409,158 @@ const CompanyDetailsCard: React.FC<CompanyDetailsCardProps> = ({ companyData }) 
                   <button className="px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90 transition-colors">
                     Скачать
                   </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          </TabsContent>
+          
+          {/* Additional Information Tab */}
+          <TabsContent value="additional" className="space-y-4">
+            <motion.div
+              className="space-y-4"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.div variants={childVariants}>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="history">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <CalendarClock className="h-4 w-4" />
+                        <span>История компании</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-4 pt-2">
+                        <div className="relative pl-6 border-l-2 border-muted-foreground/30 space-y-6">
+                          <div className="relative">
+                            <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-primary"></div>
+                            <div>
+                              <h4 className="font-medium">2010 - Основание компании</h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Компания ООО "ТехноПром" была основана группой разработчиков из МФТИ с целью создания инновационных программных решений для бизнеса.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="relative">
+                            <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-primary"></div>
+                            <div>
+                              <h4 className="font-medium">2015 - Выход на международный рынок</h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Открытие представительств в странах СНГ и первые контракты с международными клиентами.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="relative">
+                            <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-primary"></div>
+                            <div>
+                              <h4 className="font-medium">2018 - Запуск облачной платформы</h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Компания представила облачную платформу CloudSynergy, ставшую флагманским продуктом.
+                              </p>
+                            </div>
+                          </div>
+                          <div className="relative">
+                            <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-primary"></div>
+                            <div>
+                              <h4 className="font-medium">2023 - Настоящее время</h4>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                Компания входит в ТОП-10 российских разработчиков программного обеспечения с фокусом на инновационные облачные решения и искусственный интеллект.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="certificates">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <FileCheck className="h-4 w-4" />
+                        <span>Сертификаты и лицензии</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div className="p-4 border rounded-md">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="outline">ISO 9001:2015</Badge>
+                            <span className="text-xs text-muted-foreground">до 10.05.2025</span>
+                          </div>
+                          <p className="text-sm">Система менеджмента качества в области разработки ПО</p>
+                        </div>
+                        <div className="p-4 border rounded-md">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="outline">ISO/IEC 27001:2013</Badge>
+                            <span className="text-xs text-muted-foreground">до 15.03.2026</span>
+                          </div>
+                          <p className="text-sm">Система управления информационной безопасностью</p>
+                        </div>
+                        <div className="p-4 border rounded-md">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="outline">ФСТЭК России</Badge>
+                            <span className="text-xs text-muted-foreground">до 20.11.2024</span>
+                          </div>
+                          <p className="text-sm">Лицензия на деятельность по технической защите конфиденциальной информации</p>
+                        </div>
+                        <div className="p-4 border rounded-md">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="outline">Минцифры России</Badge>
+                            <span className="text-xs text-muted-foreground">до 05.08.2027</span>
+                          </div>
+                          <p className="text-sm">Включение продуктов в реестр отечественного ПО</p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  
+                  <AccordionItem value="associations">
+                    <AccordionTrigger>
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span>Членство в ассоциациях</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
+                          <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <Globe className="h-6 w-6 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">РУССОФТ</h4>
+                            <p className="text-sm text-muted-foreground">Ассоциация разработчиков программного обеспечения</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-md">
+                          <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <ShoppingBag className="h-6 w-6 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium">АРПП "Отечественный софт"</h4>
+                            <p className="text-sm text-muted-foreground">Ассоциация разработчиков программных продуктов</p>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </motion.div>
+              
+              <motion.div variants={childVariants}>
+                <div className="p-4 bg-primary/5 rounded-md">
+                  <h3 className="font-medium mb-2 flex items-center gap-2">
+                    <Info className="h-4 w-4 text-primary" />
+                    Дополнительная информация о компании
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    ООО "ТехноПром" является одним из ведущих разработчиков программного обеспечения для бизнеса в России. 
+                    Компания специализируется на создании облачных решений, систем управления ресурсами предприятия и 
+                    клиентскими взаимоотношениями. Наши продукты помогают бизнесу повысить эффективность, снизить затраты 
+                    и обеспечить устойчивое развитие в условиях цифровой экономики.
+                  </p>
                 </div>
               </motion.div>
             </motion.div>

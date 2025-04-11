@@ -5,11 +5,11 @@ export const companyData = {
   description: 'Разработка и внедрение программного обеспечения для оптимизации бизнес-процессов, создание CRM и ERP систем, разработка облачных решений и мобильных приложений для корпоративных клиентов.',
   industry: 'Информационные технологии',
   macroIndicators: [
-    { name: 'Рост рынка', value: 12.5, industry: 8.3, unit: '%' },
-    { name: 'Рентабельность', value: 18.7, industry: 15.2, unit: '%' },
-    { name: 'Стоимость привлечения капитала', value: 7.2, industry: 8.5, unit: '%' },
-    { name: 'Доля экспорта', value: 23.1, industry: 16.4, unit: '%' },
-    { name: 'Инвестиции в R&D', value: 9.8, industry: 5.7, unit: '%' }
+    { name: 'Ставка ЦБ', value: 16.0, previous: 15.0, unit: '%', change: '+1.0' },
+    { name: 'Инфляция', value: 7.4, previous: 7.7, unit: '%', change: '-0.3' },
+    { name: 'Безработица', value: 3.1, previous: 3.0, unit: '%', change: '+0.1' },
+    { name: 'Индекс промпроизводства', value: 102.8, previous: 101.5, unit: '', change: '+1.3' },
+    { name: 'Индекс деловой активности', value: 53.4, previous: 52.1, unit: '', change: '+1.3' }
   ],
   brands: [
     'TechnoPro', 'CloudSynergy', 'DataFlow', 'AppWeaver', 'InnovateX'
