@@ -59,15 +59,18 @@ export default function RiskAnalysisCard({
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [selectedRisk, setSelectedRisk] = useState<Risk | null>(null);
 
+  // More flexible scoring function that can adapt to different contexts
   const getRiskLevel = (score: number): 'low' | 'medium' | 'high' => {
-    if (score >= 80) return 'low';
-    if (score >= 65) return 'medium';
+    // These thresholds can be adjusted per business needs
+    if (score >= 75) return 'low';
+    if (score >= 60) return 'medium';
     return 'high';
   };
 
   const getScoreColor = (score: number): string => {
-    if (score >= 80) return 'bg-compGreen-500';
-    if (score >= 65) return 'bg-amber-500';
+    // Matching color scheme with the risk level function
+    if (score >= 75) return 'bg-compGreen-500';
+    if (score >= 60) return 'bg-amber-500';
     return 'bg-red-500';
   };
 
@@ -251,17 +254,33 @@ export default function RiskAnalysisCard({
             <div className="bg-muted p-4 rounded-md">
               <h3 className="text-md font-medium mb-2 flex items-center">
                 <Info className="h-4 w-4 mr-2 text-blue-500" />
-                Общие рекомендации
+                Дополнительная информация
               </h3>
-              <p className="text-sm">
-                Для повышения общей оценки соответствия в области "{title}" рекомендуется обратить внимание на следующие аспекты:
-              </p>
-              <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
-                <li>Регулярный мониторинг нормативно-правовой базы и трендов в отрасли</li>
-                <li>Обучение персонала и повышение квалификации</li>
-                <li>Разработка и внедрение политик и процедур в соответствии с лучшими практиками</li>
-                <li>Выполнение рекомендуемых действий в установленные сроки</li>
-              </ul>
+              <div className="space-y-3">
+                <div>
+                  <h4 className="text-sm font-medium">Факторы влияния</h4>
+                  <p className="text-sm text-muted-foreground">
+                    При анализе области "{title}" учитывались внутренние процессы, документация и внешние требования.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium">Методология оценки</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Оценка произведена на основе индивидуальных показателей с учетом их весовых коэффициентов и приоритетов бизнеса.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium">Общие рекомендации</h4>
+                  <ul className="list-disc list-inside mt-1 space-y-1 text-sm text-muted-foreground">
+                    <li>Мониторинг изменений и отраслевых практик</li>
+                    <li>Развитие компетенций персонала</li>
+                    <li>Оптимизация внутренних процессов</li>
+                    <li>Регулярный пересмотр политик и процедур</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 

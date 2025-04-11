@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { SimulationResult } from './types';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Button } from '@/components/ui/button';
-import { Layers, ZoomIn, ArrowLeft } from 'lucide-react';
+import { Layers, ZoomIn, ArrowLeft, Info } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface RiskImpactChartProps {
@@ -272,44 +272,14 @@ const RiskImpactChart: React.FC<RiskImpactChartProps> = ({ simulationResults, on
               </div>
             </div>
           ) : (
-            <div className="h-96">
-              <ChartContainer
-                config={{
-                  impact: { color: "#ef4444" },
-                  expected: { color: "#3b82f6" }
-                }}
-              >
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={chartData} 
-                    margin={{ top: 20, right: 30, left: 20, bottom: 70 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                    <YAxis 
-                      tickFormatter={(value) => new Intl.NumberFormat('ru-RU', {
-                        notation: 'compact',
-                        compactDisplay: 'short'
-                      }).format(value)}
-                    />
-                    <Tooltip />
-                    <Bar 
-                      dataKey="impact" 
-                      fill="var(--color-impact)" 
-                      name="95-й процентиль" 
-                      onClick={handleBarClick}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    <Bar 
-                      dataKey="expected" 
-                      fill="var(--color-expected)" 
-                      name="Ожидаемое значение" 
-                      onClick={handleBarClick}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+            <div className="h-96 flex items-center justify-center">
+              <div className="text-center p-6 max-w-lg">
+                <Info className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">Выберите риск для детального анализа</h3>
+                <p className="text-sm text-muted-foreground">
+                  Нажмите на элемент диаграммы выше для просмотра подробного анализа и распределения.
+                </p>
+              </div>
             </div>
           )}
         </DialogContent>
