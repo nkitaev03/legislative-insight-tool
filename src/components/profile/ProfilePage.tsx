@@ -8,6 +8,8 @@ import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import CompanyDetailsCard from './CompanyDetailsCard';
+import { companyData } from './CompanyData';
 
 interface CompanyInfo {
   name: string;
@@ -214,10 +216,15 @@ export default function ProfilePage() {
         </TabsContent>
         
         <TabsContent value="company" className="space-y-4">
-          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200">
+          {/* Import CompanyDetailsCard at the top of the file */}
+          {/* import CompanyDetailsCard from './CompanyDetailsCard'; */}
+          {/* import { companyData } from './CompanyData'; */}
+          <CompanyDetailsCard companyData={companyData} />
+          
+          <Card className="shadow-sm hover:shadow-md transition-shadow duration-200 mt-4">
             <CardHeader className="pb-2">
-              <CardTitle>Информация о компании</CardTitle>
-              <CardDescription>Данные вашей организации</CardDescription>
+              <CardTitle>Дополнительная информация</CardTitle>
+              <CardDescription>Настройка данных вашей организации</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -229,24 +236,10 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Деятельность</label>
-                  <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
-                    <ShoppingBag className="h-4 w-4 text-muted-foreground" />
-                    <span>{companyInfo.business}</span>
-                  </div>
-                </div>
-                <div>
                   <label className="text-sm font-medium text-muted-foreground">География работы</label>
                   <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
                     <Globe className="h-4 w-4 text-muted-foreground" />
                     <span>{companyInfo.geography}</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Юридический адрес</label>
-                  <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span>{companyInfo.address}</span>
                   </div>
                 </div>
               </div>
@@ -311,14 +304,6 @@ export default function ProfilePage() {
                       <Plus className="h-4 w-4 mr-1" />
                       Добавить
                     </Button>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Рынок</label>
-                  <div className="flex items-center gap-2 mt-1 border p-2 rounded-md">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>{companyInfo.market}</span>
                   </div>
                 </div>
               </div>

@@ -9,6 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import RiskIndicator from '../common/RiskIndicator';
 import MonteCarloSimulator from './MonteCarloSimulator';
 import RiskImpactChart from './RiskImpactChart';
+import RiskDistributionChart from './RiskDistributionChart';
 import { getRisksFromMonitoring } from './utils';
 import { RiskData, RiskCategory, SimulationResult, SimulationScenario } from './types';
 import SimulationParametersForm, { SimulationParameters } from './SimulationParametersForm';
@@ -696,6 +697,29 @@ export default function SimulationPage() {
                 setShowHeatmap(false);
               }}
             />
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Risk Details Dialog */}
+      <Dialog open={selectedRiskId !== null} onOpenChange={() => setSelectedRiskId(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Детальный анализ риска</DialogTitle>
+          </DialogHeader>
+          <div className="mt-4">
+            {selectedRiskId && simulationResults.find(r => r.riskId === selectedRiskId) && (
+              <>
+                <RiskDistributionChart 
+                  result={simulationResults.find(r => r.riskId === selectedRiskId)!} 
+                />
+                <div className="mt-6">
+                  <RiskImpactChart 
+                    simulationResults={simulationResults.filter(r => r.riskId === selectedRiskId)}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
