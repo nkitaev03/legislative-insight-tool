@@ -22,13 +22,25 @@ interface LegislationTimelineProps {
 }
 
 // Helper to format date for display
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('ru-RU', { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
-  }).format(date);
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return 'Дата не указана';
+  
+  try {
+    const date = new Date(dateString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Недействительная дата';
+    }
+    
+    return new Intl.DateTimeFormat('ru-RU', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    }).format(date);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return 'Ошибка даты';
+  }
 };
 
 // Calculate relative position on timeline
@@ -45,9 +57,20 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
   const strategicItems = items
     .filter(item => item.strategicImpact && item.implementationDate)
     .sort((a, b) => {
-      const dateA = new Date(a.implementationDate!);
-      const dateB = new Date(b.implementationDate!);
-      return dateA.getTime() - dateB.getTime();
+      try {
+        const dateA = new Date(a.implementationDate!);
+        const dateB = new Date(b.implementationDate!);
+        
+        // Handle invalid dates
+        if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0;
+        if (isNaN(dateA.getTime())) return 1; // Place invalid dates at the end
+        if (isNaN(dateB.getTime())) return -1;
+        
+        return dateA.getTime() - dateB.getTime();
+      } catch (error) {
+        console.error("Error sorting dates:", error);
+        return 0;
+      }
     });
 
   // Prepare data for the horizontal timeline chart
@@ -57,22 +80,39 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
     const now = new Date();
     
     return strategicItems.map(item => {
-      const implementationDate = new Date(item.implementationDate!);
-      const isPast = implementationDate < now;
-      const isNear = !isPast && implementationDate < new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+      // Handle potential invalid implementation dates
+      if (!item.implementationDate) {
+        return null;
+      }
       
-      return {
-        name: item.title,
-        id: item.id,
-        date: implementationDate,
-        formattedDate: formatDate(item.implementationDate!),
-        value: 1, // For chart display
-        fill: isPast ? '#10b981' : isNear ? '#ef4444' : '#6366f1',
-        status: isPast ? 'active' : 'planned',
-        description: item.strategicImpact || '',
-        advantages: item.competitiveAdvantages || []
-      };
-    });
+      try {
+        const implementationDate = new Date(item.implementationDate);
+        
+        // Skip items with invalid dates
+        if (isNaN(implementationDate.getTime())) {
+          console.warn(`Skipping item with invalid date: ${item.title}`);
+          return null;
+        }
+        
+        const isPast = implementationDate < now;
+        const isNear = !isPast && implementationDate < new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+        
+        return {
+          name: item.title,
+          id: item.id,
+          date: implementationDate,
+          formattedDate: formatDate(item.implementationDate),
+          value: 1, // For chart display
+          fill: isPast ? '#10b981' : isNear ? '#ef4444' : '#6366f1',
+          status: isPast ? 'active' : 'planned',
+          description: item.strategicImpact || '',
+          advantages: item.competitiveAdvantages || []
+        };
+      } catch (error) {
+        console.error(`Error processing item ${item.title}:`, error);
+        return null;
+      }
+    }).filter(Boolean); // Remove null entries
   };
   
   const chartData = prepareChartData();
@@ -83,9 +123,26 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
       return { min: new Date(), max: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) };
     }
     
-    const dates = strategicItems.map(item => new Date(item.implementationDate!));
-    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
-    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    // Filter out invalid dates first
+    const validDates = strategicItems
+      .filter(item => item.implementationDate)
+      .map(item => {
+        try {
+          const date = new Date(item.implementationDate!);
+          return isNaN(date.getTime()) ? null : date;
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean) as Date[];
+    
+    // If no valid dates, return default range
+    if (validDates.length === 0) {
+      return { min: new Date(), max: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) };
+    }
+    
+    const minDate = new Date(Math.min(...validDates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...validDates.map(d => d.getTime())));
     
     // Add padding (30 days before first and after last)
     minDate.setDate(minDate.getDate() - 30);
@@ -224,16 +281,18 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-medium">{item.title}</h3>
                         <Badge variant={
-                          new Date(item.implementationDate!) < new Date() ? "default" : 
-                          new Date(item.implementationDate!) < new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) ? "destructive" : "outline"
+                          !item.implementationDate ? "outline" :
+                          new Date(item.implementationDate) < new Date() ? "default" : 
+                          new Date(item.implementationDate) < new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) ? "destructive" : "outline"
                         }>
-                          {new Date(item.implementationDate!) < new Date() ? "Действует" : "Планируется"}
+                          {!item.implementationDate ? "Без даты" :
+                           new Date(item.implementationDate) < new Date() ? "Действует" : "Планируется"}
                         </Badge>
                       </div>
                       
                       <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        <span>Срок внедрения: {formatDate(item.implementationDate!)}</span>
+                        <span>Срок внедрения: {formatDate(item.implementationDate)}</span>
                       </div>
                       
                       <div className="mb-3 text-sm">
@@ -272,8 +331,21 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
   );
 };
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    payload: {
+      name: string;
+      formattedDate: string;
+      status: string;
+      description: string;
+      advantages: string[];
+    }
+  }>;
+}
+
 // Custom tooltip component
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
   if (!active || !payload || !payload.length) {
     return null;
   }
