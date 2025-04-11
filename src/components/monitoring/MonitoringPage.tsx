@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X, Target, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -462,184 +461,168 @@ export default function MonitoringPage() {
         </Button>
       </div>
       
-      {/* Main tabs for entire monitoring page */}
-      <Tabs defaultValue="main" className="mb-6">
+      {/* Strategic Timeline Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Target className="h-5 w-5 text-compGreen-500" />
+          <h2 className="text-xl font-semibold">Стратегическая шкала законодательных изменений</h2>
+        </div>
+        <LegislationTimeline items={legislationChanges} />
+      </div>
+      
+      {/* Competitive Advantages Section */}
+      <div className="space-y-4 mt-8">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-compGreen-500" />
+          <h2 className="text-xl font-semibold">Конкурентные преимущества</h2>
+        </div>
+        <CompetitiveAdvantageList items={legislationChanges} onOpenDialog={setOpenDialogId} />
+      </div>
+      
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle>Фильтры и поиск</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Поиск по названию или содержанию..." 
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <Select value={selectedRisk} onValueChange={setSelectedRisk}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Уровень риска" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все уровни</SelectItem>
+                    <SelectItem value="high">Высокий</SelectItem>
+                    <SelectItem value="medium">Средний</SelectItem>
+                    <SelectItem value="low">Низкий</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Select value={selectedDate} onValueChange={setSelectedDate}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Период" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Любая дата</SelectItem>
+                    <SelectItem value="recent">Последние 30 дней</SelectItem>
+                    <SelectItem value="older">Старше 30 дней</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button variant="secondary" className="flex-1">
+                  Применить
+                </Button>
+                <Button variant="outline">
+                  <Filter className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Tabs defaultValue="all">
         <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
-          <TabsTrigger value="main">Основные данные</TabsTrigger>
-          <TabsTrigger value="strategic">Стратегическая шкала</TabsTrigger>
-          <TabsTrigger value="competitive">Конкурентные преимущества</TabsTrigger>
+          <TabsTrigger value="all">Все изменения</TabsTrigger>
+          <TabsTrigger value="laws">Законы</TabsTrigger>
+          <TabsTrigger value="news" className="relative">
+            Новости
+            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+              2
+            </Badge>
+          </TabsTrigger>
         </TabsList>
         
-        {/* Main data tab - default view */}
-        <TabsContent value="main">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>Фильтры и поиск</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="Поиск по названию или содержанию..." 
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+        <TabsContent value="all" className="mt-6 space-y-4">
+          {filteredLegislation.length > 0 || filteredNews.length > 0 ? (
+            <>
+              {filteredLegislation.length > 0 && (
+                <div className="space-y-4">
+                  <LegislationList 
+                    items={filteredLegislation} 
+                    onOpenDialog={setOpenDialogId}
+                    onEditResponsible={setEditResponsibleId}
+                    editResponsibleId={editResponsibleId}
+                    handleResponsibleChange={handleResponsibleChange}
+                    responsiblePersons={responsiblePersons}
                   />
                 </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <Select value={selectedRisk} onValueChange={setSelectedRisk}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Уровень риска" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Все уровни</SelectItem>
-                        <SelectItem value="high">Высокий</SelectItem>
-                        <SelectItem value="medium">Средний</SelectItem>
-                        <SelectItem value="low">Низкий</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Select value={selectedDate} onValueChange={setSelectedDate}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Период" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Любая дата</SelectItem>
-                        <SelectItem value="recent">Последние 30 дней</SelectItem>
-                        <SelectItem value="older">Старше 30 дней</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant="secondary" className="flex-1">
-                      Применить
-                    </Button>
-                    <Button variant="outline">
-                      <Filter className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Tabs defaultValue="all" className="mt-6">
-            <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
-              <TabsTrigger value="all">Все изменения</TabsTrigger>
-              <TabsTrigger value="laws">Законы</TabsTrigger>
-              <TabsTrigger value="news" className="relative">
-                Новости
-                <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                  2
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="all" className="mt-6 space-y-4">
-              {filteredLegislation.length > 0 || filteredNews.length > 0 ? (
-                <>
-                  {filteredLegislation.length > 0 && (
-                    <div className="space-y-4">
-                      <LegislationList 
-                        items={filteredLegislation} 
-                        onOpenDialog={setOpenDialogId}
-                        onEditResponsible={setEditResponsibleId}
-                        editResponsibleId={editResponsibleId}
-                        handleResponsibleChange={handleResponsibleChange}
-                        responsiblePersons={responsiblePersons}
-                      />
-                    </div>
-                  )}
-                  
-                  {filteredNews.length > 0 && (
-                    <div className="space-y-4 mt-8">
-                      <h2 className="text-lg font-medium">Новости и события</h2>
-                      <NewsList 
-                        items={filteredNews} 
-                        onOpenDialog={setOpenDialogId}
-                        onEditResponsible={setEditResponsibleId}
-                        editResponsibleId={editResponsibleId}
-                        handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
-                        responsiblePersons={responsiblePersons}
-                      />
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center p-8 border border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
-                    Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-                  </p>
+              )}
+              
+              {filteredNews.length > 0 && (
+                <div className="space-y-4 mt-8">
+                  <h2 className="text-lg font-medium">Новости и события</h2>
+                  <NewsList 
+                    items={filteredNews} 
+                    onOpenDialog={setOpenDialogId}
+                    onEditResponsible={setEditResponsibleId}
+                    editResponsibleId={editResponsibleId}
+                    handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
+                    responsiblePersons={responsiblePersons}
+                  />
                 </div>
               )}
-            </TabsContent>
-
-            <TabsContent value="laws" className="mt-6 space-y-4">
-              {filteredLegislation.length > 0 ? (
-                <LegislationList 
-                  items={filteredLegislation} 
-                  onOpenDialog={setOpenDialogId}
-                  onEditResponsible={setEditResponsibleId}
-                  editResponsibleId={editResponsibleId}
-                  handleResponsibleChange={handleResponsibleChange}
-                  responsiblePersons={responsiblePersons}
-                />
-              ) : (
-                <div className="text-center p-8 border border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
-                    Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-                  </p>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="news" className="mt-6 space-y-4">
-              {filteredNews.length > 0 ? (
-                <NewsList 
-                  items={filteredNews} 
-                  onOpenDialog={setOpenDialogId}
-                  onEditResponsible={setEditResponsibleId}
-                  editResponsibleId={editResponsibleId}
-                  handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
-                  responsiblePersons={responsiblePersons}
-                />
-              ) : (
-                <div className="text-center p-8 border border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
-                    Новости по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-                  </p>
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </TabsContent>
-        
-        {/* Strategic Timeline Tab */}
-        <TabsContent value="strategic" className="pt-4">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-compGreen-500" />
-              <h2 className="text-xl font-semibold">Стратегическая шкала законодательных изменений</h2>
+            </>
+          ) : (
+            <div className="text-center p-8 border border-dashed rounded-lg">
+              <p className="text-muted-foreground">
+                Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
+              </p>
             </div>
-            <LegislationTimeline items={legislationChanges} />
-          </div>
+          )}
         </TabsContent>
-        
-        {/* Competitive Advantages Tab */}
-        <TabsContent value="competitive" className="pt-4">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-compGreen-500" />
-              <h2 className="text-xl font-semibold">Конкурентные преимущества</h2>
+
+        <TabsContent value="laws" className="mt-6 space-y-4">
+          {filteredLegislation.length > 0 ? (
+            <LegislationList 
+              items={filteredLegislation} 
+              onOpenDialog={setOpenDialogId}
+              onEditResponsible={setEditResponsibleId}
+              editResponsibleId={editResponsibleId}
+              handleResponsibleChange={handleResponsibleChange}
+              responsiblePersons={responsiblePersons}
+            />
+          ) : (
+            <div className="text-center p-8 border border-dashed rounded-lg">
+              <p className="text-muted-foreground">
+                Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
+              </p>
             </div>
-            <CompetitiveAdvantageList items={legislationChanges} onOpenDialog={setOpenDialogId} />
-          </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="news" className="mt-6 space-y-4">
+          {filteredNews.length > 0 ? (
+            <NewsList 
+              items={filteredNews} 
+              onOpenDialog={setOpenDialogId}
+              onEditResponsible={setEditResponsibleId}
+              editResponsibleId={editResponsibleId}
+              handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
+              responsiblePersons={responsiblePersons}
+            />
+          ) : (
+            <div className="text-center p-8 border border-dashed rounded-lg">
+              <p className="text-muted-foreground">
+                Новости по заданным критериям не найдены. Попробуйте изменить параметры поиска.
+              </p>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 

@@ -119,7 +119,7 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
       <CardContent>
         <div className="space-y-6">
           <Tabs defaultValue="distribution" className="w-full">
-            <TabsList className="w-full grid grid-cols-3 mb-4">
+            <TabsList className="w-full grid grid-cols-3">
               <TabsTrigger value="distribution" className="flex items-center gap-1">
                 <LineChart className="h-4 w-4" />
                 <span>Распределение</span>
@@ -139,27 +139,21 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
                 variants={chartAnimation}
                 initial="hidden"
                 animate="visible"
-                className="h-80 w-full"
+                className="h-64 w-full"
               >
                 <ChartContainer config={{ distribution: { color: chartColors[distributionType] } }}>
                   {chartType === 'area' ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={distributionData}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis 
                           dataKey="value" 
                           type="number"
                           domain={['dataMin', 'dataMax']}
-                          tickFormatter={(value) => {
-                            if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
-                            if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
-                            return value.toLocaleString(undefined, { maximumFractionDigits: 0 });
-                          }}
-                          tick={{fontSize: 11}}
-                          interval={3}
+                          tickFormatter={(value) => value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         />
                         <YAxis />
                         <Tooltip 
@@ -186,17 +180,10 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={histogramData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="range" 
-                          tick={{fontSize: 10}} 
-                          interval={histogramData.length > 10 ? 2 : 1}
-                          height={50}
-                          angle={-15}
-                          textAnchor="end"
-                        />
+                        <XAxis dataKey="range" tick={{fontSize: 10}} interval={histogramData.length > 10 ? 1 : 0} />
                         <YAxis yAxisId="left" orientation="left" label={{ value: 'Количество', angle: -90, position: 'insideLeft' }} />
                         <YAxis yAxisId="right" orientation="right" label={{ value: 'Процент', angle: 90, position: 'insideRight' }} />
                         <Tooltip />
@@ -215,13 +202,13 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
                 variants={chartAnimation}
                 initial="hidden"
                 animate="visible"
-                className="h-80 w-full"
+                className="h-64 w-full"
               >
                 <ChartContainer config={{ probability: { color: '#8884d8' } }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={distributionData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
@@ -290,13 +277,13 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
                 variants={chartAnimation}
                 initial="hidden"
                 animate="visible"
-                className="h-80 w-full"
+                className="h-64 w-full"
               >
                 <ChartContainer config={{ confidence: { color: '#82ca9d' } }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={distributionData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 30 }}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
@@ -326,14 +313,8 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
                         stroke="red" 
                         strokeDasharray="3 3"
                         label={{ 
-                          value: `${confidenceLevel}%: ${getConfidenceValue() >= 1000000 ? 
-                            (getConfidenceValue() / 1000000).toFixed(1) + 'M' : 
-                            getConfidenceValue() >= 1000 ? 
-                            (getConfidenceValue() / 1000).toFixed(0) + 'K' : 
-                            getConfidenceValue().toLocaleString()}`, 
-                          position: 'top',
-                          fill: 'red',
-                          fontSize: 12
+                          value: `${confidenceLevel}% доверит. интервал: ${getConfidenceValue().toLocaleString()}`, 
+                          position: 'insideTopRight' 
                         }}
                       />
                     </AreaChart>
@@ -355,19 +336,19 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
             </TabsContent>
           </Tabs>
           
-          <div className="mt-8 pt-4 border-t">
-            <h3 className="text-md font-medium mb-3">Ключевые статистики</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3">
+          <div>
+            <h3 className="text-md font-medium mb-2">Ключевые статистики</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2">
               {keyStats.map((stat, idx) => (
-                <div key={idx} className="bg-muted p-3 rounded-md text-center">
-                  <div className="text-xs text-muted-foreground mb-1">{stat.name}</div>
-                  <div className="font-medium text-sm truncate" title={stat.value}>{stat.value}</div>
+                <div key={idx} className="bg-muted p-2 rounded-md text-center">
+                  <div className="text-xs text-muted-foreground">{stat.name}</div>
+                  <div className="font-medium">{stat.value}</div>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-sm mt-4 pt-3 border-t">
+          <div className="flex justify-between items-center text-sm">
             <div className="text-muted-foreground">
               Тип распределения: <span className="font-medium">{
                 distributionType === 'normal' ? 'Нормальное' : 
@@ -375,7 +356,7 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
               }</span>
             </div>
             <div className="text-muted-foreground">
-              Количество симуляций: <span className="font-medium">{result.simulations.length.toLocaleString()}</span>
+              Количество симуляций: <span className="font-medium">{result.simulations.length}</span>
             </div>
           </div>
         </div>
