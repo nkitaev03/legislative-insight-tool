@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X } from 'lucide-react';
+import { Search, Filter, Calendar, AlertCircle, Download, Link as LinkIcon, User, FileWarning, ListTodo, Info, CheckCircle, X, Target, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,8 @@ import {
 import { LegislationItem, NewsItem } from './types';
 import LegislationList from './LegislationList';
 import NewsList from './NewsList';
+import LegislationTimeline from './LegislationTimeline';
+import CompetitiveAdvantageList from './CompetitiveAdvantageList';
 
 // Extended legislation data with risks, recommendations, and responsible person
 const initialLegislationChanges: LegislationItem[] = [
@@ -55,7 +57,14 @@ const initialLegislationChanges: LegislationItem[] = [
       min: 100000,
       max: 500000,
       expected: 350000
-    }
+    },
+    strategicImpact: 'Критическое влияние на стратегию защиты данных компании. Требуется пересмотр процессов обработки персональных данных, что затрагивает все подразделения.',
+    implementationDate: '01.08.2023',
+    competitiveAdvantages: [
+      'Возможность позиционирования как компании с высоким уровнем защиты данных клиентов',
+      'Развитие уникальных компетенций в области кибербезопасности',
+      'Снижение рисков утечек по сравнению с конкурентами, не соответствующими новым требованиям'
+    ]
   },
   {
     id: '2',
@@ -109,7 +118,14 @@ const initialLegislationChanges: LegislationItem[] = [
       min: -300000,
       max: 0,
       expected: -150000
-    }
+    },
+    strategicImpact: 'Снижение налоговой нагрузки позволит высвободить средства для реализации стратегии цифровой трансформации компании.',
+    implementationDate: '01.07.2023',
+    competitiveAdvantages: [
+      'Снижение себестоимости продукции на 5-7% по сравнению с конкурентами',
+      'Возможность снижения цен или увеличения рентабельности',
+      'Дополнительные инвестиции в R&D при сохранении текущего уровня цен'
+    ]
   },
   {
     id: '4',
@@ -136,7 +152,9 @@ const initialLegislationChanges: LegislationItem[] = [
       min: 20000,
       max: 80000,
       expected: 45000
-    }
+    },
+    strategicImpact: 'Незначительное влияние на стратегию, требуется лишь техническое соответствие.',
+    implementationDate: '01.12.2023'
   },
   {
     id: '5',
@@ -163,8 +181,45 @@ const initialLegislationChanges: LegislationItem[] = [
       min: 100000,
       max: 300000,
       expected: 180000
-    }
+    },
+    strategicImpact: 'Влияет на стратегию дистрибуции и логистики. Требуется перестройка цепочки поставок с учетом новых требований к маркировке.',
+    implementationDate: '15.06.2023'
   },
+  {
+    id: '6',
+    title: 'Закон о поддержке IT-стартапов',
+    date: '05.07.2023',
+    description: 'Новая программа субсидирования и грантовой поддержки для IT-стартапов, занимающихся разработкой инновационных технологий.',
+    category: 'Налоговое право',
+    source: 'Министерство цифрового развития',
+    sourceUrl: 'https://regulation.gov.ru/example6',
+    risk: 'low',
+    isNew: true,
+    responsible: 'Смирнова Е.В., Главный бухгалтер',
+    risks: [
+      'Повышенное внимание налоговых органов при получении субсидий',
+      'Необходимость дополнительной отчетности по целевому использованию средств',
+      'Репутационные риски при неосвоении полученных грантов'
+    ],
+    recommendations: [
+      { text: 'Подготовить проект для заявки на грант', responsible: '', status: 'pending' },
+      { text: 'Сформировать отдельную команду для работы с государственными проектами', responsible: '', status: 'pending' },
+      { text: 'Разработать систему внутреннего учета для контроля целевого использования средств', responsible: '', status: 'pending' }
+    ],
+    financialImpact: {
+      min: -5000000,
+      max: -2000000,
+      expected: -3500000
+    },
+    strategicImpact: 'Критически важно для реализации стратегии инновационного развития. Позволяет получить государственное финансирование для разработки новых продуктов.',
+    implementationDate: '01.09.2023',
+    competitiveAdvantages: [
+      'Возможность получения значительного финансирования для развития новых направлений',
+      'Снижение финансовой нагрузки на R&D бюджет компании',
+      'Доступ к государственным каналам продвижения и пилотирования продуктов',
+      'Преимущество перед конкурентами, не участвующими в программе поддержки'
+    ]
+  }
 ];
 
 // News data
@@ -404,6 +459,24 @@ export default function MonitoringPage() {
           <Download className="h-4 w-4" />
           Экспорт
         </Button>
+      </div>
+      
+      {/* Strategic Timeline Section */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Target className="h-5 w-5 text-compGreen-500" />
+          <h2 className="text-xl font-semibold">Стратегическая шкала законодательных изменений</h2>
+        </div>
+        <LegislationTimeline items={legislationChanges} />
+      </div>
+      
+      {/* Competitive Advantages Section */}
+      <div className="space-y-4 mt-8">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-compGreen-500" />
+          <h2 className="text-xl font-semibold">Конкурентные преимущества</h2>
+        </div>
+        <CompetitiveAdvantageList items={legislationChanges} onOpenDialog={setOpenDialogId} />
       </div>
       
       <Card>

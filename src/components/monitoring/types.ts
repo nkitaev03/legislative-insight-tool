@@ -25,6 +25,9 @@ export interface LegislationItem {
   risks: string[];
   recommendations: Recommendation[];
   financialImpact: FinancialImpact;
+  strategicImpact?: string;
+  implementationDate?: string;
+  competitiveAdvantages?: string[];
 }
 
 export interface NewsItem extends LegislationItem {}
