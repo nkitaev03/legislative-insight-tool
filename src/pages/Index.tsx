@@ -6,6 +6,7 @@ import DashboardPage from '@/components/dashboard/DashboardPage';
 import MonitoringPage from '@/components/monitoring/MonitoringPage';
 import SimulationPage from '@/components/simulation/SimulationPage';
 import ProfilePage from '@/components/profile/ProfilePage';
+import AuditPage from '@/components/audit/AuditPage';
 import ChatSupport from '@/components/common/ChatSupport';
 import { useToast } from '@/components/ui/use-toast';
 import RiskAnalysisCard from '@/components/common/RiskAnalysisCard';
