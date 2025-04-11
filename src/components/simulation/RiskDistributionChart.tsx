@@ -116,246 +116,127 @@ const RiskDistributionChart: React.FC<RiskDistributionChartProps> = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-2 pb-4"> {/* Adjusted padding */}
         <div className="space-y-6">
-          <Tabs defaultValue="distribution" className="w-full">
-            <TabsList className="w-full grid grid-cols-3">
-              <TabsTrigger value="distribution" className="flex items-center gap-1">
-                <LineChart className="h-4 w-4" />
-                <span>Распределение</span>
-              </TabsTrigger>
-              <TabsTrigger value="probability" className="flex items-center gap-1">
-                <BarChart3 className="h-4 w-4" />
-                <span>Плотность вероятности</span>
-              </TabsTrigger>
-              <TabsTrigger value="confidence" className="flex items-center gap-1">
-                <ArrowLeftRight className="h-4 w-4" />
-                <span>Доверительные интервалы</span>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="distribution" className="mt-6">
-              <motion.div 
-                variants={chartAnimation}
-                initial="hidden"
-                animate="visible"
-                className="h-64 w-full"
-              >
-                <ChartContainer config={{ distribution: { color: chartColors[distributionType] } }}>
-                  {chartType === 'area' ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={distributionData}
-                        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis 
-                          dataKey="value" 
-                          type="number"
-                          domain={['dataMin', 'dataMax']}
-                          tickFormatter={(value) => value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                        />
-                        <YAxis />
-                        <Tooltip 
-                          formatter={(value: any) => [value.toFixed(4), 'Вероятность']}
-                          labelFormatter={(value) => `Значение: ${parseInt(value).toLocaleString()}`}
-                        />
-                        <defs>
-                          <linearGradient id="colorDistribution" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={chartColors[distributionType]} stopOpacity={0.8}/>
-                            <stop offset="95%" stopColor={chartColors[distributionType]} stopOpacity={0.2}/>
-                          </linearGradient>
-                        </defs>
-                        <Area 
-                          type="monotone" 
-                          dataKey="probability" 
-                          stroke={chartColors[distributionType]} 
-                          fillOpacity={1} 
-                          fill="url(#colorDistribution)" 
-                        />
-                        <Legend />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={histogramData}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="range" tick={{fontSize: 10}} interval={histogramData.length > 10 ? 1 : 0} />
-                        <YAxis yAxisId="left" orientation="left" label={{ value: 'Количество', angle: -90, position: 'insideLeft' }} />
-                        <YAxis yAxisId="right" orientation="right" label={{ value: 'Процент', angle: 90, position: 'insideRight' }} />
-                        <Tooltip />
-                        <Legend />
-                        <Bar yAxisId="left" dataKey="count" name="Количество" fill={chartColors[distributionType]} />
-                        <Bar yAxisId="right" dataKey="percentage" name="Процент" fill="#ff7300" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  )}
-                </ChartContainer>
-              </motion.div>
-            </TabsContent>
-            
-            <TabsContent value="probability" className="mt-6">
-              <motion.div 
-                variants={chartAnimation}
-                initial="hidden"
-                animate="visible"
-                className="h-64 w-full"
-              >
-                <ChartContainer config={{ probability: { color: '#8884d8' } }}>
+          {/* Single chart with improved layout */}
+          <div className="mt-6">
+            <motion.div 
+              variants={chartAnimation}
+              initial="hidden"
+              animate="visible"
+              className="h-80 w-full" /* Increased height of chart */
+            >
+              <ChartContainer config={{ distribution: { color: chartColors[distributionType] } }}>
+                {chartType === 'area' ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart
                       data={distributionData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                      margin={{ top: 10, right: 30, left: 10, bottom: 50 }} /* Increased bottom margin */
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
                         dataKey="value" 
                         type="number"
                         domain={['dataMin', 'dataMax']}
-                        tickFormatter={(value) => value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                        height={60} /* Increased axis height for labels */
+                        tick={{fontSize: 10}} /* Smaller font for better spacing */
+                        tickFormatter={(value) => {
+                          // Format large numbers with abbreviated suffixes
+                          if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+                          if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+                          return value.toString();
+                        }}
+                        interval="preserveEnd" /* Better interval selection */
                       />
-                      <YAxis />
+                      <YAxis 
+                        width={50} /* Wider axis for labels */
+                        tickFormatter={(value) => value.toFixed(4)} /* Shorter Y values */
+                      />
                       <Tooltip 
-                        formatter={(value: any) => [value.toFixed(4), 'Плотность вероятности']}
+                        formatter={(value: any) => [value.toFixed(4), 'Вероятность']}
                         labelFormatter={(value) => `Значение: ${parseInt(value).toLocaleString()}`}
                       />
                       <defs>
-                        <linearGradient id="colorProbability" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#8884d8" stopOpacity={0.2}/>
+                        <linearGradient id="colorDistribution" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={chartColors[distributionType]} stopOpacity={0.8}/>
+                          <stop offset="95%" stopColor={chartColors[distributionType]} stopOpacity={0.2}/>
                         </linearGradient>
                       </defs>
                       <Area 
                         type="monotone" 
                         dataKey="probability" 
-                        stroke="#8884d8" 
+                        stroke={chartColors[distributionType]} 
                         fillOpacity={1} 
-                        fill="url(#colorProbability)" 
+                        fill="url(#colorDistribution)" 
                       />
-                      <Legend />
+                      <Legend wrapperStyle={{ bottom: -30 }} /* Position legend lower */ />
                     </AreaChart>
                   </ResponsiveContainer>
-                </ChartContainer>
-              </motion.div>
-            </TabsContent>
-            
-            <TabsContent value="confidence" className="mt-6">
-              <div className="mb-4">
-                <label className="text-sm font-medium">Выберите уровень доверия:</label>
-                <div className="flex gap-2 mt-2">
-                  <Button
-                    variant={confidenceLevel === "90" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setConfidenceLevel("90")}
-                    className="flex-1"
-                  >
-                    90%
-                  </Button>
-                  <Button
-                    variant={confidenceLevel === "95" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setConfidenceLevel("95")}
-                    className="flex-1"
-                  >
-                    95%
-                  </Button>
-                  <Button
-                    variant={confidenceLevel === "99" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setConfidenceLevel("99")}
-                    className="flex-1"
-                  >
-                    99%
-                  </Button>
-                </div>
-              </div>
-              
-              <motion.div 
-                variants={chartAnimation}
-                initial="hidden"
-                animate="visible"
-                className="h-64 w-full"
-              >
-                <ChartContainer config={{ confidence: { color: '#82ca9d' } }}>
+                ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
-                      data={distributionData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    <BarChart
+                      data={histogramData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 50 }} /* Increased bottom margin */
                     >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis 
-                        dataKey="value" 
-                        type="number"
-                        domain={['dataMin', 'dataMax']}
-                        tickFormatter={(value) => value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                      />
-                      <YAxis />
-                      <Tooltip />
-                      <defs>
-                        <linearGradient id="confidenceGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
-                          <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.2}/>
-                        </linearGradient>
-                      </defs>
-                      <Area 
-                        type="monotone" 
-                        dataKey="probability" 
-                        stroke="#82ca9d" 
-                        fillOpacity={1} 
-                        fill="url(#confidenceGradient)" 
-                      />
-                      {/* Vertical line for confidence interval */}
-                      <ReferenceLine 
-                        x={getConfidenceValue()} 
-                        stroke="red" 
-                        strokeDasharray="3 3"
-                        label={{ 
-                          value: `${confidenceLevel}% доверит. интервал: ${getConfidenceValue().toLocaleString()}`, 
-                          position: 'insideTopRight' 
+                        dataKey="range" 
+                        tick={(props) => {
+                          const { x, y, payload } = props;
+                          return (
+                            <g transform={`translate(${x},${y})`}>
+                              <text 
+                                x={0} 
+                                y={0} 
+                                dy={16} 
+                                textAnchor="end"
+                                fill="#666"
+                                fontSize={9}
+                                transform="rotate(-45)"
+                              >
+                                {payload.value}
+                              </text>
+                            </g>
+                          );
                         }}
+                        height={70} /* More space for angled labels */
+                        interval={0} /* Show all labels */
                       />
-                    </AreaChart>
+                      <YAxis yAxisId="left" orientation="left" width={50} />
+                      <YAxis yAxisId="right" orientation="right" width={50} />
+                      <Tooltip />
+                      <Legend wrapperStyle={{ bottom: -40 }} /* Position legend lower */ />
+                      <Bar yAxisId="left" dataKey="count" name="Количество" fill={chartColors[distributionType]} />
+                      <Bar yAxisId="right" dataKey="percentage" name="Процент" fill="#ff7300" />
+                    </BarChart>
                   </ResponsiveContainer>
-                </ChartContainer>
-              </motion.div>
-              
-              <div className="mt-4 p-4 bg-muted/30 rounded-lg">
-                <h4 className="font-medium mb-2">Доверительные интервалы:</h4>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Доверительные интервалы показывают, с какой вероятностью фактическое значение будет меньше или равно указанному значению.
-                </p>
-                <ul className="space-y-1 text-sm">
-                  <li>90% доверительный интервал: <span className="font-medium">{result.percentile90.toLocaleString()} ₽</span></li>
-                  <li>95% доверительный интервал: <span className="font-medium">{result.percentile95.toLocaleString()} ₽</span></li>
-                  <li>99% доверительный интервал: <span className="font-medium">{(result.percentile99 || 0).toLocaleString()} ₽</span></li>
-                </ul>
-              </div>
-            </TabsContent>
-          </Tabs>
+                )}
+              </ChartContainer>
+            </motion.div>
+          </div>
           
-          <div>
-            <h3 className="text-md font-medium mb-2">Ключевые статистики</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2">
+          {/* Key Statistics section with improved spacing */}
+          <div className="mt-10"> {/* More vertical space after chart */}
+            <h3 className="text-md font-medium mb-4">Ключевые статистики</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-3"> {/* Increased gap */}
               {keyStats.map((stat, idx) => (
-                <div key={idx} className="bg-muted p-2 rounded-md text-center">
-                  <div className="text-xs text-muted-foreground">{stat.name}</div>
-                  <div className="font-medium">{stat.value}</div>
+                <div key={idx} className="bg-muted p-3 rounded-md text-center"> {/* Increased padding */}
+                  <div className="text-xs text-muted-foreground mb-1">{stat.name}</div> {/* Added margin */}
+                  <div className="font-medium text-sm">{stat.value}</div>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="flex justify-between items-center text-sm">
-            <div className="text-muted-foreground">
+          {/* Footer metadata with improved spacing */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-6 pt-3 border-t"> {/* Added border top for visual separation */}
+            <div className="text-muted-foreground text-sm">
               Тип распределения: <span className="font-medium">{
                 distributionType === 'normal' ? 'Нормальное' : 
                 distributionType === 'triangular' ? 'Треугольное' : 'Равномерное'
               }</span>
             </div>
-            <div className="text-muted-foreground">
+            <div className="text-muted-foreground text-sm">
               Количество симуляций: <span className="font-medium">{result.simulations.length}</span>
             </div>
           </div>
