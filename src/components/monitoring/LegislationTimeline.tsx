@@ -1,20 +1,22 @@
 
 import React, { useState } from 'react';
-import { Calendar, Flag, Target, TrendingUp, BarChart, List, ArrowRight, Clock, CheckCircle, Clock1 } from 'lucide-react';
+import { Calendar, Flag, Target, TrendingUp, BarChart3, List, ArrowRight, Clock, CheckCircle, Clock1, Calendar as CalendarIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { LegislationItem } from './types';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import { 
-  Bar, 
-  BarChart as RechartsBarChart, 
-  XAxis, 
-  YAxis, 
   ResponsiveContainer,
+  CartesianGrid,
   ReferenceLine,
-  CartesianGrid
+  XAxis, 
+  YAxis,
+  Tooltip,
+  Rectangle,
+  ScatterChart,
+  ZAxis
 } from 'recharts';
 
 interface LegislationTimelineProps {
@@ -43,15 +45,21 @@ const formatDate = (dateString: string | null | undefined): string => {
   }
 };
 
-// Calculate relative position on timeline
-const calculateTimelinePosition = (date: Date, minDate: Date, maxDate: Date): number => {
-  const range = maxDate.getTime() - minDate.getTime();
-  const position = date.getTime() - minDate.getTime();
-  return range === 0 ? 50 : (position / range) * 100;
+// Format month for display in chart
+const formatMonth = (date: Date): string => {
+  try {
+    return new Intl.DateTimeFormat('ru-RU', { 
+      month: 'short', 
+      year: 'numeric' 
+    }).format(date);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return 'Неизв.';
+  }
 };
 
 const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
-  const [viewType, setViewType] = useState<'horizontal' | 'vertical'>('horizontal');
+  const [viewType, setViewType] = useState<'gantt' | 'vertical'>('gantt');
   
   // Filter items with strategic impact and sort by implementation date
   const strategicItems = items
@@ -73,57 +81,14 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
       }
     });
 
-  // Prepare data for the horizontal timeline chart
-  const prepareChartData = () => {
-    if (strategicItems.length === 0) return [];
+  // Generate timeline data for Gantt-like chart
+  const prepareGanttData = () => {
+    if (strategicItems.length === 0) return { ganttBars: [], timeRange: { min: new Date(), max: new Date() } };
     
     const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    return strategicItems.map(item => {
-      // Handle potential invalid implementation dates
-      if (!item.implementationDate) {
-        return null;
-      }
-      
-      try {
-        const implementationDate = new Date(item.implementationDate);
-        
-        // Skip items with invalid dates
-        if (isNaN(implementationDate.getTime())) {
-          console.warn(`Skipping item with invalid date: ${item.title}`);
-          return null;
-        }
-        
-        const isPast = implementationDate < now;
-        const isNear = !isPast && implementationDate < new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
-        
-        return {
-          name: item.title,
-          id: item.id,
-          date: implementationDate,
-          formattedDate: formatDate(item.implementationDate),
-          value: 1, // For chart display
-          fill: isPast ? '#10b981' : isNear ? '#ef4444' : '#6366f1',
-          status: isPast ? 'active' : 'planned',
-          description: item.strategicImpact || '',
-          advantages: item.competitiveAdvantages || []
-        };
-      } catch (error) {
-        console.error(`Error processing item ${item.title}:`, error);
-        return null;
-      }
-    }).filter(Boolean); // Remove null entries
-  };
-  
-  const chartData = prepareChartData();
-  
-  // Calculate timeline min/max dates with padding
-  const getTimelineBounds = () => {
-    if (strategicItems.length === 0) {
-      return { min: new Date(), max: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) };
-    }
-    
-    // Filter out invalid dates first
+    // Get valid dates for min/max calculation
     const validDates = strategicItems
       .filter(item => item.implementationDate)
       .map(item => {
@@ -136,40 +101,187 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
       })
       .filter(Boolean) as Date[];
     
-    // If no valid dates, return default range
+    // Set default time range if no valid dates
     if (validDates.length === 0) {
-      return { min: new Date(), max: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) };
+      const defaultMin = new Date();
+      const defaultMax = new Date();
+      defaultMax.setMonth(defaultMax.getMonth() + 6);
+      
+      return { 
+        ganttBars: [], 
+        timeRange: { 
+          min: defaultMin, 
+          max: defaultMax 
+        } 
+      };
     }
     
-    const minDate = new Date(Math.min(...validDates.map(d => d.getTime())));
-    const maxDate = new Date(Math.max(...validDates.map(d => d.getTime())));
+    // Calculate time range with padding
+    let minDate = new Date(Math.min(...validDates.map(d => d.getTime())));
+    let maxDate = new Date(Math.max(...validDates.map(d => d.getTime())));
     
-    // Add padding (30 days before first and after last)
-    minDate.setDate(minDate.getDate() - 30);
-    maxDate.setDate(maxDate.getDate() + 30);
+    // Add padding
+    minDate = new Date(minDate);
+    minDate.setMonth(minDate.getMonth() - 1);
     
-    return { min: minDate, max: maxDate };
+    maxDate = new Date(maxDate);
+    maxDate.setMonth(maxDate.getMonth() + 1);
+    
+    // Create Gantt bars
+    const ganttBars = strategicItems
+      .map((item, index) => {
+        if (!item.implementationDate) return null;
+        
+        try {
+          const implementationDate = new Date(item.implementationDate);
+          
+          // Skip items with invalid dates
+          if (isNaN(implementationDate.getTime())) {
+            return null;
+          }
+          
+          // Calculate status and color
+          const isPast = implementationDate < today;
+          const isNear = !isPast && implementationDate < new Date(today.getTime() + 90 * 24 * 60 * 60 * 1000);
+          const status = isPast ? 'active' : (isNear ? 'urgent' : 'planned');
+          const color = isPast ? '#10b981' : (isNear ? '#ef4444' : '#6366f1');
+          
+          // Added some randomization to y-position to avoid overlaps
+          const yPos = index + 1;
+          
+          return {
+            id: item.id,
+            name: item.title,
+            date: implementationDate,
+            x: implementationDate.getTime(),
+            y: yPos,
+            z: 10, // Size indicator
+            status,
+            color,
+            formattedDate: formatDate(item.implementationDate),
+            description: item.strategicImpact || '',
+            advantages: item.competitiveAdvantages || []
+          };
+        } catch (error) {
+          console.error(`Error processing item ${item.title}:`, error);
+          return null;
+        }
+      })
+      .filter(Boolean);
+    
+    return { ganttBars, timeRange: { min: minDate, max: maxDate } };
   };
   
-  const { min: minDate, max: maxDate } = getTimelineBounds();
-
+  const { ganttBars, timeRange } = prepareGanttData();
+  
+  // Generate a list of months for the chart
+  const getMonthTickValues = () => {
+    const { min, max } = timeRange;
+    const tickValues = [];
+    
+    const currentDate = new Date(min);
+    currentDate.setDate(1); // Start at the beginning of the month
+    
+    while (currentDate <= max) {
+      tickValues.push(new Date(currentDate));
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+    
+    return tickValues;
+  };
+  
+  const monthTicks = getMonthTickValues();
+  
   // Current date for reference line
   const today = new Date();
+
+  // Custom shape for gantt items
+  const CustomGanttBar = (props: any) => {
+    const { x, y, width, height, fill, payload } = props;
+    
+    if (!payload) return null;
+    
+    const color = payload.color || fill;
+    const barHeight = 18;
+    
+    return (
+      <g>
+        <Rectangle 
+          x={x} 
+          y={y - barHeight/2} 
+          width={15} 
+          height={barHeight} 
+          fill={color} 
+          rx={3} 
+          ry={3} 
+        />
+        <text 
+          x={x + 20} 
+          y={y + 4} 
+          textAnchor="start" 
+          fill="#374151" 
+          fontSize={12}
+        >
+          {payload.name}
+        </text>
+      </g>
+    );
+  };
   
-  // Chart configuration with colors for different states
-  const chartConfig = {
-    active: {
-      label: "Действующие",
-      color: "#10b981" // green
-    },
-    planned: {
-      label: "Планируемые",
-      color: "#6366f1" // indigo
-    },
-    urgent: {
-      label: "Срочные",
-      color: "#ef4444" // red
-    }
+  // Custom tooltip for Gantt chart
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (!active || !payload || !payload.length) return null;
+    
+    const data = payload[0].payload;
+    
+    return (
+      <div className="bg-background/95 backdrop-blur-sm border border-border/50 p-3 rounded-lg shadow-lg max-w-xs">
+        <h3 className="font-medium mb-1">{data.name}</h3>
+        <div className="flex items-center gap-1 mb-2 text-xs text-muted-foreground">
+          <Clock className="h-3.5 w-3.5" />
+          <span>{data.formattedDate}</span>
+          <span className="ml-1">
+            {data.status === 'active' ? (
+              <span className="flex items-center text-green-500">
+                <CheckCircle className="h-3 w-3 mr-1" />
+                Действует
+              </span>
+            ) : data.status === 'urgent' ? (
+              <span className="flex items-center text-red-500">
+                <Clock1 className="h-3 w-3 mr-1" />
+                Срочно
+              </span>
+            ) : (
+              <span className="flex items-center text-indigo-500">
+                <Clock1 className="h-3 w-3 mr-1" />
+                Планируется
+              </span>
+            )}
+          </span>
+        </div>
+        
+        <Separator className="my-2" />
+        
+        <div className="text-xs mt-2">
+          <p className="font-medium mb-1">Стратегическое влияние:</p>
+          <p className="text-muted-foreground">{data.description}</p>
+        </div>
+        
+        {data.advantages && data.advantages.length > 0 && (
+          <div className="mt-2 text-xs">
+            <p className="font-medium flex items-center mb-1">
+              <TrendingUp className="h-3 w-3 mr-1 text-compGreen-500" />
+              Преимущества:
+            </p>
+            <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
+              {data.advantages.map((adv: string, i: number) => (
+                <li key={i}>{adv}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -180,11 +292,11 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
             <Target className="h-5 w-5 text-compGreen-500" />
             Стратегическая временная шкала
           </CardTitle>
-          <Tabs defaultValue="horizontal" onValueChange={(value) => setViewType(value as 'horizontal' | 'vertical')}>
+          <Tabs defaultValue="gantt" onValueChange={(value) => setViewType(value as 'gantt' | 'vertical')}>
             <TabsList className="grid grid-cols-2 w-[200px]">
-              <TabsTrigger value="horizontal">
-                <BarChart className="h-4 w-4 mr-2" />
-                <span>Линейная</span>
+              <TabsTrigger value="gantt">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                <span>Диаграмма Ганта</span>
               </TabsTrigger>
               <TabsTrigger value="vertical">
                 <List className="h-4 w-4 mr-2" />
@@ -197,57 +309,73 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
       <CardContent>
         {strategicItems.length > 0 ? (
           <>
-            {viewType === 'horizontal' ? (
+            {viewType === 'gantt' ? (
               <div className="space-y-6">
-                {/* Horizontal Timeline Chart */}
-                <div className="h-[320px] pt-6">
-                  <ChartContainer config={chartConfig}>
-                    <RechartsBarChart 
-                      data={chartData}
-                      layout="vertical"
-                      barCategoryGap={8}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                {/* Gantt Chart */}
+                <div className="h-[400px] pt-6 overflow-x-auto">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart
+                      margin={{ top: 20, right: 30, bottom: 60, left: 120 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                      <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={true} />
                       <XAxis 
                         type="number" 
-                        domain={[minDate.getTime(), maxDate.getTime()]} 
-                        tickFormatter={(value) => {
-                          return formatDate(new Date(value).toISOString());
-                        }}
-                        dataKey="date"
-                        scale="time"
-                        tickCount={5}
+                        dataKey="x" 
+                        domain={[timeRange.min.getTime(), timeRange.max.getTime()]} 
+                        tickFormatter={(tick) => formatMonth(new Date(tick))}
+                        ticks={monthTicks.map(date => date.getTime())}
                         angle={-30}
                         textAnchor="end"
-                        height={80}
+                        height={60}
                         tick={{ dy: 20 }}
                       />
                       <YAxis 
-                        type="category" 
-                        dataKey="name" 
-                        width={150}
-                        tick={{ fontSize: 12 }}
+                        type="number" 
+                        dataKey="y" 
+                        name="Task" 
+                        tick={false}
+                        axisLine={false}
+                        tickLine={false}
                       />
+                      <ZAxis 
+                        type="number" 
+                        dataKey="z" 
+                        range={[100, 100]} 
+                        domain={[0, 100]} 
+                      />
+                      <Tooltip content={<CustomTooltip />} />
                       <ReferenceLine 
                         x={today.getTime()} 
                         stroke="#ef4444" 
                         strokeWidth={2} 
-                        strokeDasharray="3 3"
-                        label={{ value: 'Сегодня', position: 'insideTopRight', fill: '#ef4444', fontSize: 12 }}
+                        strokeDasharray="5 5"
+                        label={{ 
+                          value: 'Сегодня', 
+                          position: 'insideTopRight', 
+                          fill: '#ef4444', 
+                          fontSize: 12,
+                          offset: 10
+                        }}
                       />
-                      <Bar 
-                        dataKey="value" 
-                        shape={<CustomBarShape />}
-                        background={{ fill: "#f3f4f6" }}
-                      />
-                      <ChartTooltip 
-                        content={
-                          <CustomTooltip />
-                        } 
-                      />
-                    </RechartsBarChart>
-                  </ChartContainer>
+                      {ganttBars.map((item: any) => (
+                        <ReferenceLine 
+                          key={item.id}
+                          y={item.y}
+                          stroke="#E5E7EB"
+                          strokeWidth={1}
+                          ifOverflow="extendDomain"
+                        />
+                      ))}
+                      {ganttBars.map((item: any) => (
+                        <CustomGanttBar
+                          key={item.id}
+                          x={item.x}
+                          y={item.y}
+                          payload={item}
+                        />
+                      ))}
+                    </ScatterChart>
+                  </ResponsiveContainer>
                 </div>
 
                 {/* Legend */}
@@ -291,7 +419,7 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
                       </div>
                       
                       <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
+                        <CalendarIcon className="h-4 w-4" />
                         <span>Срок внедрения: {formatDate(item.implementationDate)}</span>
                       </div>
                       
@@ -330,89 +458,5 @@ const LegislationTimeline: React.FC<LegislationTimelineProps> = ({ items }) => {
     </Card>
   );
 };
-
-interface CustomTooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    payload: {
-      name: string;
-      formattedDate: string;
-      status: string;
-      description: string;
-      advantages: string[];
-    }
-  }>;
-}
-
-// Custom tooltip component
-const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  if (!active || !payload || !payload.length) {
-    return null;
-  }
-
-  const data = payload[0].payload;
-
-  return (
-    <div className="bg-background/95 backdrop-blur-sm border border-border/50 p-3 rounded-lg shadow-lg max-w-xs">
-      <h3 className="font-medium mb-1">{data.name}</h3>
-      <div className="flex items-center gap-1 mb-2 text-xs text-muted-foreground">
-        <Clock className="h-3.5 w-3.5" />
-        <span>{data.formattedDate}</span>
-        <span className="ml-1">
-          {data.status === 'active' ? (
-            <span className="flex items-center text-green-500">
-              <CheckCircle className="h-3 w-3 mr-1" />
-              Действует
-            </span>
-          ) : (
-            <span className="flex items-center text-indigo-500">
-              <Clock1 className="h-3 w-3 mr-1" />
-              Планируется
-            </span>
-          )}
-        </span>
-      </div>
-      
-      <Separator className="my-2" />
-      
-      <div className="text-xs mt-2">
-        <p className="font-medium mb-1">Стратегическое влияние:</p>
-        <p className="text-muted-foreground">{data.description}</p>
-      </div>
-      
-      {data.advantages && data.advantages.length > 0 && (
-        <div className="mt-2 text-xs">
-          <p className="font-medium flex items-center mb-1">
-            <TrendingUp className="h-3 w-3 mr-1 text-compGreen-500" />
-            Преимущества:
-          </p>
-          <ul className="list-disc pl-4 space-y-0.5 text-muted-foreground">
-            {data.advantages.map((adv: string, i: number) => (
-              <li key={i}>{adv}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Custom bar shape for the timeline
-const CustomBarShape = (props: any) => {
-  const { x, y, width, height, fill, payload } = props;
-  
-  // Use the fill from the payload if available, otherwise fall back to the default fill
-  const barFill = payload?.fill || fill;
-  
-  return (
-    <g>
-      <rect x={x} y={y + height/2 - 8} width={width} height={16} fill={barFill} rx={8} ry={8} />
-      <circle cx={x} cy={y + height/2} r={6} fill={barFill} />
-      <circle cx={x + width} cy={y + height/2} r={6} fill={barFill} />
-    </g>
-  );
-};
-
-// No longer needed with our updated approach
 
 export default LegislationTimeline;
