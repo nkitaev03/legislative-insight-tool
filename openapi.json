@@ -1,0 +1,1272 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/register_email": {
+            "post": {
+                "summary": "Register Email",
+                "operationId": "register_email_register_email_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserRegisterEmail"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/confirm_email": {
+            "post": {
+                "summary": "Confirm Email",
+                "operationId": "confirm_email_confirm_email_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "title": "Payload"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/token": {
+            "post": {
+                "summary": "Login",
+                "operationId": "login_token_post",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_login_token_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh": {
+            "post": {
+                "summary": "Refresh Token",
+                "operationId": "refresh_token_refresh_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Token"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "summary": "Logout",
+                "operationId": "logout_logout_post",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "summary": "Get Me",
+                "operationId": "get_me_users_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserOut"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/balance/deposit": {
+            "post": {
+                "summary": "Deposit Balance",
+                "operationId": "deposit_balance_balance_deposit_post",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Amount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas": {
+            "post": {
+                "summary": "Create Idea",
+                "operationId": "create_idea_ideas_post",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/IdeaCreateAI"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/ideas/me": {
+            "get": {
+                "summary": "Get My Ideas",
+                "operationId": "get_my_ideas_ideas_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/IdeaOut"
+                                    },
+                                    "type": "array",
+                                    "title": "Response Get My Ideas Ideas Me Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/ideas/{idea_id}/publish": {
+            "post": {
+                "summary": "Publish My Idea",
+                "operationId": "publish_my_idea_ideas__idea_id__publish_post",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/{idea_id}/draft": {
+            "post": {
+                "summary": "Revert My Idea To Draft",
+                "operationId": "revert_my_idea_to_draft_ideas__idea_id__draft_post",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/{idea_id}": {
+            "put": {
+                "summary": "Update My Idea",
+                "operationId": "update_my_idea_ideas__idea_id__put",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/IdeaUpdate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IdeaOut"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/published": {
+            "get": {
+                "summary": "Get Published Ideas Endpoint",
+                "operationId": "get_published_ideas_endpoint_ideas_published_get",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "skip",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0,
+                            "title": "Skip"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "title": "Limit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedIdeas"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/{idea_id}/buy": {
+            "post": {
+                "summary": "Buy Idea",
+                "operationId": "buy_idea_ideas__idea_id__buy_post",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/ai/new_message": {
+            "post": {
+                "summary": "Ai New Message",
+                "operationId": "ai_new_message_ideas_ai_new_message_post",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_ai_new_message_ideas_ai_new_message_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/ideas/ai/check": {
+            "get": {
+                "summary": "Ai Check",
+                "description": "Проверка статуса идеи",
+                "operationId": "ai_check_ideas_ai_check_get",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseCheckModel"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/ai/get_file": {
+            "get": {
+                "summary": "Ai Get File",
+                "operationId": "ai_get_file_ideas_ai_get_file_get",
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "idea_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "title": "Idea Id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas/ai/reset": {
+            "get": {
+                "summary": "Ai Reset",
+                "operationId": "ai_reset_ideas_ai_reset_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        },
+        "/ideas/ai/get_current_idea": {
+            "get": {
+                "summary": "Ai Get Current Idea",
+                "operationId": "ai_get_current_idea_ideas_ai_get_current_idea_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2PasswordBearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_ai_new_message_ideas_ai_new_message_post": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "message"
+                ],
+                "title": "Body_ai_new_message_ideas_ai_new_message_post"
+            },
+            "Body_login_token_post": {
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    },
+                    "grant_type": {
+                        "anyOf": [
+                            {
+                                "type": "string",
+                                "pattern": "^password$"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Grant Type"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    },
+                    "scope": {
+                        "type": "string",
+                        "title": "Scope",
+                        "default": ""
+                    },
+                    "client_id": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Client Id"
+                    },
+                    "client_secret": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Client Secret"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "role",
+                    "username",
+                    "password"
+                ],
+                "title": "Body_login_token_post"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "IdeaCreateAI": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Title"
+                    },
+                    "cost": {
+                        "type": "integer",
+                        "title": "Cost",
+                        "default": 100
+                    },
+                    "relevance": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Relevance"
+                    },
+                    "problem": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Problem"
+                    },
+                    "audience": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Audience"
+                    },
+                    "business_model": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Business Model"
+                    },
+                    "market": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Market"
+                    },
+                    "uniqueness": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Uniqueness"
+                    },
+                    "technology": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Technology"
+                    },
+                    "prime_cost": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Prime Cost"
+                    },
+                    "marketing_plan": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Marketing Plan"
+                    },
+                    "financial_model": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Financial Model"
+                    },
+                    "business_plan": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Business Plan"
+                    },
+                    "resources": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "Resources"
+                    },
+                    "state": {
+                        "type": "string",
+                        "minLength": 0,
+                        "title": "State"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "relevance",
+                    "problem",
+                    "audience",
+                    "business_model",
+                    "market",
+                    "uniqueness",
+                    "technology",
+                    "prime_cost",
+                    "marketing_plan",
+                    "financial_model",
+                    "business_plan",
+                    "resources",
+                    "state"
+                ],
+                "title": "IdeaCreateAI"
+            },
+            "IdeaOut": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Title"
+                    },
+                    "cost": {
+                        "type": "integer",
+                        "title": "Cost",
+                        "default": 100
+                    },
+                    "relevance": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Relevance"
+                    },
+                    "problem": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Problem"
+                    },
+                    "audience": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Audience"
+                    },
+                    "business_model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Business Model"
+                    },
+                    "market": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Market"
+                    },
+                    "uniqueness": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Uniqueness"
+                    },
+                    "technology": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Technology"
+                    },
+                    "prime_cost": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Prime Cost"
+                    },
+                    "marketing_plan": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Marketing Plan"
+                    },
+                    "financial_model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Financial Model"
+                    },
+                    "business_plan": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Business Plan"
+                    },
+                    "resources": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Resources"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "author_id": {
+                        "type": "integer",
+                        "title": "Author Id"
+                    },
+                    "purchased_by_id": {
+                        "anyOf": [
+                            {
+                                "type": "integer"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "title": "Purchased By Id"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "relevance",
+                    "problem",
+                    "audience",
+                    "business_model",
+                    "market",
+                    "uniqueness",
+                    "technology",
+                    "prime_cost",
+                    "marketing_plan",
+                    "financial_model",
+                    "business_plan",
+                    "resources",
+                    "id",
+                    "status",
+                    "author_id"
+                ],
+                "title": "IdeaOut"
+            },
+            "IdeaUpdate": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Title"
+                    },
+                    "cost": {
+                        "type": "integer",
+                        "title": "Cost",
+                        "default": 100
+                    },
+                    "relevance": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Relevance"
+                    },
+                    "problem": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Problem"
+                    },
+                    "audience": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Audience"
+                    },
+                    "business_model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Business Model"
+                    },
+                    "market": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Market"
+                    },
+                    "uniqueness": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Uniqueness"
+                    },
+                    "technology": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Technology"
+                    },
+                    "prime_cost": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Prime Cost"
+                    },
+                    "marketing_plan": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Marketing Plan"
+                    },
+                    "financial_model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Financial Model"
+                    },
+                    "business_plan": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Business Plan"
+                    },
+                    "resources": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Resources"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "title",
+                    "relevance",
+                    "problem",
+                    "audience",
+                    "business_model",
+                    "market",
+                    "uniqueness",
+                    "technology",
+                    "prime_cost",
+                    "marketing_plan",
+                    "financial_model",
+                    "business_plan",
+                    "resources"
+                ],
+                "title": "IdeaUpdate"
+            },
+            "PaginatedIdeas": {
+                "properties": {
+                    "total": {
+                        "type": "integer",
+                        "title": "Total"
+                    },
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/IdeaOut"
+                        },
+                        "type": "array",
+                        "title": "Items"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "total",
+                    "items"
+                ],
+                "title": "PaginatedIdeas"
+            },
+            "ResponseCheckModel": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status"
+                ],
+                "title": "ResponseCheckModel"
+            },
+            "ResponseModel": {
+                "properties": {
+                    "lost": {
+                        "type": "integer",
+                        "title": "Lost"
+                    },
+                    "answer": {
+                        "type": "string",
+                        "title": "Answer"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "lost",
+                    "answer"
+                ],
+                "title": "ResponseModel"
+            },
+            "Token": {
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "title": "Access Token"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "title": "Token Type",
+                        "default": "bearer"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "access_token"
+                ],
+                "title": "Token"
+            },
+            "UserOut": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "title": "Id"
+                    },
+                    "email": {
+                        "type": "string",
+                        "title": "Email"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "title": "Is Active"
+                    },
+                    "balance": {
+                        "type": "integer",
+                        "title": "Balance"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "email",
+                    "role",
+                    "is_active",
+                    "balance"
+                ],
+                "title": "UserOut"
+            },
+            "UserRegisterEmail": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "title": "Password"
+                    },
+                    "role": {
+                        "type": "string",
+                        "title": "Role"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "email",
+                    "password",
+                    "role"
+                ],
+                "title": "UserRegisterEmail"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        },
+        "securitySchemes": {
+            "OAuth2PasswordBearer": {
+                "type": "oauth2",
+                "flows": {
+                    "password": {
+                        "scopes": {},
+                        "tokenUrl": "token"
+                    }
+                }
+            }
+        }
+    }
+}
