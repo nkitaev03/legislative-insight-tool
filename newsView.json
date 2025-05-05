@@ -1,0 +1,118 @@
+{
+    "success": true,
+    "body": {
+        "config": {
+            "editable": false,
+            "form": {
+                "news": {
+                    "id": "7472310511416442881",
+                    "fields": {
+                        "riskLevel": {
+                            "type": "string",
+                            "value": "high",
+                            "availableItems": [{
+                                    "id": "high",
+                                    "value": "Высокий"
+                                }
+                            ]
+                        },
+                        "publicationDate": {
+                            "title": "Дата публикации",
+                            "type": "string",
+                            "value": "2025-01-13T20:59:59.999Z"
+                        },
+						"sourceLink": {
+                            "title": "Источник",
+                            "type": "string",
+                            "value": "https://translate.google.ru/?sl=ru&tl=en"
+                        },
+						"sourceName": {
+                            "type": "string",
+                            "value": "Государственная Дума РФ"
+                        },
+                        "name": {
+                            "type": "string",
+                            "value": "Об изменениях в Федеральном законе \"О защите персональных данных\" "
+                        },
+                        "version": {
+                            "type": "number",
+                            "value": 2
+                        },
+                        "description": {
+							"title": "Описание",
+                            "type": "string",
+                            "value": "Ужесточение требований к операторам персональных данных. Введение дополнительных обязанностей по обеспечению безопасности персональных данных и новые штрафы за их невыполнение.",
+                            "availableItems": [{
+                                    "id": "critical",
+                                    "value": "Очень высокий"
+                                }
+                            ]
+                        },
+                        "businessId": {
+                            "type": "string",
+                            "value": "NEWS-1695"
+                        }
+                    },
+                },
+				"links": [{
+                        "linkType": "newsToRisk",
+                        "linkedObjects": [{
+                                "id": "RSK-404",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Штрафы до 500 тыс. руб. за несоответсвие новым требованиям"
+                                    }
+                                }
+                            },{
+                                "id": "RSK-405",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Приостановление деятельности до 90 дней при утечке данных"
+                                    }
+                                }
+							},{
+                                "id": "RSK-406",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Репутационные риски при публичном раскрытии инцидентов"
+                                    }
+                                }
+							}
+                        ]
+                    },{
+                        "linkType": "newsToMeasure",
+                        "linkedObjects": [{
+                                "id": "MSR-404",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Обновить политику обработки персональных данных до 01.06.2023"
+                                    }
+                                }
+                            },{
+                                "id": "MSR-405",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Провести аудит систем хранения данных клиентов"
+                                    }
+                                }
+							},{
+                                "id": "MSR-406",
+                                "fields": {
+                                    "name": {
+                                        "type": "string",
+                                        "value": "Назначить ответсвенного за защиту персональных данных"
+                                    }
+                                }
+							}
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

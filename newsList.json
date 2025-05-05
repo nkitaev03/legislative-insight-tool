@@ -1,0 +1,114 @@
+{
+    "success": true,
+    "body": {
+        "employees": {
+            "TEAMID_517892": {
+                "firstName": "Дмитрий",
+                "lastName": "БезОтчества",
+                "position": "Пользователь СберСервис",
+                "personalNumber": "517892",
+                "fired": false
+            }
+        },
+        "news": [{
+                "id": "7496767027900121089",
+                "fields": {
+                    "responsibleUser": {
+                        "value": "TEAMID_567894"
+                    },
+                    "name": {
+                        "value": "Об изменениях в Федеральном законе \"О защите персональных данных\" "
+                    },
+                    "riskLevel": {
+                        "type": "string",
+                        "value": "high",
+                        "availableItems": [{
+                                "id": "high",
+                                "value": "Высокий"
+                            }
+                        ]
+                    },
+                    "publicationDate": {
+                        "type": "string",
+                        "value": "2025-01-13T20:59:59.999Z"
+                    },
+                    "sourceName": {
+                        "type": "string",
+                        "value": "Государственная Дума РФ"
+                    },
+                    "newsType": {
+                        "value": "personalData",
+                        "availableItems": [{
+                                "id": "personalData",
+                                "value": "Персональные данные"
+                            }
+                        ]
+                    },
+                    "tag": {
+                        "value": "new",
+                        "availableItems": [{
+                                "id": "new",
+                                "value": "Новое"
+                            }
+                        ]
+                    },
+                    "businessId": {
+                        "value": "NEWS-1695"
+                    },
+                    "decription": {
+                        "value": "Ужесточение требований к операторам персональных данных. Введение дополнительных обязанностей по обеспечению безопасности персональных данных и новые штрафы за их невыполнение."
+                    }
+                }
+            }, {
+                "id": "7496487365399609345",
+                "fields": {
+                    "responsibleUser": {
+                        "value": "TEAMID_567894"
+                    },
+                    "name": {
+                        "value": "Постановление правительства РФ об учете рабочего времени"
+                    },
+                    "riskLevel": {
+                        "type": "string",
+                        "value": "medium",
+                        "availableItems": [{
+                                "id": "medium",
+                                "value": "Высокий"
+                            }
+                        ]
+                    },
+                    "publicationDate": {
+                        "type": "string",
+                        "value": "2025-01-25T20:59:59.999Z"
+                    },
+                    "sourceName": {
+                        "type": "string",
+                        "value": "Правительство РФ"
+                    },
+                    "newsType": {
+                        "value": "labor",
+                        "availableItems": [{
+                                "id": "labor",
+                                "value": "Трудовое право"
+                            }
+                        ]
+                    },
+                    "tag": {
+                        "value": "new",
+                        "availableItems": [{
+                                "id": "new",
+                                "value": "Новое"
+                            }
+                        ]
+                    },
+                    "businessId": {
+                        "value": "NEWS-1696"
+                    },
+                    "description": {
+                        "value": "Обновленный порядок ведения учета рабочего времени сотрудника. Новые формы отчетности и требования к электронному документообороту"
+                    }
+                }
+            }
+        ]
+    }
+}

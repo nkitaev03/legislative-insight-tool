@@ -1,0 +1,17 @@
+{
+    "success": true,
+    "body": {
+        "field": "status",
+        "type": "List",
+        "format": "statusMultiSwitcher",
+        "filters": [{
+                "id": "news",
+                "name": "Новости"
+            }, {
+                "id": "law",
+                "name": "Законы",
+                "count": "2"
+            }
+        ]
+    }
+}

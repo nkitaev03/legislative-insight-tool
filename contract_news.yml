@@ -1,0 +1,2857 @@
+openapi: 3.0.1
+info:
+  title: Enablers.API.GATEWAY
+  description: Enablers.API.GATEWAY for sberorm cloud
+  version: 0.19.1
+servers:
+- url: /
+paths:
+  /api/auth/logout:
+    post:
+      tags:
+      - auth
+      operationId: logout
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /api/auth/login:
+    post:
+      tags:
+      - auth
+      operationId: loginPost
+      responses:
+        "200":
+          description: Ответ на запрос на авторизацию
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /api/auth/update:
+    post:
+      tags:
+      - auth
+      operationId: updateSession
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/employee/getUserInfo:
+    get:
+      tags:
+      - employee
+      summary: Получить данные о себе
+      operationId: getUserInfo
+      responses:
+        "200":
+          description: Информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmployeeInfoResponse'
+  /api/v1/admin/session/clear:
+    post:
+      tags:
+      - adminSession
+      operationId: clearSessions
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/admin/dictionary/upload:
+    post:
+      tags:
+      - admin
+      operationId: uploadDictionary
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/admin/companies/upload:
+    post:
+      tags:
+      - admin
+      operationId: uploadCompanies
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/admin/risks/upload:
+    post:
+      tags:
+      - admin
+      operationId: uploadRisks
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/settings/methodologist:
+    get:
+      tags:
+      - settings
+      summary: Получение загруженных документов для Базы знаний
+      operationId: getMethodologistDocuments
+      responses:
+        "200":
+          description: Список документов для Базы знаний
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListMethodologistDocumentsResponse'
+  /api/v1/settings/methodologist/{fileId}:
+    get:
+      tags:
+      - settings
+      summary: Скачивание файла
+      operationId: getMethodologistDocument
+      parameters:
+      - name: fileId
+        in: path
+        description: "Идентификатор файла, который необходимо скачать"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Запрашиваемый файл
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+    post:
+      tags:
+      - settings
+      summary: Загрузка файла для обучения методолога
+      operationId: createMethodologistDocument
+      parameters:
+      - name: fileId
+        in: path
+        description: Идентификатор файла
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateMethodologistDocumentResponse'
+    delete:
+      tags:
+      - settings
+      summary: Удаление файла
+      operationId: deleteMethodologistDocument
+      parameters:
+      - name: fileId
+        in: path
+        description: "Идентификатор файла, который необходимо удалить"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/tenants:
+    get:
+      tags:
+      - tenants
+      summary: Получить справочник тенантов
+      operationId: getAllTenants
+      responses:
+        "200":
+          description: Список тенантов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTenantsResponse'
+    post:
+      tags:
+      - tenants
+      summary: Установить тенант
+      operationId: setTenant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/v1_tenants_body'
+      responses:
+        default:
+          description: default response
+          content:
+            '*/*': {}
+  /api/v1/incidents/update:
+    post:
+      tags:
+      - incident
+      operationId: createOrUpdateIncident
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIncidentRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentViewResponse'
+  /api/v1/incidents/{id}:
+    get:
+      tags:
+      - incident
+      summary: Получение инцидента по id
+      operationId: getIncident
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: edit
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+      - name: validateOnAction
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentViewResponse'
+  /api/v1/incidents/workflow:
+    post:
+      tags:
+      - incident
+      operationId: applyWorkflowAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowActionBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentViewResponse'
+  /api/v1/{entityName}/dict/linear:
+    get:
+      tags:
+      - dict
+      summary: Получение линейного справочника
+      operationId: getLinearDict
+      parameters:
+      - name: entityName
+        in: path
+        description: Наименование бизнес сущности
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z]+$"
+          type: string
+      - name: dictId
+        in: query
+        description: Идентификатор справочника
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLinearResponse'
+  /api/v1/{entityName}/dict/structure:
+    post:
+      tags:
+      - dict
+      summary: Получить структуру по уровням
+      operationId: dictStructure
+      parameters:
+      - name: entityName
+        in: path
+        description: Наименование бизнес сущности
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z]+$"
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DictStructureRequest'
+      responses:
+        default:
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseDictStructureResponse'
+  /api/v1/incidents/search:
+    post:
+      tags:
+      - incident
+      operationId: searchIncidentsList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchIncidentsRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIncidentsResponse'
+  /api/v1/incidents/refresh:
+    post:
+      tags:
+      - incident
+      operationId: refreshIncident
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshIncidentRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshIncidentResponse'
+  /api/v1/incidents/quick-filters:
+    get:
+      tags:
+      - incident
+      operationId: getQuickFilters
+      parameters:
+      - name: section
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z0-9_]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetQuickFiltersResponse'
+  /api/v1/incidents/filters:
+    post:
+      tags:
+      - incident
+      summary: Получение фильтров
+      operationId: getFilters
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFiltersRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFiltersResponse'
+  /api/v1/skills:
+    get:
+      tags:
+      - supervisor
+      operationId: getSkills
+      parameters:
+      - name: page
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListSkillsResponse'
+  /api/v1/incidents/agent/{requestId}:
+    get:
+      tags:
+      - incident-agent
+      operationId: getIncidentByRequestId
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIncidentByIdResponse'
+  /api/v1/incidents/tasks:
+    get:
+      tags:
+      - incident
+      operationId: getTasks
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTasksResponse'
+  /api/v1/incidents/limit:
+    get:
+      tags:
+      - limit
+      operationId: getLimitLosses
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLimitLossesResponse'
+  /api/v1/incidents/{id}/history:
+    get:
+      tags:
+      - incident
+      operationId: getChangeHistory
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChangeHistoryResponse'
+  /api/v1/incidents/{id}/links/{linkType}:
+    post:
+      tags:
+      - incident
+      summary: Получение фильтров
+      operationId: updateLinks
+      parameters:
+      - name: linkType
+        in: path
+        description: тип связи
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkUpdateRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkUpdateResponse'
+    delete:
+      tags:
+      - incident
+      summary: Удаление фильтров
+      operationId: deleteLinks
+      parameters:
+      - name: linkType
+        in: path
+        description: тип связи
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkUpdateRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkUpdateResponse'
+  /api/v1/incidents/{id}/links/{linkType}/search:
+    post:
+      tags:
+      - incident
+      summary: Поиск фильтров
+      operationId: searchLinks
+      parameters:
+      - name: linkType
+        in: path
+        description: тип связи
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkSearchRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkSearchResponse'
+  /api/v1/dict/admin/export-cprcpp:
+    get:
+      tags:
+      - excel-export
+      operationId: excelExport
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /api/v1/{objectType}/{id}/attachment/{fileId}:
+    get:
+      tags:
+      - attachment
+      summary: Скачивание вложения
+      operationId: downloadAttachment
+      parameters:
+      - name: objectType
+        in: path
+        description: "Тип объекта (Инцидент, Мера)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Бизнес идентификатор объекта
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: Идентификатор файла в S3
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+    post:
+      tags:
+      - attachment
+      summary: Добавление вложения
+      operationId: uploadAttachment
+      parameters:
+      - name: objectType
+        in: path
+        description: "Тип объекта (Инцидент, Мера)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Бизнес идентификатор объекта
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: fileId
+        in: path
+        description: Идентификатор файла. Строго UUID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUploadRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachmentS3UploadResponse'
+  /api/v1/{objectType}/{id}/attachment:
+    delete:
+      tags:
+      - attachment
+      summary: Удаление вложений
+      operationId: deleteAttachments
+      parameters:
+      - name: objectType
+        in: path
+        description: "Тип объекта (Инцидент, Мера)"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Бизнес идентификатор объекта
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAttachmentsRequest'
+      responses:
+        "200":
+          description: default response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+  /api/v1/measures/update:
+    post:
+      tags:
+      - measure
+      operationId: createOrUpdateMeasure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMeasureRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasureViewResponse'
+  /api/v1/measures/quick-filters:
+    get:
+      tags:
+      - measure
+      operationId: getQuickFiltersMeasure
+      parameters:
+      - name: section
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z0-9_]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasureGetQuickFiltersResponse'
+  /api/v1/measures/filters:
+    post:
+      tags:
+      - measure
+      summary: Получение фильтров
+      operationId: getFiltersMeasure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetFiltersRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMeasureFiltersResponse'
+  /api/v1/measures/search:
+    post:
+      tags:
+      - measure
+      operationId: searchMeasuresList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudSearchMeasuresRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMeasuresResponse'
+  /api/v1/measures/{id}:
+    get:
+      tags:
+      - measure
+      summary: Получение меры по id
+      operationId: getMeasure
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: edit
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+      - name: validateOnAction
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasureViewResponse'
+  /api/v1/measures/refresh:
+    post:
+      tags:
+      - measure
+      operationId: refreshMeasure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudRefreshMeasureRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshMeasureResponse'
+  /api/v1/measures/workflow:
+    post:
+      tags:
+      - measure
+      operationId: applyWorkflowActionMeasure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeasureWorkflowActionRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasureViewResponse'
+  /api/v1/measures/tasks:
+    get:
+      tags:
+      - measure
+      operationId: getTasksMeasure
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMeasureTasksResponse'
+  /api/v1/measures/{id}/history:
+    get:
+      tags:
+      - measure
+      operationId: getChangeHistoryMeasure
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasureGetChangeHistoryResponse'
+  /api/v2/{objectType}/files/{fileName}:
+    get:
+      tags:
+      - file
+      summary: Скачивание inline файлов
+      operationId: downloadFile
+      parameters:
+      - name: objectType
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: fileName
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          headers:
+            Content-Disposition:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: inline; filename="info.html"
+          content:
+            application/*:
+              schema:
+                type: string
+                format: binary
+  /api/v2/{linkType}/search:
+    post:
+      tags:
+      - measure
+      summary: Поиск сущностей определенного типа
+      operationId: searchLinkTypeEntity
+      parameters:
+      - name: linkType
+        in: path
+        description: тип связи
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchLinkTypeRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchLinkTypeResponse'
+  /api/v1/risks/attention-zone:
+    get:
+      tags:
+      - risks
+      operationId: getAttentionZone
+      parameters:
+      - name: section
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskAttentionZoneResponse'
+  /api/v1/risks/search:
+    post:
+      tags:
+      - risks
+      operationId: searchRisksList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRisksRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchRisksResponse'
+  /api/v1/news/quick-filters:
+    get:
+      tags:
+      - news
+      operationId: getQuickFiltersNews
+      parameters:
+      - name: section
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          pattern: "^[a-zA-Z0-9_]+$"
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetQuickFiltersResponse'
+  /api/v1/news/search:
+    post:
+      tags:
+      - news
+      operationId: searchNewsList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchNewsRequestBody'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchNewsResponse'
+  /api/v1/news/{id}:
+    get:
+      tags:
+      - news
+      summary: Получение новости по id
+      operationId: getNewsSummary
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          pattern: "^[a-zA-Z0-9_-]+$"
+          type: string
+      - name: edit
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsViewResponse'
+components:
+  schemas:
+    BaseResponse:
+      required:
+      - success
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Признак успешности ответа
+        error:
+          $ref: '#/components/schemas/ErrorMessage'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+    Message:
+      type: object
+      properties:
+        title:
+          type: string
+        text:
+          type: string
+        type:
+          type: string
+        code:
+          type: string
+        uuid:
+          type: string
+    ErrorMessage:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Уникальный идентификатор ошибки
+        code:
+          type: string
+          description: Код ошибки в соответствии с требованиями. Переданный код ошибки
+            влияет на формат отображения ошибки на фронте.
+        title:
+          type: string
+          description: Заголовок в соответствии с кодом ошибки.
+        text:
+          type: string
+          description: Текст в соответствии с кодом ошибки
+        exception:
+          type: string
+          description: "Заполняется в случае, если произошла ошибка при работе мет\
+            ода. Для обрабатываемых ошибок не заполняется."
+    GetEmployeeInfoResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/EmployeeInfoBody'
+    EmployeeInfoBody:
+      type: object
+      properties:
+        userInfo:
+          $ref: '#/components/schemas/EmployeeUserInfo'
+        permissions:
+          type: array
+          items:
+            type: string
+            description: Привилегии сотрудника
+        roles:
+          type: array
+          items:
+            type: string
+            description: Роли сотрудника
+    EmployeeUserInfo:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/EmployeeInfo'
+      - type: object
+        properties:
+          userId:
+            type: string
+            description: Внутренний идентификатор сотрудника в Сбер ОРМ
+          userType:
+            type: string
+            description: Тип сотрудника РК или РМ
+    EmployeeInfo:
+      type: object
+      properties:
+        personalNumber:
+          type: string
+          description: Внутренний табельный номер сотрудника
+        firstName:
+          type: string
+          description: Имя
+        middleName:
+          type: string
+          description: Отчество
+        lastName:
+          type: string
+          description: Фамилия
+        position:
+          type: string
+          description: Должность
+        tenant:
+          $ref: '#/components/schemas/DictionaryItem'
+      description: Сведения о сотруднике
+    LoginResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/LoginBody'
+    LoginBody:
+      type: object
+      properties:
+        needChooseTenant:
+          type: boolean
+    CreateMethodologistDocumentResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CreateMethodologistDocumentResponseBody'
+    ListMethodologistDocumentsResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/ListMethodologistDocumentsResponseBody'
+    DictionaryItem:
+      required:
+      - id
+      - value
+      type: object
+      properties:
+        id:
+          type: string
+          description: ид записи
+        value:
+          type: string
+          description: "текст, значение записи"
+      description: Элемент справочника
+    GetTenantsResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/Tenants'
+    Tenants:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+    GetLinearResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/LinearDict'
+    LinearDict:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+    UpdateIncidentRequest:
+      type: object
+      properties:
+        body:
+          $ref: '#/components/schemas/UpdateIncidentRequestBody'
+    IncidentViewResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/IncidentViewResponseBody'
+    RefreshIncidentResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/IncidentViewResponseBody'
+    SearchIncidentsResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/SearchIncidentsResponseBody'
+    SearchMeasuresResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudSearchMeasuresResponseBody'
+    SearchRisksResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/SearchRisksResponseBody'
+    GetQuickFiltersResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/GetQuickFiltersResponseBody'
+    MeasureGetQuickFiltersResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudGetQuickFiltersResponseBody'
+    GetFiltersRequest:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ObjectField'
+    GetFiltersResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/GetFiltersResponseBody'
+    GetMeasureFiltersResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/GetFiltersResponseBody_1'
+    DictStructureRequest:
+      required:
+      - dictId
+      type: object
+      properties:
+        dictId:
+          type: string
+          description: Идентификатор справочника
+        itemId:
+          type: string
+          description: Элемент структуры для которого нужно вернуть уровни
+        addParams:
+          type: object
+          additionalProperties:
+            type: string
+    BaseDictStructureResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          levels:
+            type: array
+            items:
+              $ref: '#/components/schemas/ClassifierLevel'
+    ClassifierLevel:
+      type: object
+      properties:
+        selectedId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        leaf:
+          type: boolean
+    GetTasksResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/GetTasksResponseBody'
+    GetLimitLossesResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/GetLimitLossesResponseBody'
+    GetChangeHistoryResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/ChangeHistoryResponseBody'
+    LinkUpdateResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/LinkUpdateResponseBody'
+    LinkSearchResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/LinkSearchResponseBody'
+    FileUploadRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    AttachmentS3UploadResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/AttachmentS3UploadBody'
+    DeleteAttachmentsRequest:
+      type: object
+      properties:
+        fileIds:
+          type: array
+          items:
+            type: string
+            description: Идентификаторы файлов
+    MeasureViewResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudMeasureViewResponseBody'
+    UpdateMeasureRequest:
+      type: object
+      properties:
+        body:
+          $ref: '#/components/schemas/CloudUpdateMeasureRequestBody'
+    RefreshMeasureResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudMeasureViewResponseBody'
+    GetMeasureTasksResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudGetTasksResponseBody'
+    MeasureWorkflowActionRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        edit:
+          type: boolean
+        action:
+          type: string
+        comment:
+          type: string
+        version:
+          type: integer
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            orgId: SBR_10000203
+    MeasureGetChangeHistoryResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/CloudMeasureChangeHistoryResponseBody'
+    SearchLinkTypeRequest:
+      type: object
+      properties:
+        query:
+          type: string
+    SearchLinkTypeResponse:
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          count:
+            type: integer
+          notifications:
+            type: array
+            items:
+              $ref: '#/components/schemas/Notification'
+          objects:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+    RiskAttentionZoneResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            type: array
+            items:
+              $ref: '#/components/schemas/GetAttentionZoneResponseItem'
+    WorkflowActionBody:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "бизнес-идентификатор сущности, по которой производится дей\
+            ствие"
+        edit:
+          type: boolean
+          description: признак запроса на полный ответ сервера для редактирования
+        action:
+          type: string
+          description: action бизнес-процесс
+        version:
+          type: integer
+          description: текущая версия сущности
+        comment:
+          type: string
+          description: комментарий шага бизнес-процесса
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            orgId: SBR_10000203
+    SearchIncidentsRequestBody:
+      type: object
+      properties:
+        section:
+          type: string
+        filter:
+          $ref: '#/components/schemas/SearchIncidentsRequestBody_filter'
+    ValueFilter:
+      type: object
+      properties:
+        field:
+          type: string
+        value:
+          type: array
+          items:
+            type: string
+    DateFilter:
+      type: object
+      properties:
+        field:
+          type: string
+        dateFrom:
+          type: string
+          format: date-time
+        dateTo:
+          type: string
+          format: date-time
+    AmountFilter:
+      type: object
+      properties:
+        field:
+          type: string
+        amountFrom:
+          type: integer
+        amountTo:
+          type: integer
+    RefreshIncidentRequestBody:
+      type: object
+      properties:
+        editableView:
+          type: boolean
+        incident:
+          $ref: '#/components/schemas/BusinessObject'
+    ListSkillsResponse:
+      type: object
+      properties:
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillPageInfo'
+        error:
+          $ref: '#/components/schemas/Error'
+    SkillPageInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        active:
+          type: boolean
+        extras:
+          type: object
+    Error:
+      type: object
+      properties:
+        uuid:
+          type: string
+        exception:
+          type: string
+        code:
+          type: string
+        title:
+          type: string
+        text:
+          type: string
+    GetIncidentByIdResponse:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/BusinessObject'
+        error:
+          $ref: '#/components/schemas/Error'
+    LinkUpdateRequestBody:
+      type: object
+      properties:
+        linkedIds:
+          type: array
+          items:
+            type: string
+    LinkSearchRequestBody:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Строка поиска (поиск по неполному ид меры)
+    CloudSearchMeasuresRequestBody:
+      type: object
+      properties:
+        section:
+          type: string
+        filter:
+          $ref: '#/components/schemas/SearchIncidentsRequestBody_filter'
+    CloudRefreshMeasureRequestBody:
+      type: object
+      properties:
+        editableView:
+          type: boolean
+        measure:
+          $ref: '#/components/schemas/BusinessObject'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTypeData'
+    LinkTypeData:
+      type: object
+      properties:
+        linkType:
+          type: string
+          description: Тип связи
+          example: incidentToMeasure
+        title:
+          type: string
+          description: наименование связи
+          example: связь с инцидентом
+        version:
+          type: integer
+          description: Версия аггрегата связи
+          example: 1
+        value:
+          type: array
+          items:
+            type: string
+            description: идентификаторы связанного объекта
+            example: EVE-1234
+    SearchRisksRequestBody:
+      type: object
+      properties:
+        section:
+          type: string
+        filter:
+          $ref: '#/components/schemas/SearchRisksRequestBody_filter'
+    CreateMethodologistDocumentResponseBody:
+      type: object
+      properties:
+        notifications:
+          type: array
+          description: "блок с уведомлениями, которые необходимо отображать на фро\
+            нте"
+          items:
+            $ref: '#/components/schemas/Notification'
+    ListMethodologistDocumentsResponseBody:
+      type: object
+      properties:
+        userDocuments:
+          type: array
+          description: список документов пользователя
+          items:
+            $ref: '#/components/schemas/FormComponent'
+        employees:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Employee'
+          description: "блок данных о пользователях, которые упоминаются в каких л\
+            ибо полях объекта"
+        viewMessages:
+          type: array
+          description: "блок с уведомлениями, которые необходимо отображать на фро\
+            нте"
+          items:
+            $ref: '#/components/schemas/Notification'
+    UpdateIncidentRequestBody:
+      type: object
+      properties:
+        editableView:
+          type: boolean
+        incident:
+          $ref: '#/components/schemas/BusinessObject'
+    IncidentViewResponseBody:
+      description: "Инцидент(ТФ), данные справочников, конфигурация формы и данные\
+        \ пользователей"
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          data:
+            $ref: '#/components/schemas/IncidentViewResponseBody_data'
+          config:
+            $ref: '#/components/schemas/IncidentViewConfig'
+          orgs:
+            type: array
+            description: "ЮЛ, кого упоминали"
+            items:
+              $ref: '#/components/schemas/EpkOrganization'
+          individuals:
+            type: array
+            description: "ФЛ, с которым произошел инцидент"
+            items:
+              $ref: '#/components/schemas/EpkIndividual'
+    IncidentViewConfig:
+      description: "Настройки правил отображения формы. Видимость полей, настройки\
+        \ дочерних сущностей."
+      allOf:
+      - $ref: '#/components/schemas/ViewConfig'
+      - type: object
+        properties:
+          form:
+            $ref: '#/components/schemas/IncidentForm'
+          templates:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/BusinessObject'
+    IncidentForm:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/FormComponent'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkComponent'
+      description: Форма инцидента
+    SearchIncidentsResponseBody:
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          total:
+            type: integer
+          incidents:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+    CloudSearchMeasuresResponseBody:
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          total:
+            type: integer
+          measures:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+    SearchRisksResponseBody:
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          total:
+            type: integer
+          risks:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+    GetQuickFiltersResponseBody:
+      type: object
+      properties:
+        field:
+          type: string
+        type:
+          type: string
+        format:
+          type: string
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuickFilter'
+    QuickFilter:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        count:
+          type: string
+    CloudGetQuickFiltersResponseBody:
+      type: object
+      properties:
+        field:
+          type: string
+        type:
+          type: string
+        format:
+          type: string
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuickFilter'
+    ObjectField:
+      type: object
+      properties:
+        value:
+          type: object
+          description: |
+            oneOf: string, number (int32, float), boolean, array of strings Возможные варианты значений:
+              1. (Простые типы, строка) значение поля
+              2. (Массив строк) значения ValueObject
+    GetFiltersResponseBody:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectField'
+        config:
+          $ref: '#/components/schemas/IncidentViewConfig'
+        structure:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterStructureItem'
+    FilterStructureItem:
+      type: object
+      properties:
+        name:
+          type: string
+        title:
+          type: string
+        fields:
+          type: array
+          items:
+            type: string
+    GetFiltersResponseBody_1:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectField'
+        config:
+          $ref: '#/components/schemas/MeasureViewConfig'
+        structure:
+          type: array
+          items:
+            $ref: '#/components/schemas/FilterStructureItem'
+    GetTasksResponseBody:
+      type: object
+      properties:
+        title:
+          type: string
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskBlock'
+    TaskBlock:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        value:
+          type: integer
+        type:
+          type: string
+        section:
+          type: string
+        quickFilters:
+          type: array
+          items:
+            type: string
+    GetLimitLossesResponseBody:
+      type: object
+      properties:
+        title:
+          type: string
+        losses:
+          type: array
+          items:
+            $ref: '#/components/schemas/LimitLoss'
+    LimitLoss:
+      type: object
+      properties:
+        limitLossType:
+          type: string
+        title:
+          type: string
+        loss:
+          type: integer
+          format: int64
+        limit:
+          type: integer
+          format: int64
+        lossDiff:
+          type: integer
+          format: int64
+        createTime:
+          type: string
+          format: date-time
+    ChangeHistoryResponseBody:
+      type: object
+      properties:
+        changes:
+          type: array
+          description: Массив элементов с информацией о переходах инцидента по статусам
+          items:
+            $ref: '#/components/schemas/ChangeHistoryItem'
+        employees:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Employee'
+          description: "блок данных о пользователях, которые упоминаются в каких л\
+            ибо полях объекта"
+    ChangeHistoryItem:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/DictionaryItem'
+        action:
+          $ref: '#/components/schemas/DictionaryItem'
+        date:
+          type: string
+          format: date-time
+        user:
+          type: string
+          description: "Пользователь, который вносил изменения"
+        comment:
+          $ref: '#/components/schemas/FormField'
+        fieldChanges:
+          $ref: '#/components/schemas/ChangeHistoryFieldChanges'
+    ChangeHistoryFieldChanges:
+      type: object
+      properties:
+        title:
+          type: string
+        incident:
+          $ref: '#/components/schemas/ChangeComponent'
+    LinkUpdateResponseBody:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    LinkSearchResponseBody:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        count:
+          type: integer
+          description: Кол-во найденных мер по заданным условиям поиска
+        measures:
+          type: array
+          description: Массив мер
+          items:
+            $ref: '#/components/schemas/FormComponent'
+    AttachmentS3UploadBody:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    CloudMeasureViewResponseBody:
+      description: "Мера(ТФ), данные справочников, конфигурация формы и данные пол\
+        ьзователей"
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          data:
+            $ref: '#/components/schemas/CloudMeasureViewResponseBody_data'
+          config:
+            $ref: '#/components/schemas/MeasureViewConfig'
+    CloudUpdateMeasureRequestBody:
+      type: object
+      properties:
+        editableView:
+          type: boolean
+        measure:
+          $ref: '#/components/schemas/BusinessObject'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTypeData'
+    CloudGetTasksResponseBody:
+      type: object
+      properties:
+        title:
+          type: string
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskBlock'
+    CloudMeasureChangeHistoryResponseBody:
+      type: object
+      properties:
+        changes:
+          type: array
+          description: Массив элементов с информацией о переходах меры по статусам
+          items:
+            $ref: '#/components/schemas/CloudMeasureChangeHistoryItem'
+        employees:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Employee'
+          description: "блок данных о пользователях, которые упоминаются в каких л\
+            ибо полях объекта"
+    CloudMeasureChangeHistoryItem:
+      type: object
+      properties:
+        uiStatus:
+          $ref: '#/components/schemas/DictionaryItem'
+        action:
+          $ref: '#/components/schemas/DictionaryItem'
+        date:
+          type: string
+          format: date-time
+        user:
+          type: string
+          description: "Пользователь, который вносил изменения"
+        comment:
+          $ref: '#/components/schemas/FormField'
+        fieldChanges:
+          $ref: '#/components/schemas/CloudMeasureChangeHistoryFieldChanges'
+    CloudMeasureChangeHistoryFieldChanges:
+      type: object
+      properties:
+        title:
+          type: string
+        measure:
+          $ref: '#/components/schemas/ChangeComponent'
+        links:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/CloudMeasureChangeHistoryLinksChanges'
+    CloudMeasureChangeHistoryLinksChanges:
+      type: object
+      properties:
+        title:
+          type: string
+        actionType:
+          type: string
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeComponent'
+    Notification:
+      type: object
+      properties:
+        notificationType:
+          type: string
+          description: |
+            Тип ошибки. Используется для отображения ошибки на фронте. Возможные значения:
+              - error - ошибка обработки данных
+              - warning
+              - info
+              - success - уведомление об успешном выполнении действия.
+        code:
+          type: string
+          description: |
+            Код ошибки. В зависимости от переданного кода ошибки на фронте могут быть выполнены дополнительные действия (например, перезапрашиваются данные с новыми параметрами). Необязательное поле
+        title:
+          type: string
+          description: Заголовок ошибки
+        text:
+          type: string
+          description: Текст ошибки
+        actions:
+          type: array
+          description: действия (кнопки)
+          items:
+            $ref: '#/components/schemas/Action'
+        validateOnAction:
+          type: string
+          description: "Параметр, содержащий действие пользователя по воркфлоу, ко\
+            торое привело к ошибкам валидации при попытке перевода по воркфлоу."
+      description: Сведения об общих требованиях валидации при переходе по флоу
+    Action:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Текст действия
+        type:
+          type: string
+          description: Тип действия. Внешняя (external) или подсказка-дровер (hint)
+        link:
+          type: string
+          description: "Адрес ссылки. Если ссылка внешняя, то полная ссылка. Если\
+            \ дровер, то часть ссылки"
+      description: Действие
+    FormComponent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор для связи компонента с бизнес-объектом
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/FormField'
+          description: Поля компонента формы
+        dependents:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+          description: Дочерние сущности объекта
+      description: Компонент формы
+    FormField:
+      description: Поле формы
+      allOf:
+      - $ref: '#/components/schemas/CommonField'
+      - type: object
+        properties:
+          availableItems:
+            type: array
+            description: Список доступных для выбора справочных значений поля с зависимыми
+              полями
+            items:
+              $ref: '#/components/schemas/FormDictionaryItem'
+        description: Поле формы
+    CommonField:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Локализованное название поля. Может отсутствовать если для
+            поля не требуется отображать название
+        visible:
+          type: boolean
+          description: Передается только для редактирования. Дефолтное значение атрибута
+            = true.
+        type:
+          type: string
+          description: "Тип поля, необходимый фронту, чтобы считать данные. Должно\
+            \ быть заполнено всегда"
+        editable:
+          type: boolean
+          description: Маркер возможности редактировать поле. Значение по умолчанию
+            false не передается
+        required:
+          type: boolean
+          description: Маркер обязательности поля. Зависит от статуса ИОР. Значение
+            по умолчанию false не передается
+        path:
+          $ref: '#/components/schemas/DictionaryItemPath'
+        pathItems:
+          type: array
+          description: Упорядоченная последовательность элементов классификатора от
+            корневого значения к конечному листу
+          example: Территориальные банки › Северо-Западный банк › Аппарат банка ›
+            Головные отделения › Головное отделение по Санкт-Петербургу › Аппарат
+            отделения › Управление прямых продаж
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+        value:
+          type: object
+          description: |
+            oneOf: string, integer, number, boolean, array Возможные варианты значений:
+              1. (Простые типы) значение поля - для view значение из ТФ или расчетное, для edit только расчетное
+              2. (Строка или массив строк) идентификаторы выбранных элементов из списка availableItems
+              3. (Строка) идентификатор конечного элемента пути из списка path
+        validation:
+          type: array
+          description: Правила валидации данных при сохранении объекта или при движении
+            по воркфлоу (доступные правила валидации).
+          items:
+            $ref: '#/components/schemas/CommonField_validation'
+        validationError:
+          type: string
+          description: Локализованная ошибка валидации поля. Оставлено для совместимости
+            c ПАО. В клауде нужно использовать extras
+          deprecated: true
+        extras:
+          type: object
+          additionalProperties:
+            type: object
+          description: |
+            дополнительные атрибуты поля могут содержать произвольные значения, в т.ч. напрямую транслируемые из блока конфигурации ui известные аттрибуты: dictionary, format, description, hint, refresh, calculated, validationError
+    DictionaryItemPath:
+      type: object
+      properties:
+        items:
+          type: array
+          description: "Путь снизу вверх, начиная с основного элемента"
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+      description: Элемент справочника
+      example: Территориальные банки › Северо-Западный банк › Аппарат банка › Головные
+        отделения › Головное отделение по Санкт-Петербургу › Аппарат отделения › Управление
+        прямых продаж
+      deprecated: true
+    FormDictionaryItem:
+      allOf:
+      - $ref: '#/components/schemas/DictionaryItem'
+      - type: object
+        properties:
+          dependentFields:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/DependentField'
+            description: "зависимые поля, которые видны при выборе этого элемента\
+              \ справочника"
+        description: Элемент справочника с зависимыми полями
+    DependentField:
+      description: Зависимое поле формы
+      allOf:
+      - $ref: '#/components/schemas/CommonField'
+      - type: object
+        properties:
+          availableItems:
+            type: array
+            description: Список доступных для выбора справочных значений поля
+            items:
+              $ref: '#/components/schemas/DictionaryItem'
+        description: Поле формы
+    GetAttentionZoneResponseItem:
+      type: object
+      properties:
+        field:
+          type: string
+          description: ИД поля по которому необходимо фильтровать
+        title:
+          type: string
+          description: Название поля
+        type:
+          type: string
+          description: Тип поля
+        format:
+          type: string
+          description: Формат поля
+        description:
+          type: string
+          description: Описание поля
+        count:
+          type: integer
+          description: Количество рисков с выбранным состоянием
+          format: int64
+    SearchNewsRequestBody:
+      type: object
+      properties:
+        section:
+          type: string
+        filter:
+          $ref: '#/components/schemas/SearchNewsRequestBody_filter'
+    SearchNewsRequestBody_filter:
+      type: object
+      properties:
+        query:
+          type: string
+        dictionarySearch:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFilter'
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateFilter'
+    SearchNewsResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/SearchNewsResponseBody'
+    SearchNewsResponseBody:
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          total:
+            type: integer
+          news:
+            type: array
+            items:
+              $ref: '#/components/schemas/FormComponent'
+    NewsViewResponse:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/BaseResponse'
+      - type: object
+        properties:
+          body:
+            $ref: '#/components/schemas/NewsViewResponseBody'
+    NewsViewResponseBody:
+      description: "(ТФ), данные справочников, конфигурация формы и данные\
+        \ пользователей"
+      allOf:
+      - $ref: '#/components/schemas/FormBody'
+      - type: object
+        properties:
+          config:
+            $ref: '#/components/schemas/NewsViewConfig'
+    NewsViewConfig:
+      description: "Настройки правил отображения формы. Видимость полей, настройки\
+        \ дочерних сущностей."
+      allOf:
+      - $ref: '#/components/schemas/ViewConfig'
+      - type: object
+        properties:
+          form:
+            $ref: '#/components/schemas/NewsForm'
+    NewsForm:
+      type: object
+      properties:
+        news:
+          $ref: '#/components/schemas/FormComponent'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkComponent'
+      description: Форма инцидента
+    BusinessObject:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Внутренний идентификатор объекта
+          example: "7177277595696365573"
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectField'
+          description: Поля объекта
+        dependents:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/BusinessObject'
+          description: Дочерние сущности объекта
+    Employee:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Имя
+        middleName:
+          type: string
+          description: Отчество
+        lastName:
+          type: string
+          description: Фамилия
+        position:
+          type: string
+          description: Должность
+        personalNumber:
+          type: string
+          description: Табельный номер
+        fired:
+          type: boolean
+          description: Признак увольнения
+      description: Сведения о пользователе
+    FormBody:
+      type: object
+      properties:
+        users:
+          $ref: '#/components/schemas/Users'
+        employees:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Employee'
+          description: "блок данных о пользователях, которые упоминаются в каких л\
+            ибо полях объекта"
+        notifications:
+          type: array
+          description: "блок с уведомлениями, которые необходимо отображать на фро\
+            нте"
+          items:
+            $ref: '#/components/schemas/Notification'
+      description: Настройки правил отображения формы
+    Users:
+      type: object
+      properties:
+        items:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/UserInfo'
+          description: id пользователя -> сведения о пользователе
+      description: Данные о пользователях для отображения
+      deprecated: true
+    UserInfo:
+      type: object
+      deprecated: true
+      allOf:
+      - $ref: '#/components/schemas/Employee'
+      - type: object
+        properties:
+          orgStructure:
+            type: string
+            description: Структура
+        description: Элемент справочника с зависимыми полями
+    EpkOrganization:
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: идентификатор
+        fullName:
+          type: string
+          description: наименование полное
+        shortName:
+          type: string
+          description: наименование короткое
+        inn:
+          type: string
+          description: инн
+        kpp:
+          type: string
+          description: кпп
+        ogrn:
+          type: string
+          description: огрн
+        segment:
+          type: string
+          description: сегмент
+        isInsider:
+          type: boolean
+          description: Принадлежность к списку БИТЛ
+      description: "ЮЛ, кого упоминали"
+    EpkIndividual:
+      type: object
+      properties:
+        clientId:
+          type: string
+          description: идентификатор
+        fullName:
+          $ref: '#/components/schemas/ClientName'
+        birthDate:
+          type: string
+          description: дата рождения
+          format: date
+        deathDate:
+          type: string
+          description: дата смерти
+          format: date
+        insider:
+          type: boolean
+          description: признак инсайдера
+        segment:
+          type: string
+          description: сегмент
+        legalCapacity:
+          type: string
+          description: дееспособность
+        pensionerCategory:
+          type: string
+          description: категория пенсионера
+        serviceChannel:
+          type: string
+          description: канал обслуживания
+        bankruptStage:
+          type: string
+          description: стадия банкротства
+        stopLists:
+          type: array
+          description: типы стоп-листа
+          example:
+          - Стоп-лист Комплаенс
+          - Признак 345-О
+          items:
+            type: string
+      description: "ФЛ, с которым произошел реестр"
+    ClientName:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: имя
+        lastName:
+          type: string
+          description: фамилия
+        middleName:
+          type: string
+          description: отчество
+      description: полное имя клиента ФЛ
+    ViewConfig:
+      type: object
+      properties:
+        attachments:
+          type: array
+          description: Список вложений
+          items:
+            $ref: '#/components/schemas/Attachment'
+        workflowActions:
+          type: array
+          description: Список доступных действий по процессу
+          items:
+            $ref: '#/components/schemas/WorkflowAction'
+        workflowHistory:
+          type: array
+          description: История переходов объекта по бизнес-процессу
+          items:
+            $ref: '#/components/schemas/WorkflowHistoryItem'
+        viewMessage:
+          type: array
+          description: "уведомления, которые необходимо отобразить в интерфейсе ка\
+            к часть формы объекта"
+          items:
+            $ref: '#/components/schemas/Notification'
+        editable:
+          type: boolean
+          description: возможность редактирования формы в текущем состоянии воркфлоу
+            для текущего пользователя
+        version:
+          type: integer
+          description: текущая версия объекта
+      description: "Настройки правил отображения формы. Видимость полей, настройки\
+        \ дочерних сущностей."
+    WorkflowAction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Ид действия
+          example: "[\"approve\",\"decline\",\"delete\"]"
+        name:
+          type: string
+          description: Название действия
+          example: "[\"sendForInvestigation\",\"approve\",\"delete\"]"
+        title:
+          type: string
+          description: Название действия для отображения названия кнопки
+          example: "[\"Переоценить\",\"Подтвердить\",\"На подтверждение\"]"
+        params:
+          type: object
+          additionalProperties:
+            type: object
+          description: "Параметры, необходимые для отображения действия на фронте"
+      description: Действие по процессу
+    WorkflowHistoryItem:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Внутренний идентификатор сотрудника в ОРМ
+        task:
+          $ref: '#/components/schemas/DictionaryItem'
+        action:
+          $ref: '#/components/schemas/DictionaryItem'
+        timeChanged:
+          type: string
+          description: Время операции
+          format: date-time
+        comment:
+          type: string
+          description: Комментарий
+      description: История движения анкеты риска по бизнес-процессу
+    LinkComponent:
+      type: object
+      properties:
+        linkType:
+          type: string
+          description: id связи
+        linkedObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormComponent'
+    MeasureViewConfig:
+      description: "Настройки правил отображения формы. Видимость полей, настройки\
+        \ дочерних сущностей."
+      allOf:
+      - $ref: '#/components/schemas/ViewConfig'
+      - type: object
+        properties:
+          form:
+            $ref: '#/components/schemas/MeasureForm'
+          departments:
+            $ref: '#/components/schemas/OrgStructure'
+    MeasureForm:
+      type: object
+      properties:
+        measure:
+          $ref: '#/components/schemas/FormComponent'
+        efficiencyForecast:
+          $ref: '#/components/schemas/Table'
+        efficiencyFact:
+          $ref: '#/components/schemas/Table'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTypeFormComponent'
+      description: Форма мер
+    LinkTypeFormComponent:
+      type: object
+      properties:
+        linkType:
+          type: string
+        title:
+          type: string
+        linkedObjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormComponent'
+      description: компонент для отображения одного типа связи с дополнительными полями
+    OrgStructure:
+      type: object
+      properties:
+        items:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/DictionaryItemPath'
+          description: id орг структуры -> путь
+      description: Путь
+    ChangeComponent:
+      type: object
+      properties:
+        actionType:
+          type: string
+          description: "Возможные значения: added - Добавлено, edited - Изменено,\
+            \ deleted - Удалено"
+        title:
+          type: string
+        fields:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ChangeField'
+        dependents:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ChangeComponent'
+    ChangeField:
+      allOf:
+      - $ref: '#/components/schemas/FormField'
+      - type: object
+        properties:
+          old:
+            $ref: '#/components/schemas/FormField'
+    Attachment:
+      required:
+      - extension
+      - fileId
+      - filename
+      - size
+      type: object
+      properties:
+        fileId:
+          type: string
+          description: Идентификатор файла из ЕСМ
+        filename:
+          type: string
+          description: Название файла
+        size:
+          type: integer
+          description: Размер загруженного файла в байтах
+          format: int64
+          example: 14939
+        extension:
+          type: string
+          description: Расширение загруженного файла
+          example: xlsx
+        author:
+          type: string
+          description: "Внутренний идентификатор пользователя, выполнившего запрос"
+          example: "7172071357486006273"
+        createTime:
+          type: string
+          description: Текущие дата и время в UTC+0
+          format: date-time
+          example: 2021-04-29T00:00:00Z
+      description: Информация о файле
+    Table:
+      type: object
+      properties:
+        header:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Header'
+          description: Заголовки столбцов таблицы
+        rows:
+          type: array
+          description: Список строк таблицы
+          items:
+            $ref: '#/components/schemas/Row'
+        summary:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Summary'
+          description: Список агрегированных данных по каждому столбцу
+        filters:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Dictionary'
+          description: Справочники для фильтрации данных в таблице
+    Header:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Локализованный текст заголовка
+    Row:
+      type: object
+      properties:
+        cells:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Cell'
+          description: Ячейки строки
+    Cell:
+      type: object
+      properties:
+        value:
+          type: object
+          description: |
+            oneOf: string, integer, number, boolean, array Возможные варианты значений:
+              1. (Простые типы) значение поля - для view значение из ТФ или расчетное, для edit только расчетное
+              2. (Строка или массив строк) идентификаторы выбранных элементов из списка availableItems
+              3. (Строка) идентификатор конечного элемента пути из списка path
+        availableItems:
+          type: array
+          description: Список доступных для выбора справочных значений поля
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+        editable:
+          type: boolean
+          description: Признак возможности редактирования ячейки
+      description: Ячейка таблицы
+    Summary:
+      type: object
+      properties:
+        value:
+          type: object
+          description: |
+            oneOf: string, integer, number, boolean, array
+    Dictionary:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Локализованное название справочника
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DictionaryItem'
+      description: Список доступных для выбора справочных значений поля
+    v1_tenants_body:
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/DictionaryItem'
+    SearchIncidentsRequestBody_filter:
+      type: object
+      properties:
+        query:
+          type: string
+        dictionarySearch:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFilter'
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateFilter'
+        amounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmountFilter'
+    SearchRisksRequestBody_filter:
+      type: object
+      properties:
+        query:
+          type: string
+        booleanFilter:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFilter'
+    IncidentViewResponseBody_data:
+      type: object
+      properties:
+        incident:
+          $ref: '#/components/schemas/BusinessObject'
+    CloudMeasureViewResponseBody_data:
+      type: object
+      properties:
+        measure:
+          $ref: '#/components/schemas/BusinessObject'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkTypeData'
+    CommonField_validation:
+      type: object
+      properties:
+        type:
+          type: string
+          description: "Техническое название правила, по которому происходит валид\
+            ация"
+        condition:
+          type: object
+          description: |
+            oneOf: string, integer, number, boolean Параметр правила валидации, тип данных определяется типом правила валидации
+        text:
+          type: string
+          description: "Локализованное описание правила валидации, для отображения\
+            \ в интерфейсе"
