@@ -231,10 +231,6 @@ export default function LegislationDetailModal({
                   <span className="text-muted-foreground">Опубликовано</span>
                   <span>{formatDate(item.date)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Период</span>
-                  <span>Годовой</span>
-                </div>
                 <Separator />
                 <div>
                   <span className="text-muted-foreground">Источники</span>
