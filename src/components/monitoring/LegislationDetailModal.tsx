@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Dialog, 
   DialogContent, 
@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import RiskIndicator from '@/components/common/RiskIndicator';
 import { LegislationItem, Recommendation } from './types';
+import FeedbackModal from './FeedbackModal';
 
 interface LegislationDetailModalProps {
   isOpen: boolean;
@@ -37,6 +38,8 @@ export default function LegislationDetailModal({
   onClose, 
   item 
 }: LegislationDetailModalProps) {
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  
   if (!item) return null;
 
   const formatCurrency = (amount: number) => {
@@ -205,7 +208,10 @@ export default function LegislationDetailModal({
           {/* Боковая панель */}
           <div className="space-y-4">
             {/* Есть вопросы */}
-            <Card className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200">
+            <Card 
+              className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200 cursor-pointer hover:bg-compGreen-100 dark:hover:bg-compGreen-900/30 transition-colors"
+              onClick={() => setIsFeedbackModalOpen(true)}
+            >
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-compGreen-500 rounded-full">
                   <MessageCircle className="w-4 h-4 text-white" />
@@ -267,6 +273,11 @@ export default function LegislationDetailModal({
             </Card>
           </div>
         </div>
+        
+        <FeedbackModal 
+          isOpen={isFeedbackModalOpen}
+          onClose={() => setIsFeedbackModalOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );
