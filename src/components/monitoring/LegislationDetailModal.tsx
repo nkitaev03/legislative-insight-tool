@@ -82,10 +82,6 @@ export default function LegislationDetailModal({
           <DialogTitle className="text-xl font-semibold leading-tight pr-8">
             {item.title}
           </DialogTitle>
-          
-          <p className="text-sm text-muted-foreground">
-            {item.description}
-          </p>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
