@@ -29,6 +29,7 @@ import LegislationList from './LegislationList';
 import NewsList from './NewsList';
 import LegislationTimeline from './LegislationTimeline';
 import CompetitiveAdvantageList from './CompetitiveAdvantageList';
+import LegislationDetailModal from './LegislationDetailModal';
 
 // Extended legislation data with risks, recommendations, and responsible person
 const initialLegislationChanges: LegislationItem[] = [
@@ -325,6 +326,7 @@ export default function MonitoringPage() {
   const [editResponsibleId, setEditResponsibleId] = useState<string | null>(null);
   const [legislationChanges, setLegislationChanges] = useState(initialLegislationChanges);
   const [newsItems, setNewsItems] = useState(initialNewsItems);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const { toast } = useToast();
   
   // Find the selected legislation for dialog
@@ -546,7 +548,10 @@ export default function MonitoringPage() {
                 <div className="space-y-4">
                   <LegislationList 
                     items={filteredLegislation} 
-                    onOpenDialog={setOpenDialogId}
+                    onOpenDialog={(id) => {
+                      setOpenDialogId(id);
+                      setIsDetailModalOpen(true);
+                    }}
                     onEditResponsible={setEditResponsibleId}
                     editResponsibleId={editResponsibleId}
                     handleResponsibleChange={handleResponsibleChange}
@@ -560,7 +565,10 @@ export default function MonitoringPage() {
                   <h2 className="text-lg font-medium">Новости и события</h2>
                   <NewsList 
                     items={filteredNews} 
-                    onOpenDialog={setOpenDialogId}
+                    onOpenDialog={(id) => {
+                      setOpenDialogId(id);
+                      setIsDetailModalOpen(true);
+                    }}
                     onEditResponsible={setEditResponsibleId}
                     editResponsibleId={editResponsibleId}
                     handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
@@ -582,7 +590,10 @@ export default function MonitoringPage() {
           {filteredLegislation.length > 0 ? (
             <LegislationList 
               items={filteredLegislation} 
-              onOpenDialog={setOpenDialogId}
+              onOpenDialog={(id) => {
+                setOpenDialogId(id);
+                setIsDetailModalOpen(true);
+              }}
               onEditResponsible={setEditResponsibleId}
               editResponsibleId={editResponsibleId}
               handleResponsibleChange={handleResponsibleChange}
@@ -601,7 +612,10 @@ export default function MonitoringPage() {
           {filteredNews.length > 0 ? (
             <NewsList 
               items={filteredNews} 
-              onOpenDialog={setOpenDialogId}
+              onOpenDialog={(id) => {
+                setOpenDialogId(id);
+                setIsDetailModalOpen(true);
+              }}
               onEditResponsible={setEditResponsibleId}
               editResponsibleId={editResponsibleId}
               handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
@@ -636,141 +650,26 @@ export default function MonitoringPage() {
             <TrendingUp className="h-5 w-5 text-compGreen-500" />
             <h2 className="text-xl font-semibold">Конкурентные преимущества</h2>
           </div>
-          <CompetitiveAdvantageList items={legislationChanges} onOpenDialog={setOpenDialogId} />
+          <CompetitiveAdvantageList 
+            items={legislationChanges} 
+            onOpenDialog={(id) => {
+              setOpenDialogId(id);
+              setIsDetailModalOpen(true);
+            }} 
+          />
         </div>
       </TabsContent>
       </Tabs>
 
-      {/* Legislation Detail Dialog */}
-      <Dialog open={!!openDialogId} onOpenChange={(open) => !open && setOpenDialogId(null)}>
-        {selectedItem && (
-          <DialogContent className="max-w-2xl overflow-y-auto max-h-[85vh]">
-            <DialogHeader>
-              <DialogTitle className="text-xl flex items-center gap-2">
-                {selectedItem.title}
-                <RiskIndicator level={selectedItem.risk as 'low' | 'medium' | 'high'} size="sm" showLabel />
-              </DialogTitle>
-              <DialogDescription>
-                От {selectedItem.date} • {selectedItem.source}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                  <FileWarning className="h-5 w-5 text-compBlue-500" />
-                  Описание
-                </h3>
-                <p>{selectedItem.description}</p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-red-500" />
-                  Риски для компании
-                </h3>
-                <ul className="space-y-2 list-disc pl-5">
-                  {selectedItem.risks.map((risk, index) => (
-                    <li key={index}>{risk}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                  <ListTodo className="h-5 w-5 text-compGreen-500" />
-                  Рекомендации
-                </h3>
-                <ul className="space-y-3 pl-0 list-none">
-                  {selectedItem.recommendations.map((rec, index) => (
-                    <li key={index} className={`flex items-start p-3 rounded-md ${rec.status === 'completed' ? 'bg-green-50' : 'bg-gray-50'}`}>
-                      <div className="flex-shrink-0 mt-0.5 mr-3">
-                        <button 
-                          className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                            rec.status === 'completed' 
-                              ? 'bg-green-500 text-white' 
-                              : 'border-2 border-gray-300'
-                          }`}
-                          onClick={() => handleToggleRecommendationStatus(selectedItem.id, index, !!selectedNews)}
-                        >
-                          {rec.status === 'completed' && <CheckCircle className="h-3 w-3" />}
-                        </button>
-                      </div>
-                      <div className="flex-1">
-                        <p className={`text-sm ${rec.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
-                          {rec.text}
-                        </p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="text-xs text-muted-foreground">Ответственный:</span>
-                          <Select 
-                            value={rec.responsible} 
-                            onValueChange={(value) => handleRecommendationResponsibleChange(selectedItem.id, index, value, !!selectedNews)}
-                          >
-                            <SelectTrigger className="h-7 text-xs min-w-[200px]">
-                              <SelectValue placeholder="Назначить ответственного" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {responsiblePersons.map(person => (
-                                <SelectItem key={person} value={person}>{person}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2 flex items-center gap-2">
-                  <Info className="h-5 w-5 text-compPurple-500" />
-                  Информация
-                </h3>
-                <div className="space-y-2">
-                  <p><strong>Дата публикации:</strong> {selectedItem.date}</p>
-                  
-                  {/* Editable responsible person in dialog */}
-                  <div className="flex items-center gap-2">
-                    <strong>Ответственный:</strong>
-                    <Select 
-                      value={selectedItem.responsible} 
-                      onValueChange={(value) => handleResponsibleChange(selectedItem.id, value, !!selectedNews)}
-                    >
-                      <SelectTrigger className="h-8 w-[250px]">
-                        <SelectValue placeholder="Выберите ответственного" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {responsiblePersons.map(person => (
-                          <SelectItem key={person} value={person}>{person}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <p className="flex items-center gap-2">
-                    <strong>Источник:</strong>
-                    <a 
-                      href={selectedItem.sourceUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-primary flex items-center gap-1 hover:underline"
-                    >
-                      Официальный документ <LinkIcon className="h-3 w-3" />
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Закрыть</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
+      {/* New Legislation Detail Modal */}
+      <LegislationDetailModal 
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setOpenDialogId(null);
+        }}
+        item={selectedItem}
+      />
     </div>
   );
 }
