@@ -10,8 +10,6 @@ import {
   PopoverTrigger
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/components/ui/use-toast';
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +62,7 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
 
     toast({
       title: "Дедлайн установлен",
-      description: `Новый срок: ${date ? format(date, 'dd.MM.yyyy', {locale: ru}) : 'не задан'}`,
+      description: `Новый срок: ${date ? date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'не задан'}`,
       className: "bg-compBlue-50 border-l-4 border-compBlue-500",
     });
   };
@@ -167,7 +165,7 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
                         >
                           <Clock className="h-3 w-3" />
                           {item.deadline 
-                            ? format(item.deadline, 'dd.MM.yyyy', {locale: ru})
+                            ? item.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
                             : "Установить срок"
                           }
                         </Button>
@@ -177,7 +175,6 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
                           mode="single"
                           selected={item.deadline}
                           onSelect={(date) => handleDateChange(item.id, date)}
-                          locale={ru}
                         />
                       </PopoverContent>
                     </Popover>
@@ -213,7 +210,7 @@ const InteractiveChecklist: React.FC<ChecklistProps> = ({
                       <>
                         <span className="mx-1">•</span>
                         <Clock className="h-3 w-3" />
-                        <span>{format(item.deadline, 'dd.MM.yyyy', {locale: ru})}</span>
+                        <span>{item.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
                       </>
                     )}
                   </div>

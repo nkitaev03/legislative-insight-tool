@@ -25,8 +25,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { Calendar as CalendarIcon, CheckCircle, ListTodo } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
@@ -190,7 +188,7 @@ const QuickTaskAssignment: React.FC<QuickTaskAssignmentProps> = ({
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {deadline ? (
-                    format(deadline, 'PPP', { locale: ru })
+                    deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
                   ) : (
                     "Выберите дату"
                   )}
@@ -202,7 +200,6 @@ const QuickTaskAssignment: React.FC<QuickTaskAssignmentProps> = ({
                   selected={deadline}
                   onSelect={setDeadline}
                   initialFocus
-                  locale={ru}
                 />
               </PopoverContent>
             </Popover>
