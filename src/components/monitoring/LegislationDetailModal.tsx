@@ -110,7 +110,7 @@ export default function LegislationDetailModal({
                 Как это влияет
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {item.strategicImpact || 'В случае нарушения новых более жестких требований к обработке персональных данных, на компанию может быть наложен штраф в размере до 3% от годовой выручки по профильной деятельности.'}
+                {item.strategicImpact || ''}
               </p>
               
               {item.financialImpact && (
