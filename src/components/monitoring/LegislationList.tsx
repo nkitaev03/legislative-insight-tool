@@ -1,12 +1,6 @@
-
 import React from 'react';
-import { AlertCircle, User } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Scale, User, Building, Gavel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
-import RiskIndicator from '../common/RiskIndicator';
 import { ItemListProps } from './types';
 
 const LegislationList: React.FC<ItemListProps> = ({
@@ -17,77 +11,87 @@ const LegislationList: React.FC<ItemListProps> = ({
   handleResponsibleChange,
   responsiblePersons
 }) => {
+  const getCategoryIcon = (category: string) => {
+    switch (category.toLowerCase()) {
+      case 'персональные данные':
+        return <User className="w-4 h-4" />;
+      case 'трудовое право':
+        return <Building className="w-4 h-4" />;
+      case 'налоговое право':
+        return <Scale className="w-4 h-4" />;
+      case 'техническое регулирование':
+        return <Gavel className="w-4 h-4" />;
+      case 'торговля':
+        return <Building className="w-4 h-4" />;
+      default:
+        return <Scale className="w-4 h-4" />;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   return (
     <div className="space-y-4">
       {items.map((item) => (
-        <Card key={item.id} className={item.isNew ? 'border-l-4 border-l-compOrange-500' : ''}>
-          <CardContent className="p-0">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <h3 className="font-medium text-lg flex items-center gap-2">
-                    {item.title}
-                    {item.isNew && (
-                      <Badge variant="outline" className="text-xs bg-compOrange-50 text-compOrange-700 border-compOrange-200">
-                        Новое
-                      </Badge>
-                    )}
-                  </h3>
-                  <div className="text-sm text-muted-foreground mt-1">
-                    От {item.date} • {item.source}
-                  </div>
+        <div 
+          key={item.id} 
+          className="bg-background border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer"
+          onClick={() => onOpenDialog(item.id)}
+        >
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              {/* Category with icon */}
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-compBlue-50 dark:bg-compBlue-900/20 rounded-md">
+                  {getCategoryIcon(item.category)}
                 </div>
-                <RiskIndicator level={item.risk as 'low' | 'medium' | 'high'} showLabel />
+                <span className="text-sm text-compBlue-600 font-medium">
+                  Законодательство
+                </span>
+                <span className="text-sm text-muted-foreground">•</span>
+                <span className="text-sm text-compOrange-600 font-medium">
+                  {item.category}
+                </span>
               </div>
-              <p className="text-sm mt-3">{item.description}</p>
-              <div className="mt-4 flex flex-wrap gap-2 items-center">
-                <Badge variant="secondary">{item.category}</Badge>
-                
-                {/* Responsible Person with inline edit functionality */}
-                <div className="flex items-center gap-1 ml-2">
-                  <User className="h-3.5 w-3.5 text-muted-foreground" />
-                  
-                  {editResponsibleId === item.id ? (
-                    <Select 
-                      value={item.responsible} 
-                      onValueChange={(value) => handleResponsibleChange(item.id, value)}
-                      onOpenChange={(open) => {
-                        if (!open) onEditResponsible(null);
-                      }}
-                    >
-                      <SelectTrigger className="h-7 text-xs w-[250px]">
-                        <SelectValue placeholder="Выберите ответственного" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {responsiblePersons.map(person => (
-                          <SelectItem key={person} value={person}>{person}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <span 
-                      className="text-sm text-muted-foreground cursor-pointer hover:text-foreground hover:underline"
-                      onClick={() => onEditResponsible(item.id)}
-                    >
-                      {item.responsible || "Назначить ответственного"}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-            <Separator />
-            <div className="p-3 flex justify-end gap-2">
+
+              {/* Title */}
+              <h3 className="text-lg font-semibold text-foreground mb-2 leading-tight">
+                {item.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                {item.description}
+              </p>
+
+              {/* Action button */}
               <Button 
                 variant="outline" 
-                size="sm"
-                onClick={() => onOpenDialog(item.id)}
+                size="sm" 
+                className="text-compBlue-600 border-compBlue-200 hover:bg-compBlue-50"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenDialog(item.id);
+                }}
               >
-                <AlertCircle className="mr-2 h-4 w-4" />
-                Подробнее
+                Принять меры →
               </Button>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Date */}
+            <div className="text-right ml-6">
+              <div className="text-sm text-muted-foreground">
+                {formatDate(item.date)}
+              </div>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
   );
