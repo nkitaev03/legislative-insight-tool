@@ -244,6 +244,37 @@ export default function LegislationDetailModal({
               </div>
             </Card>
 
+            {/* Влияние на ФЗ */}
+            <Card className="p-4">
+              <h4 className="font-medium mb-3">Влияние на ФЗ</h4>
+              <div className="space-y-2 text-sm">
+                <p className="text-muted-foreground mb-2">Вносит изменения в:</p>
+                <div className="space-y-1">
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    ФЗ-152 "О персональных данных"
+                  </a>
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    ФЗ-149 "Об информации"
+                  </a>
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    КоАП РФ ст. 13.11
+                  </a>
+                </div>
+              </div>
+            </Card>
+
             {/* Действия */}
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" className="flex-1">
