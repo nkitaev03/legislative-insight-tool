@@ -107,107 +107,106 @@ export default function LegislationDetailModal({
               </p>
             </Card>
 
-            {/* Последствия */}
+            {/* Как это влияет */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-compOrange-600" />
-                Последствия
+                Как это влияет
               </h3>
               
-              {/* Штрафы и санкции */}
-              {item.financialImpact && (
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                  <h4 className="font-medium mb-3 text-red-700 dark:text-red-300">Штрафы и санкции:</h4>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Минимум:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.min)}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Ожидаемое:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.expected)}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Максимум:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.max)}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Иные негативные последствия */}
-              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                <h4 className="font-medium mb-3 text-amber-700 dark:text-amber-300">Иные негативные последствия:</h4>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>• Репутационные риски</p>
-                  <p>• Потеря доверия клиентов</p>
-                  <p>• Ограничения в деятельности</p>
-                  <p>• Дополнительные административные нагрузки</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Риски и рекомендации */}
-            {item.risks && item.risks.length > 0 && (
-              <Card className="p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                  Риски и рекомендации
-                </h3>
-                <div className="space-y-6">
-                  {item.risks.map((risk, riskIndex) => (
-                    <div key={riskIndex} className="space-y-3">
-                      {/* Риск */}
-                      <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+              {/* Новые риски */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-red-600 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  Новые риски
+                </h4>
+                
+                {item.risks && item.risks.length > 0 ? (
+                  <div className="space-y-3">
+                    {item.risks.map((risk, riskIndex) => (
+                      <div key={riskIndex} className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
                         <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium">{risk}</p>
+                          <p className="text-sm font-medium text-red-700 dark:text-red-300">{risk}</p>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-xs text-muted-foreground">РЗС-17318</span>
-                            <span className="text-xs text-muted-foreground">20.02.2024</span>
                             <Badge variant="secondary" className="text-xs">
                               {getRiskLevelText(item.risk)}
                             </Badge>
                           </div>
                         </div>
                       </div>
-                      
-                      {/* Рекомендации для этого риска */}
-                      <div className="ml-6 space-y-2">
-                        <h4 className="text-sm font-medium text-muted-foreground">Рекомендации:</h4>
-                        {riskIndex === 0 && (
-                          <RecommendationItem 
-                            recommendation={{
-                              text: "Назначить ответственного за обработку персональных данных",
-                              responsible: "Не назначен",
-                              status: "pending"
-                            }}
-                          />
-                        )}
-                        {riskIndex === 1 && (
-                          <RecommendationItem 
-                            recommendation={{
-                              text: "Провести обучение сотрудников",
-                              responsible: "Не назначен", 
-                              status: "pending"
-                            }}
-                          />
-                        )}
-                        {riskIndex >= 2 && (
-                          <RecommendationItem 
-                            recommendation={{
-                              text: "Аудит процессов хранения и обработки персональных данных",
-                              responsible: "Не назначен",
-                              status: "pending"
-                            }}
-                          />
-                        )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Новые риски не выявлены</p>
+                )}
+                
+                {/* Финансовое воздействие */}
+                {item.financialImpact && (
+                  <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                    <h4 className="font-medium mb-3 text-amber-700 dark:text-amber-300">Потенциальные потери:</h4>
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Минимум:</span>
+                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.min)}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Ожидаемое:</span>
+                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.expected)}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Максимум:</span>
+                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.max)}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </Card>
-            )}
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Что делать */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-compGreen-600" />
+                Что делать
+              </h3>
+              
+              <div className="space-y-4">
+                <h4 className="font-medium text-compGreen-600">Меры:</h4>
+                
+                {item.recommendations && item.recommendations.length > 0 ? (
+                  <div className="space-y-3">
+                    {item.recommendations.map((recommendation, index) => (
+                      <RecommendationItem key={index} recommendation={recommendation} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <RecommendationItem 
+                      recommendation={{
+                        text: "Назначить ответственного за обработку персональных данных",
+                        responsible: "Не назначен",
+                        status: "pending"
+                      }}
+                    />
+                    <RecommendationItem 
+                      recommendation={{
+                        text: "Провести обучение сотрудников",
+                        responsible: "Не назначен", 
+                        status: "pending"
+                      }}
+                    />
+                    <RecommendationItem 
+                      recommendation={{
+                        text: "Аудит процессов хранения и обработки персональных данных",
+                        responsible: "Не назначен",
+                        status: "pending"
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </Card>
           </div>
 
           {/* Боковая панель */}
