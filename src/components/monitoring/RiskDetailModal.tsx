@@ -138,21 +138,48 @@ export default function RiskDetailModal({
               </Card>
             </div>
 
-            {/* Риск факторы */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
-                Риск факторы
-              </h3>
-              <div className="space-y-3">
-                {risk.factors.map((factor, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-sm">{factor}</p>
+            {/* Риск факторы и Последствия */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                  Риск факторы
+                </h3>
+                <div className="space-y-3">
+                  {risk.factors.map((factor, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
+                      <p className="text-sm">{factor}</p>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-compOrange-600" />
+                  Последствия
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Штрафы от регулирующих органов до 500 000 рублей</p>
                   </div>
-                ))}
-              </div>
-            </Card>
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Приостановка деятельности организации</p>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Репутационные потери и снижение доверия клиентов</p>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Дополнительные расходы на восстановление соответствия</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
 
             {/* Владелец риска */}
             <Card className="p-6">
