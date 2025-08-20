@@ -206,8 +206,7 @@ export default function LegislationDetailModal({
           <div className="space-y-4">
             {/* Есть вопросы */}
             <Card 
-              className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200 cursor-pointer hover:bg-compGreen-100 dark:hover:bg-compGreen-900/30 transition-colors"
-              onClick={() => setIsFeedbackModalOpen(true)}
+              className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200"
             >
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-compGreen-500 rounded-full">
@@ -287,7 +286,10 @@ export default function LegislationDetailModal({
             </div>
 
             {/* Оценка согласованности */}
-            <Card className="p-4 text-center">
+            <Card 
+              className="p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+              onClick={() => setIsFeedbackModalOpen(true)}
+            >
               <div className="mb-2">
                 <div className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
                   <AlertTriangle className="w-4 h-4 text-red-600" />
