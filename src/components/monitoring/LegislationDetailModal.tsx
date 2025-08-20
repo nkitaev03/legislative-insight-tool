@@ -10,6 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
 import { 
   Scale, 
   AlertTriangle, 
@@ -21,7 +23,11 @@ import {
   ExternalLink,
   Star,
   Share2,
-  Trash2
+  Trash2,
+  Edit,
+  Plus,
+  ArrowLeft,
+  X
 } from 'lucide-react';
 import RiskIndicator from '@/components/common/RiskIndicator';
 import { LegislationItem, Recommendation } from './types';
@@ -72,243 +78,211 @@ export default function LegislationDetailModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-compBlue-50 dark:bg-compBlue-900/20 rounded-lg">
-              <Scale className="w-5 h-5 text-compBlue-600" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Назад
+              </Button>
             </div>
-            <span className="text-sm font-medium text-compBlue-600">Законодательство</span>
+            <DialogClose asChild>
+              <Button variant="ghost" size="sm">
+                <X className="w-4 h-4" />
+              </Button>
+            </DialogClose>
           </div>
           
-          <DialogTitle className="text-xl font-semibold leading-tight pr-8">
-            <div className="space-y-1">
-              <div>{item.title}</div>
-              <div className="text-sm text-muted-foreground font-normal">
-                № {item.id} от {formatDate(item.date)}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {item.source}
-              </div>
+          <div className="space-y-3">
+            {/* Статусы */}
+            <div className="flex items-center gap-2">
+              <Badge variant="destructive" className="text-xs">Риск</Badge>
+              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">Активный</Badge>
             </div>
-          </DialogTitle>
+            
+            {/* Название риска */}
+            <DialogTitle className="text-2xl font-semibold leading-tight">
+              {item.title}
+            </DialogTitle>
+            
+            {/* Категория риска */}
+            <p className="text-sm text-muted-foreground">
+              Правовой риск
+            </p>
+          </div>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          {/* Основной контент */}
-          <div className="lg:col-span-2 space-y-6">
-            
-            {/* Что случилось */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-compBlue-600" />
-                Что случилось
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {item.description}
-              </p>
-            </Card>
-
-            {/* Как это влияет */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-compOrange-600" />
-                Как это влияет
-              </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
+          {/* Основной контент с табами */}
+          <div className="lg:col-span-3">
+            <Tabs defaultValue="assessment" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="assessment">Оценка риска</TabsTrigger>
+                <TabsTrigger value="factors">Риск-факторы</TabsTrigger>
+                <TabsTrigger value="measures">Меры</TabsTrigger>
+              </TabsList>
               
-              {/* Новые риски */}
-              <div className="space-y-4">
-                <h4 className="font-medium text-red-600 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4" />
-                  Новые риски
-                </h4>
-                
-                {item.risks && item.risks.length > 0 ? (
-                  <div className="space-y-3">
-                    {item.risks.map((risk, riskIndex) => (
-                      <div key={riskIndex} className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                        <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-red-700 dark:text-red-300">{risk}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="secondary" className="text-xs">
-                              {getRiskLevelText(item.risk)}
-                            </Badge>
-                          </div>
+              <TabsContent value="assessment" className="space-y-6 mt-6">
+                {/* Уровень риска */}
+                <Card className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Уровень риска</h3>
+                      <Badge variant="destructive" className="text-sm">Очень высокий</Badge>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                      {/* Вероятность риска */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Вероятность риска</span>
+                          <span className="font-medium">85%</span>
                         </div>
+                        <Progress value={85} indicatorColor="success" className="h-2" />
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-sm text-muted-foreground">Новые риски не выявлены</p>
-                )}
-                
-                {/* Финансовое воздействие */}
-                {item.financialImpact && (
-                  <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <h4 className="font-medium mb-3 text-amber-700 dark:text-amber-300">Потенциальные потери:</h4>
-                    <div className="grid grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Минимум:</span>
-                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.min)}</p>
+                      
+                      {/* Влияние на компанию */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Влияние на компанию</span>
+                          <span className="font-medium">75%</span>
+                        </div>
+                        <Progress value={75} indicatorColor="warning" className="h-2" />
                       </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-6 pt-4">
+                      {/* Вероятные потери */}
                       <div>
-                        <span className="text-muted-foreground">Ожидаемое:</span>
-                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.expected)}</p>
+                        <span className="text-sm text-muted-foreground">Вероятные потери</span>
+                        <p className="text-lg font-semibold text-red-600">
+                          {item.financialImpact ? formatCurrency(item.financialImpact.expected) : '5 000 000 ₽'}
+                        </p>
                       </div>
+                      
+                      {/* Стратегия реагирования */}
                       <div>
-                        <span className="text-muted-foreground">Максимум:</span>
-                        <p className="font-semibold text-amber-600">{formatCurrency(item.financialImpact.max)}</p>
+                        <span className="text-sm text-muted-foreground">Стратегия реагирования</span>
+                        <p className="text-lg font-semibold">Снижение</p>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
-            </Card>
-
-            {/* Что делать */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-compGreen-600" />
-                Что делать
-              </h3>
-              
-              <div className="space-y-4">
-                <h4 className="font-medium text-compGreen-600">Меры:</h4>
+                </Card>
                 
-                {item.recommendations && item.recommendations.length > 0 ? (
-                  <div className="space-y-3">
-                    {item.recommendations.map((recommendation, index) => (
-                      <RecommendationItem key={index} recommendation={recommendation} />
-                    ))}
+                {/* Описание */}
+                <Card className="p-6">
+                  <h4 className="text-base font-semibold mb-3">Описание риска</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="factors" className="space-y-6 mt-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Риск-факторы</h3>
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">Данные не предоставлены</p>
                   </div>
-                ) : (
+                </Card>
+              </TabsContent>
+              
+              <TabsContent value="measures" className="space-y-6 mt-6">
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Меры по управлению риском</h3>
+                  
                   <div className="space-y-3">
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Назначить ответственного за обработку персональных данных",
-                        responsible: "Не назначен",
-                        status: "pending"
-                      }}
-                    />
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Провести обучение сотрудников",
-                        responsible: "Не назначен", 
-                        status: "pending"
-                      }}
-                    />
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Аудит процессов хранения и обработки персональных данных",
-                        responsible: "Не назначен",
-                        status: "pending"
-                      }}
-                    />
+                    {/* Мера 1 */}
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground">MSR-001</span>
+                        <span className="text-sm font-medium">Назначить ответственного за обработку персональных данных</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">Новая</Badge>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Мера 2 */}
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground">MSR-002</span>
+                        <span className="text-sm font-medium">Провести обучение сотрудников</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">Реализована</Badge>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Мера 3 */}
+                    <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-muted-foreground">MSR-003</span>
+                        <span className="text-sm font-medium">Аудит процессов хранения и обработки персональных данных</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs">Новая</Badge>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
-            </Card>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
 
-          {/* Боковая панель */}
+          {/* Правая колонка */}
           <div className="space-y-4">
-            {/* Есть вопросы */}
-            <Card 
-              className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="p-2 bg-compGreen-500 rounded-full">
-                  <MessageCircle className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-compGreen-700 dark:text-compGreen-300">Есть вопросы?</h4>
-                  <p className="text-xs text-compGreen-600 dark:text-compGreen-400">Я отвечу на любой из них</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Информация */}
-            <Card className="p-4">
-              <h4 className="font-medium mb-3">Информация</h4>
+            {/* Кнопка Редактировать */}
+            <Button variant="ghost" className="w-full justify-start">
+              <Edit className="w-4 h-4 mr-2" />
+              Редактировать
+            </Button>
+            
+            {/* Карточка Информация */}
+            <Card className="p-5">
+              <h4 className="font-semibold mb-4">Информация</h4>
               <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Дата публикования документа</span>
-                  <span>{formatDate(item.date)}</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Дата выгрузки на платформу</span>
-                  <span>{formatDate(item.date)}</span>
-                </div>
-                <Separator />
-                <div>
-                  <span className="text-muted-foreground">Источники</span>
-                  <a 
-                    href={item.sourceUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 mt-1"
-                  >
-                    <span className="text-xs">{item.source}</span>
-                    <ExternalLink className="w-3 h-3" />
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Риск</span>
+                  <a href="#" className="text-compBlue-600 hover:text-compBlue-700 font-medium">
+                    RSK-382
                   </a>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Дата создания</span>
+                  <span className="font-medium">04.07.2025</span>
+                </div>
+                
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Автор карточки</span>
+                  <Badge variant="secondary" className="bg-compBlue-100 text-compBlue-700">
+                    <FileText className="w-3 h-3 mr-1" />
+                    NORM AI
+                  </Badge>
                 </div>
               </div>
             </Card>
-
-            {/* Влияние на ФЗ */}
-            <Card className="p-4">
-              <h4 className="font-medium mb-3">Влияние на ФЗ</h4>
-              <div className="space-y-2 text-sm">
-                <p className="text-muted-foreground mb-2">Вносит изменения в:</p>
-                <div className="space-y-1">
-                  <a 
-                    href="#" 
-                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
-                  >
-                    <FileText className="w-3 h-3" />
-                    ФЗ-152 "О персональных данных"
-                  </a>
-                  <a 
-                    href="#" 
-                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
-                  >
-                    <FileText className="w-3 h-3" />
-                    ФЗ-149 "Об информации"
-                  </a>
-                  <a 
-                    href="#" 
-                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
-                  >
-                    <FileText className="w-3 h-3" />
-                    КоАП РФ ст. 13.11
-                  </a>
-                </div>
-              </div>
+            
+            {/* Владелец риска */}
+            <Card className="p-5">
+              <h4 className="font-semibold mb-3">Владелец риска</h4>
+              <p className="text-sm font-medium">ООО «Сбербанк-сервис»</p>
             </Card>
-
-            {/* Действия */}
-            <div className="flex gap-2">
-              <Button variant="ghost" size="sm" className="flex-1">
-                <Star className="w-4 h-4 mr-1" />
-                В избранное
-              </Button>
-              <Button variant="ghost" size="sm">
-                <Share2 className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Оценка согласованности */}
-            <Card 
-              className="p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors"
-              onClick={() => setIsFeedbackModalOpen(true)}
-            >
-              <div className="mb-2">
-                <div className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <AlertTriangle className="w-4 h-4 text-red-600" />
-                </div>
-                <p className="text-sm font-medium text-red-600">Не согласен с оценкой</p>
-              </div>
-            </Card>
+            
+            {/* Кнопка Добавить меру */}
+            <Button className="w-full justify-center">
+              <span>Добавить меру</span>
+              <Plus className="w-4 h-4 ml-2" />
+            </Button>
           </div>
         </div>
         
