@@ -27,6 +27,7 @@ import RiskIndicator from '@/components/common/RiskIndicator';
 import { LegislationItem, Recommendation } from './types';
 import FeedbackModal from './FeedbackModal';
 import RiskDetailModal from './RiskDetailModal';
+import ForwardModal from './ForwardModal';
 
 interface LegislationDetailModalProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ export default function LegislationDetailModal({
 }: LegislationDetailModalProps) {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
+  const [isForwardModalOpen, setIsForwardModalOpen] = useState(false);
   const [selectedRisk, setSelectedRisk] = useState<any>(null);
   
   if (!item) return null;
@@ -384,7 +386,7 @@ export default function LegislationDetailModal({
             {/* Оценка согласованности */}
             <Card 
               className="p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors"
-              onClick={() => setIsFeedbackModalOpen(true)}
+              onClick={() => setIsForwardModalOpen(true)}
             >
               <div className="mb-2">
                 <div className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
@@ -399,6 +401,12 @@ export default function LegislationDetailModal({
         <FeedbackModal 
           isOpen={isFeedbackModalOpen}
           onClose={() => setIsFeedbackModalOpen(false)}
+        />
+        
+        <ForwardModal 
+          isOpen={isForwardModalOpen}
+          onClose={() => setIsForwardModalOpen(false)}
+          itemTitle={item.title}
         />
         
         <RiskDetailModal 
