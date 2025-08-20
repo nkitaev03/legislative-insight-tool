@@ -106,7 +106,7 @@ export default function RiskDetailModal({
                     indicatorColor="warning"
                     className="h-2"
                   />
-                  <p className="text-sm text-muted-foreground">3 из 5</p>
+                  <p className="text-sm text-muted-foreground">3 из 4</p>
                 </div>
               </Card>
 
@@ -120,7 +120,7 @@ export default function RiskDetailModal({
                     indicatorColor="destructive"
                     className="h-2"
                   />
-                  <p className="text-sm text-muted-foreground">4 из 5</p>
+                  <p className="text-sm text-muted-foreground">4 из 4</p>
                 </div>
               </Card>
 
