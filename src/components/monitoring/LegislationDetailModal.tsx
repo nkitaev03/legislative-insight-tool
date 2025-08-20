@@ -156,7 +156,7 @@ export default function LegislationDetailModal({
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Нарушение требований по обработке персональных данных</p>
+                      <p className="text-sm font-medium">Риски информационной безопасности</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">RSK-495 • 15.07.2025</span>
                         <Badge variant="info" className="text-xs">Новый</Badge>
@@ -180,7 +180,7 @@ export default function LegislationDetailModal({
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Недостаточная защита информационных систем</p>
+                      <p className="text-sm font-medium">Регуляторные риски</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">RSK-496 • 16.07.2025</span>
                         <Badge variant="info" className="text-xs">Новый</Badge>
@@ -204,7 +204,7 @@ export default function LegislationDetailModal({
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Отсутствие назначенного ответственного за ПДн</p>
+                      <p className="text-sm font-medium">Репутационные риски</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">RSK-497 • 17.07.2025</span>
                         <Badge variant="info" className="text-xs">Новый</Badge>
@@ -228,7 +228,7 @@ export default function LegislationDetailModal({
                       <AlertTriangle className="w-4 h-4 text-red-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">Нарушение сроков уведомления регулятора</p>
+                      <p className="text-sm font-medium">Финансовые риски</p>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-xs text-muted-foreground">RSK-498 • 18.07.2025</span>
                         <Badge variant="info" className="text-xs">Новый</Badge>
