@@ -107,42 +107,48 @@ export default function LegislationDetailModal({
               </p>
             </Card>
 
-            {/* Последствия */}
+            {/* Как это влияет */}
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-compOrange-600" />
-                Последствия
+                Как это влияет
               </h3>
               
-              {/* Штрафы и санкции */}
-              {item.financialImpact && (
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                  <h4 className="font-medium mb-3 text-red-700 dark:text-red-300">Штрафы и санкции:</h4>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="text-muted-foreground">Минимум:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.min)}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Ожидаемое:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.expected)}</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Максимум:</span>
-                      <p className="font-semibold text-red-600">{formatCurrency(item.financialImpact.max)}</p>
+              {/* Новые риски */}
+              <div className="mb-6">
+                <h4 className="font-medium mb-4 text-red-700 dark:text-red-300">Новые риски:</h4>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Нарушение требований по обработке персональных данных</p>
+                      <p className="text-xs text-muted-foreground mt-1">Риск штрафов до 500 000 руб. за несоблюдение новых требований</p>
                     </div>
                   </div>
-                </div>
-              )}
-              
-              {/* Иные негативные последствия */}
-              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                <h4 className="font-medium mb-3 text-amber-700 dark:text-amber-300">Иные негативные последствия:</h4>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <p>• Репутационные риски</p>
-                  <p>• Потеря доверия клиентов</p>
-                  <p>• Ограничения в деятельности</p>
-                  <p>• Дополнительные административные нагрузки</p>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Недостаточная защита информационных систем</p>
+                      <p className="text-xs text-muted-foreground mt-1">Возможные блокировки систем и приостановка деятельности</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Отсутствие назначенного ответственного за ПДн</p>
+                      <p className="text-xs text-muted-foreground mt-1">Административная ответственность руководителя организации</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Нарушение сроков уведомления регулятора</p>
+                      <p className="text-xs text-muted-foreground mt-1">Дополнительные санкции за несвоевременное информирование</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
