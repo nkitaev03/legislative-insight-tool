@@ -81,45 +81,57 @@ export default function RiskDetailModal({
         </DialogHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Вероятность и влияние */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Уровень риска */}
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-lg font-medium text-muted-foreground">Уровень риска</span>
+            <Badge variant="success" className="text-base px-4 py-2">
+              Низкий
+            </Badge>
+          </div>
+
+          {/* Виджеты риска */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-compBlue-600" />
+              <h3 className="text-sm font-medium text-muted-foreground mb-4">
                 Вероятность риска
               </h3>
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Вероятность</span>
-                  <span className="font-medium">{risk.probability}%</span>
-                </div>
                 <Progress 
-                  value={risk.probability} 
-                  indicatorColor={getProbabilityColor(risk.probability)}
+                  value={25} 
+                  indicatorColor="success"
+                  className="h-2"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Оценка основана на анализе исторических данных и текущих условий
-                </p>
               </div>
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-compOrange-600" />
+              <h3 className="text-sm font-medium text-muted-foreground mb-4">
                 Влияние на компанию
               </h3>
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Уровень влияния</span>
-                  <Badge 
-                    variant={risk.impact === 'high' ? 'destructive' : risk.impact === 'medium' ? 'warning' : 'success'}
-                  >
-                    {getImpactText(risk.impact)}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {risk.description}
-                </p>
+                <Progress 
+                  value={45} 
+                  indicatorColor="warning"
+                  className="h-2"
+                />
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-medium text-muted-foreground mb-4">
+                Вероятные потери
+              </h3>
+              <div className="text-2xl font-bold">
+                416 ₽
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-sm font-medium text-muted-foreground mb-4">
+                Стратегия реагирования
+              </h3>
+              <div className="text-base font-medium">
+                Снижение
               </div>
             </Card>
           </div>
