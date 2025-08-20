@@ -130,75 +130,67 @@ export default function LegislationDetailModal({
               )}
             </Card>
 
-            {/* Новые риски */}
+            {/* Риски и рекомендации */}
             {item.risks && item.risks.length > 0 && (
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5 text-red-600" />
-                  Новые риски
+                  Риски и рекомендации
                 </h3>
-                <div className="space-y-3">
-                  {item.risks.map((risk, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                      <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{risk}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-muted-foreground">РЗС-17318</span>
-                          <span className="text-xs text-muted-foreground">20.02.2024</span>
-                          <Badge variant="secondary" className="text-xs">
-                            {getRiskLevelText(item.risk)}
-                          </Badge>
+                <div className="space-y-6">
+                  {item.risks.map((risk, riskIndex) => (
+                    <div key={riskIndex} className="space-y-3">
+                      {/* Риск */}
+                      <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                        <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{risk}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs text-muted-foreground">РЗС-17318</span>
+                            <span className="text-xs text-muted-foreground">20.02.2024</span>
+                            <Badge variant="secondary" className="text-xs">
+                              {getRiskLevelText(item.risk)}
+                            </Badge>
+                          </div>
                         </div>
+                      </div>
+                      
+                      {/* Рекомендации для этого риска */}
+                      <div className="ml-6 space-y-2">
+                        <h4 className="text-sm font-medium text-muted-foreground">Рекомендации:</h4>
+                        {riskIndex === 0 && (
+                          <RecommendationItem 
+                            recommendation={{
+                              text: "Назначить ответственного за обработку персональных данных",
+                              responsible: "Не назначен",
+                              status: "pending"
+                            }}
+                          />
+                        )}
+                        {riskIndex === 1 && (
+                          <RecommendationItem 
+                            recommendation={{
+                              text: "Провести обучение сотрудников",
+                              responsible: "Не назначен", 
+                              status: "pending"
+                            }}
+                          />
+                        )}
+                        {riskIndex >= 2 && (
+                          <RecommendationItem 
+                            recommendation={{
+                              text: "Аудит процессов хранения и обработки персональных данных",
+                              responsible: "Не назначен",
+                              status: "pending"
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
               </Card>
             )}
-
-            {/* Что делать */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Что делать</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Давай действовать на опережение! Я уже собрал информацию о новых требованиях.
-              </p>
-              
-              <div className="space-y-3">
-                <h4 className="font-medium">Рекомендации к мерам</h4>
-                {item.recommendations && item.recommendations.length > 0 ? (
-                  <div className="space-y-3">
-                    {item.recommendations.map((rec, index) => (
-                      <RecommendationItem key={index} recommendation={rec} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Назначить ответственного за обработку персональных данных",
-                        responsible: "Не назначен",
-                        status: "pending"
-                      }}
-                    />
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Провести обучение сотрудников",
-                        responsible: "Не назначен", 
-                        status: "pending"
-                      }}
-                    />
-                    <RecommendationItem 
-                      recommendation={{
-                        text: "Аудит процессов хранения и обработки персональных данных",
-                        responsible: "Не назначен",
-                        status: "pending"
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            </Card>
           </div>
 
           {/* Боковая панель */}
