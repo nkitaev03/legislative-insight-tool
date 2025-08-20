@@ -378,7 +378,11 @@ export default function LegislationDetailModal({
                 <Star className="w-4 h-4 mr-1" />
                 В избранное
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsForwardModalOpen(true)}
+              >
                 <Share2 className="w-4 h-4" />
               </Button>
             </div>
@@ -386,7 +390,7 @@ export default function LegislationDetailModal({
             {/* Оценка согласованности */}
             <Card 
               className="p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors"
-              onClick={() => setIsForwardModalOpen(true)}
+              onClick={() => setIsFeedbackModalOpen(true)}
             >
               <div className="mb-2">
                 <div className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
