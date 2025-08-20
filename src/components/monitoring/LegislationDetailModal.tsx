@@ -85,6 +85,9 @@ export default function LegislationDetailModal({
               <div className="text-sm text-muted-foreground font-normal">
                 № {item.id} от {formatDate(item.date)}
               </div>
+              <div className="text-xs text-muted-foreground">
+                {item.source}
+              </div>
             </div>
           </DialogTitle>
         </DialogHeader>
