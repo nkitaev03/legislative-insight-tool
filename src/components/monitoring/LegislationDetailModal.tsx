@@ -81,10 +81,10 @@ export default function LegislationDetailModal({
           
           <DialogTitle className="text-xl font-semibold leading-tight pr-8">
             <div className="space-y-1">
+              <div>{item.title}</div>
               <div className="text-sm text-muted-foreground font-normal">
                 № {item.id} от {formatDate(item.date)}
               </div>
-              <div>{item.title}</div>
             </div>
           </DialogTitle>
         </DialogHeader>
