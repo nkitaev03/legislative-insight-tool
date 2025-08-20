@@ -76,8 +76,11 @@ export default function RiskDetailModal({
           </div>
           
           <DialogTitle className="text-xl font-semibold leading-tight pr-8">
-            {risk.title}
+            Риски информационной безопасности
           </DialogTitle>
+          <p className="text-muted-foreground text-base leading-relaxed">
+            Нарушение требований ФЗ № 149-ФЗ по защите данных в государственных системах
+          </p>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
@@ -86,8 +89,8 @@ export default function RiskDetailModal({
             {/* Уровень риска */}
             <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-medium text-muted-foreground">Уровень риска</span>
-              <Badge variant="success" className="text-base px-4 py-2">
-                Низкий
+              <Badge variant="destructive" className="text-base px-4 py-2">
+                Высокий
               </Badge>
             </div>
 
@@ -99,10 +102,11 @@ export default function RiskDetailModal({
                 </h3>
                 <div className="space-y-3">
                   <Progress 
-                    value={25} 
-                    indicatorColor="success"
+                    value={60} 
+                    indicatorColor="warning"
                     className="h-2"
                   />
+                  <p className="text-sm text-muted-foreground">3 из 5</p>
                 </div>
               </Card>
 
@@ -112,10 +116,11 @@ export default function RiskDetailModal({
                 </h3>
                 <div className="space-y-3">
                   <Progress 
-                    value={45} 
-                    indicatorColor="warning"
+                    value={80} 
+                    indicatorColor="destructive"
                     className="h-2"
                   />
+                  <p className="text-sm text-muted-foreground">4 из 5</p>
                 </div>
               </Card>
 
@@ -124,7 +129,7 @@ export default function RiskDetailModal({
                   Вероятные потери
                 </h3>
                 <div className="text-2xl font-bold">
-                  416 ₽
+                  522 196 ₽
                 </div>
               </Card>
 
@@ -146,12 +151,14 @@ export default function RiskDetailModal({
                   Риск факторы
                 </h3>
                 <div className="space-y-3">
-                  {risk.factors.map((factor, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                      <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                      <p className="text-sm">{factor}</p>
-                    </div>
-                  ))}
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Несоответствие IT-инфраструктуры требованиям ФЗ № 149-ФЗ</p>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0" />
+                    <p className="text-sm">Отсутствие ВНД по учету рабочего времени и документообороту</p>
+                  </div>
                 </div>
               </Card>
 
@@ -163,19 +170,15 @@ export default function RiskDetailModal({
                 <div className="space-y-3">
                   <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
                     <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-sm">Штрафы от регулирующих органов до 500 000 рублей</p>
+                    <p className="text-sm">Штрафы от 500 тыс. до 3 млн руб.</p>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
                     <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-sm">Приостановка деятельности организации</p>
+                    <p className="text-sm">Потери выручки при блокировке сервиса</p>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
                     <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-sm">Репутационные потери и снижение доверия клиентов</p>
-                  </div>
-                  <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                    <div className="w-2 h-2 bg-compOrange-500 rounded-full mt-2 flex-shrink-0" />
-                    <p className="text-sm">Дополнительные расходы на восстановление соответствия</p>
+                    <p className="text-sm">Юридическая ответственность по ст. 4.101 КоАП РФ</p>
                   </div>
                 </div>
               </Card>
@@ -205,14 +208,24 @@ export default function RiskDetailModal({
                 Меры
               </h3>
               <div className="space-y-3">
-                {risk.measures.map((measure, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-compGreen-50 dark:bg-compGreen-900/20 rounded-lg border border-compGreen-200 dark:border-compGreen-800">
-                    <div className="p-1 bg-compGreen-500 rounded-full flex-shrink-0 mt-1">
-                      <Shield className="w-3 h-3 text-white" />
-                    </div>
-                    <p className="text-sm">{measure}</p>
+                <div className="flex items-start gap-3 p-3 bg-compGreen-50 dark:bg-compGreen-900/20 rounded-lg border border-compGreen-200 dark:border-compGreen-800">
+                  <div className="p-1 bg-compGreen-500 rounded-full flex-shrink-0 mt-1">
+                    <Shield className="w-3 h-3 text-white" />
                   </div>
-                ))}
+                  <p className="text-sm">Обновить IT-инфраструктуру в соответствии с ФЗ № 149-ФЗ</p>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-compGreen-50 dark:bg-compGreen-900/20 rounded-lg border border-compGreen-200 dark:border-compGreen-800">
+                  <div className="p-1 bg-compGreen-500 rounded-full flex-shrink-0 mt-1">
+                    <Shield className="w-3 h-3 text-white" />
+                  </div>
+                  <p className="text-sm">Разработать ВНД по учету рабочего времени и документообороту</p>
+                </div>
+                <div className="flex items-start gap-3 p-3 bg-compGreen-50 dark:bg-compGreen-900/20 rounded-lg border border-compGreen-200 dark:border-compGreen-800">
+                  <div className="p-1 bg-compGreen-500 rounded-full flex-shrink-0 mt-1">
+                    <Shield className="w-3 h-3 text-white" />
+                  </div>
+                  <p className="text-sm">Провести аудит соответствия системы защиты данных законодательным требованиям</p>
+                </div>
               </div>
             </Card>
           </div>
