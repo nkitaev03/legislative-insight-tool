@@ -149,46 +149,98 @@ export default function LegislationDetailModal({
                 <h4 className="font-medium mb-4 text-red-700 dark:text-red-300">Новые риски:</h4>
                 <div className="space-y-3">
                   <div 
-                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                     onClick={() => handleRiskClick('Нарушение требований по обработке персональных данных', 'Риск штрафов до 500 000 руб. за несоблюдение новых требований')}
                   >
-                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Нарушение требований по обработке персональных данных</p>
-                      <p className="text-xs text-muted-foreground mt-1">Риск штрафов до 500 000 руб. за несоблюдение новых требований</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-495 • 15.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
+                      </div>
+                    </div>
+                    <Badge variant="destructive" className="text-xs">
+                      Очень высокий
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
                   
                   <div 
-                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                     onClick={() => handleRiskClick('Недостаточная защита информационных систем', 'Возможные блокировки систем и приостановка деятельности')}
                   >
-                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Недостаточная защита информационных систем</p>
-                      <p className="text-xs text-muted-foreground mt-1">Возможные блокировки систем и приостановка деятельности</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-496 • 16.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
+                      </div>
+                    </div>
+                    <Badge variant="destructive" className="text-xs">
+                      Высокий
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
                   
                   <div 
-                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                     onClick={() => handleRiskClick('Отсутствие назначенного ответственного за ПДн', 'Административная ответственность руководителя организации')}
                   >
-                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Отсутствие назначенного ответственного за ПДн</p>
-                      <p className="text-xs text-muted-foreground mt-1">Административная ответственность руководителя организации</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-497 • 17.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
+                      </div>
+                    </div>
+                    <Badge variant="warning" className="text-xs">
+                      Средний
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
                   
                   <div 
-                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                     onClick={() => handleRiskClick('Нарушение сроков уведомления регулятора', 'Дополнительные санкции за несвоевременное информирование')}
                   >
-                    <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">Нарушение сроков уведомления регулятора</p>
-                      <p className="text-xs text-muted-foreground mt-1">Дополнительные санкции за несвоевременное информирование</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-498 • 18.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
+                      </div>
+                    </div>
+                    <Badge variant="warning" className="text-xs">
+                      Средний
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
                 </div>
