@@ -229,7 +229,12 @@ export default function LegislationDetailModal({
               <h4 className="font-medium mb-3">Информация</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Опубликовано</span>
+                  <span className="text-muted-foreground">Дата публикования документа</span>
+                  <span>{formatDate(item.date)}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Дата выгрузки на платформу</span>
                   <span>{formatDate(item.date)}</span>
                 </div>
                 <Separator />
