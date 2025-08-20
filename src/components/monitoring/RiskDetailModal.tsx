@@ -197,25 +197,21 @@ export default function RiskDetailModal({
               <h4 className="font-medium mb-3">Информация</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Дата выявления риска</span>
-                  <span>15.01.2024</span>
+                  <span className="text-muted-foreground">Риск</span>
+                  <span>RSK-302</span>
                 </div>
-                <div className="border-t border-border my-2" />
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Дата последнего обновления</span>
-                  <span>20.01.2024</span>
+                  <span className="text-muted-foreground">Дата создания</span>
+                  <span>04.07.2025</span>
                 </div>
-                <div className="border-t border-border my-2" />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Статус</span>
-                  <Badge variant="warning" className="text-xs">
-                    Активный
-                  </Badge>
-                </div>
-                <div className="border-t border-border my-2" />
-                <div>
-                  <span className="text-muted-foreground">Категория</span>
-                  <p className="text-sm mt-1">Информационная безопасность</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Автор карточки</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-compGreen-500 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full" />
+                    </div>
+                    <span>NORM AI</span>
+                  </div>
                 </div>
               </div>
             </Card>
