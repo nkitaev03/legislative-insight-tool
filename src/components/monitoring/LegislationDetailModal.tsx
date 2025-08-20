@@ -26,6 +26,7 @@ import {
 import RiskIndicator from '@/components/common/RiskIndicator';
 import { LegislationItem, Recommendation } from './types';
 import FeedbackModal from './FeedbackModal';
+import RiskDetailModal from './RiskDetailModal';
 
 interface LegislationDetailModalProps {
   isOpen: boolean;
@@ -39,8 +40,37 @@ export default function LegislationDetailModal({
   item 
 }: LegislationDetailModalProps) {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [isRiskModalOpen, setIsRiskModalOpen] = useState(false);
+  const [selectedRisk, setSelectedRisk] = useState<any>(null);
   
   if (!item) return null;
+
+  const handleRiskClick = (riskTitle: string, riskDescription: string) => {
+    // Mock risk data - in real app this would come from props or API
+    const riskData = {
+      id: '1',
+      title: riskTitle,
+      description: riskDescription,
+      probability: 75,
+      impact: 'high' as const,
+      factors: [
+        'Недостаточная осведомленность сотрудников о новых требованиях',
+        'Отсутствие технических средств защиты информации',
+        'Неактуальная документация по обработке персональных данных',
+        'Отсутствие регулярного аудита систем защиты'
+      ],
+      owner: 'Иванов И.И., Руководитель отдела ИБ',
+      measures: [
+        'Провести обучение всех сотрудников новым требованиям по защите ПДн',
+        'Внедрить технические средства защиты информации (антивирус, файрвол)',
+        'Обновить все внутренние документы согласно новым требованиям',
+        'Назначить ответственного за обработку персональных данных',
+        'Провести аудит всех информационных систем на соответствие требованиям'
+      ]
+    };
+    setSelectedRisk(riskData);
+    setIsRiskModalOpen(true);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ru-RU', {
@@ -118,7 +148,10 @@ export default function LegislationDetailModal({
               <div className="mb-6">
                 <h4 className="font-medium mb-4 text-red-700 dark:text-red-300">Новые риски:</h4>
                 <div className="space-y-3">
-                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div 
+                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Нарушение требований по обработке персональных данных', 'Риск штрафов до 500 000 руб. за несоблюдение новых требований')}
+                  >
                     <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Нарушение требований по обработке персональных данных</p>
@@ -126,7 +159,10 @@ export default function LegislationDetailModal({
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div 
+                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Недостаточная защита информационных систем', 'Возможные блокировки систем и приостановка деятельности')}
+                  >
                     <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Недостаточная защита информационных систем</p>
@@ -134,7 +170,10 @@ export default function LegislationDetailModal({
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div 
+                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Отсутствие назначенного ответственного за ПДн', 'Административная ответственность руководителя организации')}
+                  >
                     <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Отсутствие назначенного ответственного за ПДн</p>
@@ -142,7 +181,10 @@ export default function LegislationDetailModal({
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div 
+                    className="flex items-start gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Нарушение сроков уведомления регулятора', 'Дополнительные санкции за несвоевременное информирование')}
+                  >
                     <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm font-medium">Нарушение сроков уведомления регулятора</p>
@@ -305,6 +347,12 @@ export default function LegislationDetailModal({
         <FeedbackModal 
           isOpen={isFeedbackModalOpen}
           onClose={() => setIsFeedbackModalOpen(false)}
+        />
+        
+        <RiskDetailModal 
+          isOpen={isRiskModalOpen}
+          onClose={() => setIsRiskModalOpen(false)}
+          risk={selectedRisk}
         />
       </DialogContent>
     </Dialog>
