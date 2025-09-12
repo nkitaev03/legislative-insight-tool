@@ -88,29 +88,29 @@ export default function DashboardPage() {
     <div className="p-6 space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-          Управление рисками
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          Панель руководителя
         </h1>
-        <p className="text-muted-foreground">ООО «Звук» • Принятие решений по критическим рискам</p>
+        <p className="text-muted-foreground">ООО «Звук» • Мониторинг рисков и соответствия</p>
       </div>
 
       {/* Risk Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-red-200">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-red-600/20"></div>
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-orange-200">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/15"></div>
           <CardContent className="p-6 relative">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
-                <AlertTriangle className="w-8 h-8 text-red-600" />
+              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                <AlertTriangle className="w-8 h-8 text-orange-600" />
               </div>
-              <Badge variant="destructive" className="text-lg px-3 py-1">
-                КРИТИЧНО
+              <Badge variant="destructive" className="text-lg px-3 py-1 bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200">
+                ВНИМАНИЕ
               </Badge>
             </div>
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">Общий риск-профиль</p>
-              <p className="text-4xl font-bold text-red-600">7.3M₽</p>
-              <p className="text-sm text-red-600 flex items-center">
+              <p className="text-4xl font-bold text-orange-600">7.3M₽</p>
+              <p className="text-sm text-orange-600 flex items-center">
                 <TrendingUp className="w-4 h-4 mr-1" />
                 Потенциальный ущерб
               </p>
@@ -162,17 +162,17 @@ export default function DashboardPage() {
       </div>
 
       {/* Critical Risks - Main Focus */}
-      <Card className="border-2 border-red-200 bg-gradient-to-r from-red-50/50 to-orange-50/50 hover:shadow-xl transition-all duration-300">
+      <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-50/30 to-yellow-50/30 hover:shadow-xl transition-all duration-300">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-3 text-2xl">
-              <div className="p-2 bg-red-100 rounded-lg">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <AlertTriangle className="w-6 h-6 text-orange-600" />
               </div>
               Критические риски для принятия решений
             </CardTitle>
-            <Badge variant="destructive" className="text-sm px-3 py-1">
-              Требуют немедленного внимания
+            <Badge variant="secondary" className="text-sm px-3 py-1 bg-orange-100 text-orange-700 border-orange-200">
+              Требуют внимания
             </Badge>
           </div>
         </CardHeader>
@@ -182,8 +182,8 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-4">
                   <div className={`w-3 h-3 rounded-full ${
-                    risk.status === 'critical' ? 'bg-red-500 animate-pulse' :
-                    risk.status === 'high' ? 'bg-orange-500' : 'bg-yellow-500'
+                    risk.status === 'critical' ? 'bg-orange-500' :
+                    risk.status === 'high' ? 'bg-yellow-500' : 'bg-blue-500'
                   }`}></div>
                   <div>
                     <h3 className="font-semibold text-lg">{risk.title}</h3>
@@ -191,7 +191,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="text-right space-y-1">
-                  <Badge variant="destructive" className="text-lg px-3 py-1">
+                  <Badge variant="secondary" className="text-lg px-3 py-1 bg-orange-100 text-orange-700 border-orange-200">
                     {risk.impact}
                   </Badge>
                   <p className="text-sm text-muted-foreground">потенциальный ущерб</p>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 <div className="space-y-2">
                   <span className="text-sm font-medium">Статус решения</span>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="destructive" className="flex-1">
+                    <Button size="sm" className="flex-1 bg-orange-600 hover:bg-orange-700">
                       Принять меры
                     </Button>
                     <Button size="sm" variant="outline" className="flex-1">
@@ -303,11 +303,104 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Recent Legislation and News */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Legislation */}
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building className="w-5 h-5 text-blue-500" />
+              Новые законы и требования
+            </CardTitle>
+            <CardDescription>Изменения, влияющие на бизнес</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 border border-blue-200 rounded-lg hover:bg-blue-50/50 transition-colors">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-medium text-sm leading-tight">Изменения в ФЗ №149 "О защите персональных данных"</h4>
+                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
+                  Новое
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">15 января 2024 • Правовые</p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Риск несоответствия</span>
+                  <span className="font-medium text-orange-600">Высокий</span>
+                </div>
+                <Progress value={85} className="h-2" />
+              </div>
+            </div>
+
+            <div className="p-4 border border-yellow-200 rounded-lg hover:bg-yellow-50/50 transition-colors">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-medium text-sm leading-tight">Новые требования к модерации контента</h4>
+                <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-700 border-yellow-200">
+                  7 дней
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">10 января 2024 • Регулирование</p>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Риск штрафов</span>
+                  <span className="font-medium text-yellow-600">Средний</span>
+                </div>
+                <Progress value={65} className="h-2" />
+              </div>
+            </div>
+
+            <Button variant="outline" className="w-full mt-4">
+              Все изменения в законах
+              <ArrowUpRight className="w-4 h-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Industry News */}
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-green-500" />
+              Новости отрасли
+            </CardTitle>
+            <CardDescription>Важные события и тренды</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 border border-green-200 rounded-lg hover:bg-green-50/50 transition-colors">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-medium text-sm leading-tight">Рост требований к кибербезопасности в IT-сфере</h4>
+                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                  Тренд
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">12 января 2024 • Отраслевые</p>
+              <p className="text-sm text-muted-foreground">Влияние: Необходимость усиления IT-инфраструктуры</p>
+            </div>
+
+            <div className="p-4 border border-purple-200 rounded-lg hover:bg-purple-50/50 transition-colors">
+              <div className="flex items-start justify-between mb-2">
+                <h4 className="font-medium text-sm leading-tight">Изменения в налоговом регулировании IT-услуг</h4>
+                <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200">
+                  Важно
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">8 января 2024 • Налоги</p>
+              <p className="text-sm text-muted-foreground">Возможность оптимизации на 15-20%</p>
+            </div>
+
+            <Button variant="outline" className="w-full mt-4">
+              Все новости отрасли
+              <ArrowUpRight className="w-4 h-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* AI Risk Assistant */}
-      <Card className="bg-gradient-to-r from-red-500/5 to-orange-500/10 border-red-200 hover:shadow-lg transition-all duration-300">
+      <Card className="bg-gradient-to-r from-blue-500/5 to-purple-500/10 border-blue-200 hover:shadow-lg transition-all duration-300">
         <CardContent className="p-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-red-100 rounded-full">
+            <div className="p-3 bg-blue-100 rounded-full">
               <img 
                 src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
                 alt="AI Assistant" 
@@ -315,15 +408,15 @@ export default function DashboardPage() {
               />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold mb-2 text-red-600">Срочные рекомендации NORM AI по рискам</h3>
+              <h3 className="font-semibold mb-2 text-blue-600">Рекомендации NORM AI</h3>
               <p className="text-muted-foreground mb-4 leading-relaxed">
-                <strong>Критическая ситуация:</strong> Нарушение ФЗ №149 может привести к штрафам до 3.4M₽ с вероятностью 85%. 
-                <strong>Рекомендую:</strong> немедленно начать аудит соответствия и выделить дополнительные ресурсы на IT-безопасность. 
-                Это снизит общий риск-профиль на 60%.
+                На основе анализа новых требований ФЗ №149 рекомендую: <strong>запланировать аудит соответствия на следующую неделю</strong>. 
+                Это поможет избежать потенциальных штрафов до 3.4M₽ и снизит общий риск-профиль на 60%. 
+                Также стоит ускорить внедрение системы модерации контента.
               </p>
               <div className="flex gap-3">
-                <Button size="sm" className="bg-red-600 hover:bg-red-700">
-                  Принять все меры
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  Применить рекомендации
                 </Button>
                 <Button size="sm" variant="outline">
                   Анализ сценариев
