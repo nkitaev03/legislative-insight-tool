@@ -509,77 +509,159 @@ export default function MonitoringPage() {
       
       <Tabs defaultValue="all">
         <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
-          <TabsTrigger value="all">Все изменения</TabsTrigger>
-          <TabsTrigger value="laws">Законы</TabsTrigger>
-          <TabsTrigger value="news" className="relative">
-            Новости
-            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-              2
-            </Badge>
-          </TabsTrigger>
+          <TabsTrigger value="all">Все события</TabsTrigger>
+          <TabsTrigger value="laws">Законодательство</TabsTrigger>
+          <TabsTrigger value="news">Новости</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="mt-6">
-          <div className="space-y-4">
-            <LegislationList 
-              items={filteredLegislation} 
-              onOpenDialog={(id) => {
-                setOpenDialogId(id);
-                setIsDetailModalOpen(true);
-              }}
-              onEditResponsible={setEditResponsibleId}
-              editResponsibleId={editResponsibleId}
-              handleResponsibleChange={handleResponsibleChange}
-              responsiblePersons={responsiblePersons}
-            />
-            <NewsList 
-              items={filteredNews} 
-              onOpenDialog={(id) => {
-                setOpenDialogId(id);
-                setIsDetailModalOpen(true);
-              }}
-              onEditResponsible={setEditResponsibleId}
-              editResponsibleId={editResponsibleId}
-              handleResponsibleChange={(id, responsible) => handleResponsibleChange(id, responsible, true)}
-              responsiblePersons={responsiblePersons}
-            />
+          <div className="space-y-1">
+            {[...filteredLegislation.map(item => ({...item, type: 'legislation'})), 
+              ...filteredNews.map(item => ({...item, type: 'news'}))]
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+              .map((item) => (
+              <div key={item.id} className="flex items-start gap-4 p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex-shrink-0 mt-1">
+                  {item.type === 'legislation' ? (
+                    <div className="w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
+                      <FileWarning className="w-4 h-4 text-blue-600" />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded bg-orange-100 flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4 text-orange-600" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-blue-600">
+                      {item.type === 'legislation' ? 'Законодательство' : 'Новость'}
+                    </span>
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2 leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setOpenDialogId(item.id);
+                      setIsDetailModalOpen(true);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Принять меры →
+                  </button>
+                </div>
+                
+                <div className="flex-shrink-0 text-right">
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(item.date).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </TabsContent>
 
         <TabsContent value="laws" className="mt-6">
-          <LegislationList 
-            items={filteredLegislation} 
-            onOpenDialog={(id) => {
-              setOpenDialogId(id);
-              setIsDetailModalOpen(true);
-            }}
-            onEditResponsible={setEditResponsibleId}
-            editResponsibleId={editResponsibleId}
-            handleResponsibleChange={handleResponsibleChange}
-            responsiblePersons={responsiblePersons}
-          />
+          <div className="space-y-1">
+            {filteredLegislation
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+              .map((item) => (
+              <div key={item.id} className="flex items-start gap-4 p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded bg-blue-100 flex items-center justify-center">
+                    <FileWarning className="w-4 h-4 text-blue-600" />
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-blue-600">Законодательство</span>
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2 leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setOpenDialogId(item.id);
+                      setIsDetailModalOpen(true);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Принять меры →
+                  </button>
+                </div>
+                
+                <div className="flex-shrink-0 text-right">
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(item.date).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </TabsContent>
 
         <TabsContent value="news" className="mt-6">
-          {filteredNews.length > 0 ? (
-            <NewsList 
-              items={filteredNews} 
-              onOpenDialog={(id) => {
-                setOpenDialogId(id);
-                setIsDetailModalOpen(true);
-              }}
-              onEditResponsible={setEditResponsibleId}
-              editResponsibleId={editResponsibleId}
-              handleResponsibleChange={(id, responsible) => handleResponsibleChange(id, responsible, true)}
-              responsiblePersons={responsiblePersons}
-            />
-          ) : (
-            <div className="text-center p-8 border border-dashed rounded-lg">
-              <p className="text-muted-foreground">
-                Новости по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-              </p>
-            </div>
-          )}
+          <div className="space-y-1">
+            {filteredNews
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+              .map((item) => (
+              <div key={item.id} className="flex items-start gap-4 p-4 hover:bg-muted/50 transition-colors">
+                <div className="flex-shrink-0 mt-1">
+                  <div className="w-6 h-6 rounded bg-orange-100 flex items-center justify-center">
+                    <AlertCircle className="w-4 h-4 text-orange-600" />
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-blue-600">Новость</span>
+                  </div>
+                  <h3 className="font-semibold text-foreground mb-2 leading-tight">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
+                    {item.description}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setOpenDialogId(item.id);
+                      setIsDetailModalOpen(true);
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Принять меры →
+                  </button>
+                </div>
+                
+                <div className="flex-shrink-0 text-right">
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(item.date).toLocaleDateString('ru-RU', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </TabsContent>
       </Tabs>
 
