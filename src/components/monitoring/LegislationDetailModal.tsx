@@ -314,9 +314,11 @@ export default function LegislationDetailModal({
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded">
-                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <img 
+                    src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
+                    alt="AI Assistant" 
+                    className="w-4 h-4"
+                  />
                 </div>
                 <h4 className="font-medium text-green-700 dark:text-green-300">Норм на связи</h4>
                 <div className="text-muted-foreground">
