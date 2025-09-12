@@ -46,8 +46,6 @@ export default function Sidebar() {
   const navigationItems = [
     { icon: Home, text: "Главная", path: "/" },
     { icon: FileSearch, text: "Мониторинг", path: "/monitoring" },
-    { icon: Play, text: "Симуляция", path: "/simulation" },
-    { icon: Clipboard, text: "Аудит", path: "/audit" },
     { icon: User, text: "Личный кабинет", path: "/profile" },
   ];
 
