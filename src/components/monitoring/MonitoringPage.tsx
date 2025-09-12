@@ -457,137 +457,70 @@ export default function MonitoringPage() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Мониторинг законодательства и новостей</h1>
-        <Button variant="outline" className="gap-2">
-          <Download className="h-4 w-4" />
-          Экспорт
-        </Button>
       </div>
       
-      <Tabs defaultValue="основные">
-        <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid mb-6">
-          <TabsTrigger value="основные">Основные данные</TabsTrigger>
-          <TabsTrigger value="стратегическая">Стратегическая шкала</TabsTrigger>
-          <TabsTrigger value="конкурентные">Конкурентные преимущества</TabsTrigger>
-        </TabsList>
-        
-        {/* Основные данные */}
-        <TabsContent value="основные" className="space-y-6">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>Фильтры и поиск</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input 
-                    placeholder="Поиск по названию или содержанию..." 
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <Select value={selectedRisk} onValueChange={setSelectedRisk}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Уровень риска" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Все уровни</SelectItem>
-                        <SelectItem value="high">Высокий</SelectItem>
-                        <SelectItem value="medium">Средний</SelectItem>
-                        <SelectItem value="low">Низкий</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Select value={selectedDate} onValueChange={setSelectedDate}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Период" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Любая дата</SelectItem>
-                        <SelectItem value="recent">Последние 30 дней</SelectItem>
-                        <SelectItem value="older">Старше 30 дней</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant="secondary" className="flex-1">
-                      Применить
-                    </Button>
-                    <Button variant="outline">
-                      <Filter className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Tabs defaultValue="all">
-            <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
-              <TabsTrigger value="all">Все изменения</TabsTrigger>
-              <TabsTrigger value="laws">Законы</TabsTrigger>
-              <TabsTrigger value="news" className="relative">
-                Новости
-                <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-                  2
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-        
-        <TabsContent value="all" className="mt-6 space-y-4">
-          {filteredLegislation.length > 0 || filteredNews.length > 0 ? (
-            <>
-              {filteredLegislation.length > 0 && (
-                <div className="space-y-4">
-                  <LegislationList 
-                    items={filteredLegislation} 
-                    onOpenDialog={(id) => {
-                      setOpenDialogId(id);
-                      setIsDetailModalOpen(true);
-                    }}
-                    onEditResponsible={setEditResponsibleId}
-                    editResponsibleId={editResponsibleId}
-                    handleResponsibleChange={handleResponsibleChange}
-                    responsiblePersons={responsiblePersons}
-                  />
-                </div>
-              )}
-              
-              {filteredNews.length > 0 && (
-                <div className="space-y-4 mt-8">
-                  <h2 className="text-lg font-medium">Новости и события</h2>
-                  <NewsList 
-                    items={filteredNews} 
-                    onOpenDialog={(id) => {
-                      setOpenDialogId(id);
-                      setIsDetailModalOpen(true);
-                    }}
-                    onEditResponsible={setEditResponsibleId}
-                    editResponsibleId={editResponsibleId}
-                    handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
-                    responsiblePersons={responsiblePersons}
-                  />
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="text-center p-8 border border-dashed rounded-lg">
-              <p className="text-muted-foreground">
-                Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-              </p>
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2">
+            <FileWarning className="h-5 w-5 text-orange-500" />
+            Фильтрация и поиск
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Поиск по названию или содержанию..." 
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-          )}
-        </TabsContent>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Select value={selectedRisk} onValueChange={setSelectedRisk}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Уровень риска" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все уровни</SelectItem>
+                    <SelectItem value="high">Высокий</SelectItem>
+                    <SelectItem value="medium">Средний</SelectItem>
+                    <SelectItem value="low">Низкий</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-        <TabsContent value="laws" className="mt-6 space-y-4">
-          {filteredLegislation.length > 0 ? (
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="flex-1 gap-2">
+                  <Calendar className="h-4 w-4" />
+                  Период
+                </Button>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Filter className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Tabs defaultValue="all">
+        <TabsList className="grid w-full grid-cols-3 md:w-auto md:inline-grid">
+          <TabsTrigger value="all">Все изменения</TabsTrigger>
+          <TabsTrigger value="laws">Законы</TabsTrigger>
+          <TabsTrigger value="news" className="relative">
+            Новости
+            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+              2
+            </Badge>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="mt-6">
+          <div className="space-y-4">
             <LegislationList 
               items={filteredLegislation} 
               onOpenDialog={(id) => {
@@ -599,16 +532,35 @@ export default function MonitoringPage() {
               handleResponsibleChange={handleResponsibleChange}
               responsiblePersons={responsiblePersons}
             />
-          ) : (
-            <div className="text-center p-8 border border-dashed rounded-lg">
-              <p className="text-muted-foreground">
-                Документы по заданным критериям не найдены. Попробуйте изменить параметры поиска.
-              </p>
-            </div>
-          )}
+            <NewsList 
+              items={filteredNews} 
+              onOpenDialog={(id) => {
+                setOpenDialogId(id);
+                setIsDetailModalOpen(true);
+              }}
+              onEditResponsible={setEditResponsibleId}
+              editResponsibleId={editResponsibleId}
+              handleResponsibleChange={(id, responsible) => handleResponsibleChange(id, responsible, true)}
+              responsiblePersons={responsiblePersons}
+            />
+          </div>
         </TabsContent>
 
-        <TabsContent value="news" className="mt-6 space-y-4">
+        <TabsContent value="laws" className="mt-6">
+          <LegislationList 
+            items={filteredLegislation} 
+            onOpenDialog={(id) => {
+              setOpenDialogId(id);
+              setIsDetailModalOpen(true);
+            }}
+            onEditResponsible={setEditResponsibleId}
+            editResponsibleId={editResponsibleId}
+            handleResponsibleChange={handleResponsibleChange}
+            responsiblePersons={responsiblePersons}
+          />
+        </TabsContent>
+
+        <TabsContent value="news" className="mt-6">
           {filteredNews.length > 0 ? (
             <NewsList 
               items={filteredNews} 
@@ -618,7 +570,7 @@ export default function MonitoringPage() {
               }}
               onEditResponsible={setEditResponsibleId}
               editResponsibleId={editResponsibleId}
-              handleResponsibleChange={(id, resp) => handleResponsibleChange(id, resp, true)}
+              handleResponsibleChange={(id, responsible) => handleResponsibleChange(id, responsible, true)}
               responsiblePersons={responsiblePersons}
             />
           ) : (
@@ -629,36 +581,6 @@ export default function MonitoringPage() {
             </div>
           )}
         </TabsContent>
-      </Tabs>
-      </TabsContent>
-        
-      {/* Стратегическая шкала */}
-      <TabsContent value="стратегическая" className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-compGreen-500" />
-            <h2 className="text-xl font-semibold">Стратегическая шкала законодательных изменений</h2>
-          </div>
-          <LegislationTimeline items={legislationChanges} />
-        </div>
-      </TabsContent>
-      
-      {/* Конкурентные преимущества */}
-      <TabsContent value="конкурентные" className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-compGreen-500" />
-            <h2 className="text-xl font-semibold">Конкурентные преимущества</h2>
-          </div>
-          <CompetitiveAdvantageList 
-            items={legislationChanges} 
-            onOpenDialog={(id) => {
-              setOpenDialogId(id);
-              setIsDetailModalOpen(true);
-            }} 
-          />
-        </div>
-      </TabsContent>
       </Tabs>
 
       {/* New Legislation Detail Modal */}
