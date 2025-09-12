@@ -1,596 +1,401 @@
-
 import { useState } from 'react';
 import {
   BarChart3,
-  FileText,
   AlertTriangle,
   CheckCircle,
-  Clock,
-  User,
-  CalendarClock,
-  ArrowUpRight,
-  DollarSign,
-  Percent,
   TrendingUp,
   TrendingDown,
-  LineChart,
-  X
+  DollarSign,
+  Percent,
+  ArrowUpRight,
+  Calendar,
+  Target,
+  Shield,
+  Users,
+  Building
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import MetricCard from '../common/MetricCard';
-import RiskIndicator from '../common/RiskIndicator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
-  PieChart as RechartsPieChart,
-  Pie,
-  Cell,
-  Legend,
+  AreaChart,
+  Area,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
-  LineChart as RechartsLineChart,
-  Line,
-  Area,
-  AreaChart
+  CartesianGrid
 } from 'recharts';
-import BusinessProcessMap from './BusinessProcessMap';
-import InteractiveChecklist from '../common/InteractiveChecklist';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import FinancialForecastChart from '../simulation/FinancialForecastChart';
 
-const riskData = [
-  { name: 'Высокий', value: 25, color: '#f44336' },
-  { name: 'Средний', value: 30, color: '#ff9800' },
-  { name: 'Низкий', value: 45, color: '#2a9e31' },
+// Simplified data for business owner dashboard
+const kpiData = [
+  { month: 'Янв', revenue: 120, profit: 24 },
+  { month: 'Фев', revenue: 135, profit: 28 },
+  { month: 'Мар', revenue: 148, profit: 32 },
+  { month: 'Апр', revenue: 156, profit: 35 },
+  { month: 'Май', revenue: 162, profit: 38 },
+  { month: 'Июн', revenue: 178, profit: 42 }
 ];
 
-// Financial forecast data
-const financialForecastData = [
-  { month: 'Янв', forecast: 5.2, actual: 5.4 },
-  { month: 'Фев', forecast: 5.6, actual: 5.7 },
-  { month: 'Мар', forecast: 5.8, actual: 5.9 },
-  { month: 'Апр', forecast: 6.1, actual: 5.8 },
-  { month: 'Май', forecast: 6.3, actual: 6.2 },
-  { month: 'Июн', forecast: 6.5, actual: 6.3 },
-  { month: 'Июл', forecast: 6.7, actual: 6.5 },
-  { month: 'Авг', forecast: 6.9, actual: null },
-  { month: 'Сен', forecast: 7.1, actual: null },
-  { month: 'Окт', forecast: 7.3, actual: null },
-  { month: 'Ноя', forecast: 7.5, actual: null },
-  { month: 'Дек', forecast: 7.7, actual: null },
-];
-
-// Macro parameters impact data
-const macroParametersData = [
-  { parameter: 'Ставка ЦБ', current: '16%', impact: 'высокое', change: '+2%', trend: 'up' },
-  { parameter: 'Инфляция', current: '7.4%', impact: 'среднее', change: '-0.3%', trend: 'down' },
-  { parameter: 'Цена нефти', current: '$85', impact: 'среднее', change: '+$3', trend: 'up' },
-  { parameter: 'Курс USD/RUB', current: '92₽', impact: 'высокое', change: '+2.5₽', trend: 'up' },
-  { parameter: 'Объем рынка', current: '1.2T₽', impact: 'низкое', change: '+4%', trend: 'up' },
-];
-
-// Risk impact data for bar chart
-const riskImpactData = [
-  { category: 'Финансовые', high: 14, medium: 8, low: 6 },
-  { category: 'Юридические', high: 8, medium: 12, low: 5 },
-  { category: 'Операционные', high: 5, medium: 9, low: 15 },
-  { category: 'Технологические', high: 7, medium: 11, low: 9 },
-];
-
-// Checklist items for the interactive checklist
-const checklistItems = [
+const criticalRisks = [
   {
-    id: '1',
-    text: 'Обновить политику конфиденциальности в соответствии с новыми требованиями',
-    completed: false,
-    responsible: 'Иванов И.И.'
+    title: "Нарушение ФЗ №149 по защите данных",
+    impact: "3.4M₽",
+    probability: 85,
+    status: "critical"
   },
   {
-    id: '2',
-    text: 'Провести аудит систем хранения персональных данных',
-    completed: true,
-    deadline: new Date('2023-05-30'),
-    responsible: 'Петрова А.С.'
+    title: "Отток ключевых клиентов",
+    impact: "2.1M₽", 
+    probability: 65,
+    status: "high"
   },
   {
-    id: '3',
-    text: 'Назначить ответственного за защиту персональных данных',
-    completed: false,
-    reminders: true,
-    responsible: 'Смирнова Е.В.'
-  },
-  {
-    id: '4',
-    text: 'Внедрить систему контроля доступа к конфиденциальным данным',
-    completed: false,
-    deadline: new Date('2023-06-15'),
-    responsible: 'Соколов Д.М.'
-  },
-  {
-    id: '5',
-    text: 'Обновить договоры с контрагентами с учетом новых требований',
-    completed: false,
-    responsible: 'Козлов А.И.'
+    title: "Кибер-атаки на IT-системы",
+    impact: "1.8M₽",
+    probability: 45,
+    status: "medium"
   }
 ];
 
-const tasks = [
-  { 
-    id: 1, 
-    title: 'Обновить политику конфиденциальности', 
-    deadline: '18.05.2023', 
-    risk: 'high',
-    status: 'pending',
-    responsible: 'Иванов И.И.'
+const priorityTasks = [
+  {
+    title: "Обновить IT-инфраструктуру",
+    deadline: "15 дней",
+    progress: 75,
+    status: "on-track"
   },
-  { 
-    id: 2, 
-    title: 'Провести аудит договоров с контрагентами', 
-    deadline: '24.05.2023', 
-    risk: 'medium',
-    status: 'in-progress',
-    responsible: 'Петрова А.С.'
+  {
+    title: "Аудит соответствия ФЗ-152", 
+    deadline: "7 дней",
+    progress: 30,
+    status: "at-risk"
   },
-  { 
-    id: 3, 
-    title: 'Обновить внутренние регламенты', 
-    deadline: '02.06.2023', 
-    risk: 'medium',
-    status: 'pending',
-    responsible: 'Смирнова Е.В.'
-  },
-  { 
-    id: 4, 
-    title: 'Прохождение обязательного обучения', 
-    deadline: '15.06.2023', 
-    risk: 'low',
-    status: 'completed',
-    responsible: 'Соколов Д.М.'
-  },
-  { 
-    id: 5, 
-    title: 'Подготовка отчета о соответствии', 
-    deadline: '30.06.2023', 
-    risk: 'low',
-    status: 'pending',
-    responsible: 'Козлов А.И.'
-  },
+  {
+    title: "Внедрение модерации контента",
+    deadline: "3 дня",
+    progress: 90,
+    status: "almost-done"
+  }
 ];
 
 export default function DashboardPage() {
-  const [tab, setTab] = useState('overview');
-  const [metricChartOpen, setMetricChartOpen] = useState(false);
-  const [selectedMetric, setSelectedMetric] = useState<{
-    title: string;
-    data: any[];
-    dataKey: string;
-    color: string;
-    formatter?: (value: any) => string;
-  } | null>(null);
-
-  // Define chart data for each metric
-  const metricCharts = {
-    profit: {
-      title: "Динамика прибыли",
-      data: [
-        { month: 'Янв', value: 9.2 },
-        { month: 'Фев', value: 10.1 },
-        { month: 'Мар', value: 10.8 },
-        { month: 'Апр', value: 11.5 },
-        { month: 'Май', value: 11.9 },
-        { month: 'Июн', value: 12.7 }
-      ],
-      dataKey: "value",
-      color: "#10b981",
-      formatter: (value: number) => `${value}M₽`
-    },
-    margin: {
-      title: "Динамика маржинальности",
-      data: [
-        { month: 'Янв', value: 15.8 },
-        { month: 'Фев', value: 16.2 },
-        { month: 'Мар', value: 16.9 },
-        { month: 'Апр', value: 17.3 },
-        { month: 'Май', value: 17.8 },
-        { month: 'Июн', value: 18.2 }
-      ],
-      dataKey: "value",
-      color: "#8884d8",
-      formatter: (value: number) => `${value}%`
-    },
-    expenses: {
-      title: "Операционные расходы",
-      data: [
-        { month: 'Янв', value: 9.8 },
-        { month: 'Фев', value: 9.7 },
-        { month: 'Мар', value: 9.6 },
-        { month: 'Апр', value: 9.4 },
-        { month: 'Май', value: 9.3 },
-        { month: 'Июн', value: 9.2 }
-      ],
-      dataKey: "value",
-      color: "#ef4444",
-      formatter: (value: number) => `${value}M₽`
-    },
-    risks: {
-      title: "Оценка рисков",
-      data: [
-        { category: 'Финансовые', value: 32.1 },
-        { category: 'Операционные', value: 18.7 },
-        { category: 'Юридические', value: 15.2 },
-        { category: 'Рыночные', value: 12.4 }
-      ],
-      dataKey: "value",
-      color: "#f59e0b",
-      formatter: (value: number) => `${value}M₽`
-    }
-  };
-
-  const handleMetricCardClick = (metricType: 'profit' | 'margin' | 'expenses' | 'risks') => {
-    setSelectedMetric(metricCharts[metricType]);
-    setMetricChartOpen(true);
-  };
+  const [timeframe, setTimeframe] = useState('current');
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl md:text-2xl font-semibold">
-          Панель управления
+    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          Панель руководителя
         </h1>
+        <p className="text-muted-foreground">ООО «Звук» • Краткий обзор ключевых показателей</p>
       </div>
 
-      <div className="bg-secondary/40 rounded-xl p-6">
-        <h2 className="text-lg font-medium mb-4">Я оценил ситуацию и собрал всё самое важное</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="feature-card">
-            <div className="flex items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                  <span>Законодательство</span>
-                  <span>•</span>
-                  <span className="text-orange-500">Повышенные риски</span>
-                </div>
-                <h3 className="font-medium mb-1">Обработка персональных данных</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Ужесточились требования к обработке персональных данных и существенно выросли штрафы за выявленные нарушения.
-                </p>
-                <button className="feature-button">
-                  Обновить оборудование
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/10"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                <DollarSign className="w-6 h-6 text-green-600" />
               </div>
+              <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
+                +18% к плану
+              </Badge>
             </div>
-          </div>
-          
-          <div className="feature-card">
-            <div className="flex items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                  <span>Новость</span>
-                  <span>•</span>
-                  <span className="text-orange-500">Повышенные риски</span>
-                </div>
-                <h3 className="font-medium mb-1">Магазин-склад закрыт Роспотребнадзором</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Невский районный суд Петербурга закрыл магазин-склад из-за нарушений санитарных требований.
-                </p>
-                <button className="feature-button">
-                  Защитить пользователей
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Выручка (полугодие)</p>
+              <p className="text-3xl font-bold">178M₽</p>
+              <p className="text-sm text-green-600 flex items-center">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                План: 150M₽
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/10"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <Percent className="w-6 h-6 text-blue-600" />
               </div>
+              <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200">
+                Стабильно
+              </Badge>
             </div>
-          </div>
-          
-          <div className="feature-card">
-            <div className="flex items-start">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                  <span>Мера</span>
-                  <span>•</span>
-                  <span className="text-orange-500">Просрочено на 14 дней</span>
-                </div>
-                <h3 className="font-medium mb-1">Немного задержались с этой мерой</h3>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Если не навёрстать упущенное, возможны задержки в других процессах. Давай не допустим эффекта домино.
-                </p>
-                <button className="feature-button">
-                  Исправить ситуацию
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                </button>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Рентабельность</p>
+              <p className="text-3xl font-bold">23.6%</p>
+              <p className="text-sm text-muted-foreground">
+                Средняя по рынку: 18%
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/10"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                <AlertTriangle className="w-6 h-6 text-orange-600" />
               </div>
+              <Badge variant="destructive">
+                Требует внимания
+              </Badge>
             </div>
-          </div>
-        </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Критические риски</p>
+              <p className="text-3xl font-bold text-orange-600">7.3M₽</p>
+              <p className="text-sm text-orange-600 flex items-center">
+                <AlertTriangle className="w-4 h-4 mr-1" />
+                Потенциальный ущерб
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-600/10"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <Target className="w-6 h-6 text-purple-600" />
+              </div>
+              <Badge variant="secondary" className="bg-purple-50 text-purple-700 border-purple-200">
+                72% готово
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Критические задачи</p>
+              <p className="text-3xl font-bold">8/11</p>
+              <p className="text-sm text-muted-foreground">
+                Выполнено в срок
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      
-      <Tabs defaultValue={tab} onValueChange={setTab} className="space-y-6">
-        <TabsList className="bg-background border">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Обзор</TabsTrigger>
-          <TabsTrigger value="process-map" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg">Карта процессов</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview" className="space-y-6">
-          {/* Financial Metrics Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div onClick={() => handleMetricCardClick('profit')} className="cursor-pointer">
-              <MetricCard 
-                title="Прибыль Q2 2023"
-                value="12.7M₽"
-                icon={<DollarSign className="h-5 w-5" />}
-                description="План: 12.4M₽"
-                trend={{ value: 8, isPositive: true }}
-                variant="success"
-              />
-            </div>
-            <div onClick={() => handleMetricCardClick('margin')} className="cursor-pointer">
-              <MetricCard 
-                title="Маржинальность"
-                value="18.2%"
-                icon={<Percent className="h-5 w-5" />}
-                description="Прошлый квартал: 17.5%"
-                trend={{ value: 4, isPositive: true }}
-                variant="success"
-              />
-            </div>
-            <div onClick={() => handleMetricCardClick('expenses')} className="cursor-pointer">
-              <MetricCard 
-                title="Операционные расходы"
-                value="9.2M₽"
-                icon={<TrendingDown className="h-5 w-5" />}
-                description="План: 9.5M₽"
-                trend={{ value: 3, isPositive: true }}
-                variant="success"
-              />
-            </div>
-            <div onClick={() => handleMetricCardClick('risks')} className="cursor-pointer">
-              <MetricCard 
-                title="Оценка рисков"
-                value="78.4M₽"
-                icon={<AlertTriangle className="h-5 w-5" />}
-                description="Потенциальные убытки"
-                trend={{ value: 12, isPositive: false }}
-                variant="danger"
-              />
-            </div>
-          </div>
 
-          {/* Financial Forecast Chart */}
-          <Card className="hover-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Финансовый прогноз</CardTitle>
-              <CardDescription>Влияние макропараметров на финансовые показатели</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={financialForecastData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <defs>
-                      <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1eaedb" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#1eaedb" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="month" />
-                    <YAxis 
-                      tickFormatter={(value) => `${value}M₽`}
-                      domain={['dataMin - 0.5', 'dataMax + 0.5']}
-                    />
-                    <Tooltip 
-                      formatter={(value) => [`${value}M₽`, '']}
-                      labelFormatter={(label) => `${label} 2023`}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="actual" 
-                      stroke="#8884d8" 
-                      strokeWidth={2}
-                      fillOpacity={1} 
-                      fill="url(#colorActual)" 
-                      name="Факт"
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="forecast" 
-                      stroke="#1eaedb" 
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      fillOpacity={1} 
-                      fill="url(#colorForecast)" 
-                      name="Прогноз"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Revenue Trend */}
+        <Card className="lg:col-span-2 hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              Динамика роста
+            </CardTitle>
+            <CardDescription>
+              Выручка и прибыль за 6 месяцев (млн ₽)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={kpiData}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
+                  <XAxis dataKey="month" />
+                  <YAxis tickFormatter={(value) => `${value}M`} />
+                  <Tooltip 
+                    formatter={(value, name) => [
+                      `${value}M₽`, 
+                      name === 'revenue' ? 'Выручка' : 'Прибыль'
+                    ]}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={3}
+                    fill="url(#colorRevenue)" 
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="profit" 
+                    stroke="#10b981" 
+                    strokeWidth={3}
+                    fill="url(#colorProfit)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats */}
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building className="w-5 h-5 text-primary" />
+              Быстрая сводка
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Команда</span>
+                <span className="font-semibold">247 сотрудников</span>
               </div>
-            </CardContent>
-          </Card>
+              <Progress value={85} className="h-2" />
+              <p className="text-xs text-muted-foreground">Эффективность: 85%</p>
+            </div>
 
-          {/* Macro Parameters and Risk Distribution */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Macro Parameters */}
-            <Card className="hover-card">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Макропараметры</CardTitle>
-                <CardDescription>Ключевые показатели и их влияние</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Параметр</TableHead>
-                        <TableHead>Значение</TableHead>
-                        <TableHead>Изменение</TableHead>
-                        <TableHead>Влияние</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {macroParametersData.map((param, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell className="font-medium">{param.parameter}</TableCell>
-                          <TableCell>{param.current}</TableCell>
-                          <TableCell>
-                            <span className={`flex items-center ${param.trend === 'up' ? 'text-red-500' : 'text-green-500'}`}>
-                              {param.change}
-                              {param.trend === 'up' ? <TrendingUp className="h-3 w-3 ml-1" /> : <TrendingDown className="h-3 w-3 ml-1" />}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              param.impact === 'высокое' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' :
-                              param.impact === 'среднее' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
-                              'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                            }`}>
-                              {param.impact}
-                            </span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Клиенты</span>
+                <span className="font-semibold">12,847 активных</span>
+              </div>
+              <Progress value={92} className="h-2" />
+              <p className="text-xs text-muted-foreground">Удержание: 92%</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Соответствие</span>
+                <span className="font-semibold text-orange-600">68%</span>
+              </div>
+              <Progress value={68} className="h-2" />
+              <p className="text-xs text-orange-600">Требует внимания</p>
+            </div>
+
+            <Button className="w-full" variant="outline">
+              <Users className="w-4 h-4 mr-2" />
+              Подробная аналитика
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Critical Items */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Risks */}
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-red-500" />
+                Критические риски
+              </div>
+              <Badge variant="destructive" className="text-xs">
+                Топ-3
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {criticalRisks.map((risk, index) => (
+              <div key={index} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-medium text-sm leading-tight">{risk.title}</h4>
+                  <Badge variant={risk.status === 'critical' ? 'destructive' : 
+                                risk.status === 'high' ? 'destructive' : 'secondary'} 
+                         className="text-xs">
+                    {risk.impact}
+                  </Badge>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Вероятность</span>
+                    <span className="font-medium">{risk.probability}%</span>
+                  </div>
+                  <Progress value={risk.probability} className="h-2" />
+                </div>
+              </div>
+            ))}
+            <Button variant="ghost" className="w-full mt-4">
+              Перейти к рискам
+              <ArrowUpRight className="w-4 h-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
 
-            {/* Risk Impact Chart (replacing pie chart) */}
-            <Card className="hover-card">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Распределение рисков</CardTitle>
-                <CardDescription>По категориям и уровням важности</CardDescription>
-              </CardHeader>
-              <CardContent className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={riskImpactData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    barSize={20}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="category" />
-                    <YAxis />
-                    <Tooltip 
-                      formatter={(value, name) => {
-                        return [value, name === 'high' ? 'Высокий' : name === 'medium' ? 'Средний' : 'Низкий'];
-                      }}
-                    />
-                    <Legend 
-                      formatter={(value) => (
-                        value === 'high' ? 'Высокий' : 
-                        value === 'medium' ? 'Средний' : 'Низкий'
-                      )}
-                    />
-                    <Bar 
-                      dataKey="high" 
-                      stackId="a" 
-                      fill="#f44336" 
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar 
-                      dataKey="medium" 
-                      stackId="a" 
-                      fill="#ff9800"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar 
-                      dataKey="low" 
-                      stackId="a" 
-                      fill="#2a9e31"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Priority Tasks */}
+        <Card className="hover:shadow-lg transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-blue-500" />
+                Приоритетные задачи
+              </div>
+              <Badge variant="secondary" className="text-xs">
+                На контроле
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {priorityTasks.map((task, index) => (
+              <div key={index} className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-medium text-sm leading-tight">{task.title}</h4>
+                  <Badge variant={task.status === 'at-risk' ? 'destructive' : 
+                                task.status === 'almost-done' ? 'default' : 'secondary'} 
+                         className="text-xs">
+                    {task.deadline}
+                  </Badge>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Готовность</span>
+                    <span className="font-medium">{task.progress}%</span>
+                  </div>
+                  <Progress value={task.progress} className="h-2" />
+                </div>
+              </div>
+            ))}
+            <Button variant="ghost" className="w-full mt-4">
+              Управление задачами
+              <ArrowUpRight className="w-4 h-4 ml-2" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-          {/* Interactive Checklist */}
-          <Card className="hover-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">План устранения рисков</CardTitle>
-              <CardDescription>Приоритетные задачи</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <InteractiveChecklist 
-                items={checklistItems.slice(0, 3)}
-                compact
+      {/* Key Insights */}
+      <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20 hover:shadow-lg transition-all duration-300">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-primary/10 rounded-full">
+              <img 
+                src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
+                alt="AI Assistant" 
+                className="w-8 h-8"
               />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="process-map" className="space-y-4">
-          <BusinessProcessMap />
-        </TabsContent>
-      </Tabs>
-
-      {/* Metric Chart Dialog */}
-      <Dialog open={metricChartOpen} onOpenChange={setMetricChartOpen}>
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>{selectedMetric?.title}</DialogTitle>
-            <button 
-              onClick={() => setMetricChartOpen(false)}
-              className="rounded-full p-1 hover:bg-muted"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </DialogHeader>
-          <div className="h-[400px] mt-4">
-            {selectedMetric && (
-              selectedMetric.title === "Оценка рисков" ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={selectedMetric.data}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="category" />
-                    <YAxis tickFormatter={(value) => `${value}M₽`} />
-                    <Tooltip formatter={(value) => [`${value}M₽`, 'Потенциальные убытки']} />
-                    <Bar 
-                      dataKey={selectedMetric.dataKey} 
-                      fill={selectedMetric.color}
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <RechartsLineChart
-                    data={selectedMetric.data}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="month" />
-                    <YAxis tickFormatter={(value) => selectedMetric.formatter ? selectedMetric.formatter(value) : value} />
-                    <Tooltip formatter={(value) => [selectedMetric.formatter ? selectedMetric.formatter(value) : value, '']} />
-                    <Line 
-                      type="monotone" 
-                      dataKey={selectedMetric.dataKey} 
-                      stroke={selectedMetric.color}
-                      strokeWidth={2}
-                      dot={{ r: 4 }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </RechartsLineChart>
-                </ResponsiveContainer>
-              )
-            )}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold mb-2 text-primary">Рекомендации NORM AI</h3>
+              <p className="text-muted-foreground mb-4 leading-relaxed">
+                На основе анализа показателей рекомендую: <strong>срочно завершить аудит соответствия ФЗ-152</strong> 
+                — просрочка может привести к штрафам до 3M₽. Также стоит ускорить внедрение модерации контента, 
+                это снизит юридические риски на 40%.
+              </p>
+              <div className="flex gap-3">
+                <Button size="sm" className="bg-primary hover:bg-primary/90">
+                  Применить рекомендации
+                </Button>
+                <Button size="sm" variant="outline">
+                  Подробный анализ
+                </Button>
+              </div>
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </CardContent>
+      </Card>
     </div>
   );
 }
