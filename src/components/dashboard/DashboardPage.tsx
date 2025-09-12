@@ -303,98 +303,93 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Recent Legislation and News */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Legislation */}
-        <Card className="hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+      {/* Recent Legislation and News Feed */}
+      <Card className="bg-gradient-to-r from-blue-50/50 to-purple-50/30 border-blue-200 hover:shadow-lg transition-all duration-300">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-3 text-xl">
               <Building className="w-5 h-5 text-blue-500" />
-              Новые законы и требования
+              — Я собрал важные изменения в законах и СМИ
             </CardTitle>
-            <CardDescription>Изменения, влияющие на бизнес</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 border border-blue-200 rounded-lg hover:bg-blue-50/50 transition-colors">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-medium text-sm leading-tight">Изменения в ФЗ №149 "О защите персональных данных"</h4>
-                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
-                  Новое
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">15 января 2024 • Правовые</p>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Риск несоответствия</span>
-                  <span className="font-medium text-orange-600">Высокий</span>
-                </div>
-                <Progress value={85} className="h-2" />
-              </div>
-            </div>
-
-            <div className="p-4 border border-yellow-200 rounded-lg hover:bg-yellow-50/50 transition-colors">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-medium text-sm leading-tight">Новые требования к модерации контента</h4>
-                <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-700 border-yellow-200">
-                  7 дней
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">10 января 2024 • Регулирование</p>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">Риск штрафов</span>
-                  <span className="font-medium text-yellow-600">Средний</span>
-                </div>
-                <Progress value={65} className="h-2" />
-              </div>
-            </div>
-
-            <Button variant="outline" className="w-full mt-4">
-              Все изменения в законах
-              <ArrowUpRight className="w-4 h-4 ml-2" />
+            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+              Показать все
+              <ArrowUpRight className="w-4 h-4 ml-1" />
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Card className="border border-blue-200 hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-1.5 bg-blue-100 rounded-md">
+                    <Shield className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
+                    Законодательство
+                  </Badge>
+                </div>
+                <h4 className="font-semibold text-sm mb-2 leading-tight">
+                  Федеральный закон от 08.08.2024 № 216-ФЗ «О внесении изменений в ...»
+                </h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Закон направлен на усиление регулирования в сфере информационной безопасности и защиты данных
+                </p>
+                <Button size="sm" variant="outline" className="w-full text-blue-600 border-blue-200 hover:bg-blue-50">
+                  Принять меры
+                  <ArrowUpRight className="w-3 h-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
 
-        {/* Industry News */}
-        <Card className="hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-green-500" />
-              Новости отрасли
-            </CardTitle>
-            <CardDescription>Важные события и тренды</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="p-4 border border-green-200 rounded-lg hover:bg-green-50/50 transition-colors">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-medium text-sm leading-tight">Рост требований к кибербезопасности в IT-сфере</h4>
-                <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
-                  Тренд
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">12 января 2024 • Отраслевые</p>
-              <p className="text-sm text-muted-foreground">Влияние: Необходимость усиления IT-инфраструктуры</p>
-            </div>
+            <Card className="border border-green-200 hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-1.5 bg-green-100 rounded-md">
+                    <BarChart3 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                    Новость
+                  </Badge>
+                </div>
+                <h4 className="font-semibold text-sm mb-2 leading-tight">
+                  Магазин-склад Самоката закрыт Роспотребнадзором
+                </h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Невский районный суд Петербурга закрыл магазин-склад ООО "Умный Ритейл" в Ростове-на-Дону по иску Роспотребнадзор...
+                </p>
+                <Button size="sm" variant="outline" className="w-full text-green-600 border-green-200 hover:bg-green-50">
+                  Принять меры
+                  <ArrowUpRight className="w-3 h-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
 
-            <div className="p-4 border border-purple-200 rounded-lg hover:bg-purple-50/50 transition-colors">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-medium text-sm leading-tight">Изменения в налоговом регулировании IT-услуг</h4>
-                <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200">
-                  Важно
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground mb-2">8 января 2024 • Налоги</p>
-              <p className="text-sm text-muted-foreground">Возможность оптимизации на 15-20%</p>
-            </div>
-
-            <Button variant="outline" className="w-full mt-4">
-              Все новости отрасли
-              <ArrowUpRight className="w-4 h-4 ml-2" />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+            <Card className="border border-orange-200 hover:shadow-md transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="p-1.5 bg-orange-100 rounded-md">
+                    <Shield className="w-4 h-4 text-orange-600" />
+                  </div>
+                  <Badge variant="secondary" className="text-xs bg-orange-100 text-orange-700 border-orange-200">
+                    Законодательство
+                  </Badge>
+                </div>
+                <h4 className="font-semibold text-sm mb-2 leading-tight">
+                  Ужесточение требований к обработке персональных данных
+                </h4>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Ужесточились требования к обработке персональных данных и существенно выросли штрафы за выявленные нарушения.
+                </p>
+                <Button size="sm" variant="outline" className="w-full text-orange-600 border-orange-200 hover:bg-orange-50">
+                  Принять меры
+                  <ArrowUpRight className="w-3 h-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* AI Risk Assistant */}
       <Card className="bg-gradient-to-r from-blue-500/5 to-purple-500/10 border-blue-200 hover:shadow-lg transition-all duration-300">
