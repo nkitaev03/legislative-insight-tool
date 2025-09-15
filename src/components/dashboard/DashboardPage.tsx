@@ -94,8 +94,30 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">ООО «Звук» • Мониторинг рисков и соответствия</p>
       </div>
 
-      {/* Risk Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Company Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-blue-200">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/15"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <Shield className="w-8 h-8 text-blue-600" />
+              </div>
+              <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 text-lg px-3 py-1">
+                Новые
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Выявлено новых законов</p>
+              <p className="text-4xl font-bold text-blue-600">12</p>
+              <p className="text-sm text-blue-600 flex items-center">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                За последний месяц
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-orange-200">
           <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/15"></div>
           <CardContent className="p-6 relative">
@@ -103,58 +125,60 @@ export default function DashboardPage() {
               <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
                 <AlertTriangle className="w-8 h-8 text-orange-600" />
               </div>
-              <Badge variant="destructive" className="text-lg px-3 py-1 bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200">
-                ВНИМАНИЕ
-              </Badge>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Общий риск-профиль</p>
-              <p className="text-4xl font-bold text-orange-600">7.3M₽</p>
-              <p className="text-sm text-orange-600 flex items-center">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                Потенциальный ущерб
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-orange-600/10"></div>
-          <CardContent className="p-6 relative">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                <Shield className="w-8 h-8 text-orange-600" />
-              </div>
               <Badge variant="secondary" className="bg-orange-50 text-orange-700 border-orange-200 text-lg px-3 py-1">
-                3 активных
+                Активные
               </Badge>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Требуют решения</p>
-              <p className="text-4xl font-bold">85%</p>
-              <p className="text-sm text-muted-foreground">
-                Вероятность реализации
+              <p className="text-sm text-muted-foreground">Выявлено рисков</p>
+              <p className="text-4xl font-bold text-orange-600">27</p>
+              <p className="text-sm text-orange-600 flex items-center">
+                <AlertTriangle className="w-4 h-4 mr-1" />
+                Требуют внимания
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-green-600/10"></div>
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-green-200">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/15"></div>
           <CardContent className="p-6 relative">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+                <Building className="w-8 h-8 text-green-600" />
               </div>
               <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200 text-lg px-3 py-1">
-                В работе
+                Охвачено
               </Badge>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">Мер по снижению</p>
-              <p className="text-4xl font-bold">5/8</p>
-              <p className="text-sm text-green-600">
-                Реализуется сейчас
+              <p className="text-sm text-muted-foreground">Подразделений компании</p>
+              <p className="text-4xl font-bold text-green-600">8</p>
+              <p className="text-sm text-green-600 flex items-center">
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Полный мониторинг
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-purple-200">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/15"></div>
+          <CardContent className="p-6 relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                <Users className="w-8 h-8 text-purple-600" />
+              </div>
+              <Badge variant="secondary" className="bg-purple-50 text-purple-700 border-purple-200 text-lg px-3 py-1">
+                Активно
+              </Badge>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">Ответственных сотрудников</p>
+              <p className="text-4xl font-bold text-purple-600">15</p>
+              <p className="text-sm text-purple-600 flex items-center">
+                <Users className="w-4 h-4 mr-1" />
+                Вовлечены в процесс
               </p>
             </div>
           </CardContent>
