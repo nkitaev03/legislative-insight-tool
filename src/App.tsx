@@ -7,8 +7,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
+import EventsPage from "./pages/EventsPage";
+import RisksPage from "./pages/RisksPage";
+import MeasuresPage from "./pages/MeasuresPage";
 import { ThemeProvider } from "./hooks/use-theme";
 import EnhancedAIAssistant from "./components/common/EnhancedAIAssistant";
+import Sidebar from "./components/layout/Sidebar";
+import Header from "./components/layout/Header";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +24,18 @@ const queryClient = new QueryClient({
   },
 });
 
+const AppLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-screen flex w-full">
+    <Sidebar />
+    <div className="flex-1 ml-64">
+      <Header sidebarCollapsed={false} />
+      <main className="pt-16">
+        {children}
+      </main>
+    </div>
+  </div>
+);
+
 const App = () => (
   <ThemeProvider defaultTheme="system">
     <QueryClientProvider client={queryClient}>
@@ -28,6 +45,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/events" element={<AppLayout><EventsPage /></AppLayout>} />
+            <Route path="/risks" element={<AppLayout><RisksPage /></AppLayout>} />
+            <Route path="/measures" element={<AppLayout><MeasuresPage /></AppLayout>} />
             <Route path="/monitoring" element={<Index />} />
             <Route path="/simulation" element={<Index />} />
             <Route path="/audit" element={<Index />} />

@@ -2,14 +2,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  BarChart3, 
   FileSearch, 
   Play, 
   Clipboard,
   ChevronLeft,
   ChevronRight,
   User,
-  Home
+  Home,
+  Calendar,
+  AlertTriangle,
+  Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -45,6 +47,9 @@ export default function Sidebar() {
 
   const navigationItems = [
     { icon: Home, text: "Главная", path: "/" },
+    { icon: Calendar, text: "События", path: "/events" },
+    { icon: AlertTriangle, text: "Риски", path: "/risks" },
+    { icon: Shield, text: "Меры", path: "/measures" },
     { icon: FileSearch, text: "Мониторинг", path: "/monitoring" },
     { icon: Play, text: "Симуляция", path: "/simulation" },
     { icon: Clipboard, text: "Аудит", path: "/audit" },
