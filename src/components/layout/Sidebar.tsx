@@ -66,11 +66,7 @@ export default function Sidebar() {
       >
         {!isCollapsed && (
           <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/4bee6142-1b43-4f44-8ecd-fd2eaec8fd6f.png" 
-              alt="СБЕР ОРМ Logo" 
-              className="h-8" 
-            />
+            <span className="text-xl font-bold text-primary">RiskAI</span>
           </div>
         )}
         <button
