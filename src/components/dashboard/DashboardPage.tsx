@@ -14,7 +14,9 @@ import {
   TrendingUp,
   TrendingDown,
   LineChart,
-  X
+  X,
+  Search,
+  Send
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -237,12 +239,52 @@ export default function DashboardPage() {
     setMetricChartOpen(true);
   };
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      console.log('Поиск:', searchQuery);
+      // Here you can add search functionality
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl md:text-2xl font-semibold">
-          Панель управления
-        </h1>
+      <div className="space-y-4">
+        <div className="text-center md:text-left">
+          <h1 className="text-xl md:text-2xl font-semibold text-foreground">
+            Привет, Никита. Меня зовут RiskAI.
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Я твой помощник в сфере рисков
+          </p>
+        </div>
+        
+        <div className="max-w-2xl">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Задайте вопрос о рисках или компании..."
+              className="w-full h-12 pl-12 pr-12 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            />
+            <button
+              onClick={handleSearch}
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
+            >
+              <Send className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="bg-secondary/40 rounded-xl p-6">
