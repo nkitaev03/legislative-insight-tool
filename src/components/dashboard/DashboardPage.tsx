@@ -241,11 +241,11 @@ export default function DashboardPage() {
     <div className="p-6 space-y-6">
       <div className="space-y-4">
         <div className="text-center md:text-left">
-          <h1 className="text-xl md:text-2xl font-semibold text-foreground">
-            Привет, Никита. Меня зовут RiskAI.
+          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Привет, Никита!
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Я твой помощник в сфере рисков
+          <p className="text-lg text-muted-foreground mt-2">
+            Меня зовут <span className="font-semibold text-foreground">RiskAI</span> — я твой помощник в сфере рисков
           </p>
         </div>
         
