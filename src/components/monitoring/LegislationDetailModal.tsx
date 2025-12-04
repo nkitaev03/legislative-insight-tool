@@ -103,305 +103,346 @@ export default function LegislationDetailModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <DialogHeader className="border-b pb-4">
-          <div className="flex items-center gap-3 mb-2">
+        <DialogHeader className="space-y-4">
+          <div className="flex items-center gap-3">
             <div className="p-2 bg-compBlue-50 dark:bg-compBlue-900/20 rounded-lg">
               <Scale className="w-5 h-5 text-compBlue-600" />
             </div>
             <span className="text-sm font-medium text-compBlue-600">Законодательство</span>
           </div>
           
-          <DialogTitle className="text-xl font-semibold leading-tight">
-            {item.title}
+          <DialogTitle className="text-xl font-semibold leading-tight pr-8">
+            <div className="space-y-1">
+              <div>{item.title}</div>
+              <div className="text-sm text-muted-foreground font-normal">
+                № {item.id} от {formatDate(item.date)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {item.source}
+              </div>
+            </div>
           </DialogTitle>
-          
-          <div className="text-sm text-muted-foreground">
-            ООО «Звук»
-          </div>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Основной контент */}
+          <div className="lg:col-span-2 space-y-6">
             
-            {/* Предмет регулирования */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Предмет регулирования</h3>
+            {/* Что случилось */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-compBlue-600" />
+                Что случилось
+              </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
-            </div>
+            </Card>
 
             {/* Как это влияет */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Как это влияет</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                Для ООО «Звук» последствия несоблюдения закона № 216-ФЗ заключаются в высоком риске крупных 
-                штрафов (до 3 млн руб. за нарушение), потенциальной блокировке сервиса по решению 
-                Генпрокуратуры и значительном репутационном ущербе, ведущем к оттоку клиентов. Основные угрозы 
-                исходят от несоответствия IT-инфраструктуры требованиям по защите данных (ФЗ-149), отсутствия 
-                автоматической модерации контента (ФЗ-126) и риска распространения запрещенного материала (
-                ФЗ-436).
-              </p>
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-compOrange-600" />
+                Как это влияет
+              </h3>
               
-              {/* Risk Items */}
-              <div className="space-y-3">
-                <div 
-                  className="flex items-center gap-3 p-4 bg-background border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handleRiskClick('Нарушение требований ФЗ № 149-ФЗ по защите данных в государственных системах', 'RSG-171185 • 20.02.2024')}
-                >
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Нарушение требований ФЗ № 149-ФЗ по защите данных в государственных системах</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-muted-foreground">RSG-171185 • 20.02.2024</span>
-                      <Badge variant="info" className="text-xs">Новый</Badge>
+              {/* Новые риски */}
+              <div className="mb-6">
+                <h4 className="font-medium mb-4 text-red-700 dark:text-red-300">Новые риски:</h4>
+                <div className="space-y-3">
+                  <div 
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Нарушение требований по обработке персональных данных', 'Риск штрафов до 500 000 руб. за несоблюдение новых требований')}
+                  >
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
                     </div>
-                  </div>
-                  <Badge variant="destructive" className="text-xs">
-                    Высокий
-                  </Badge>
-                  <div className="text-muted-foreground">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="space-y-2 ml-4">
-                  <h4 className="text-sm font-medium">Рекомендации 🔥</h4>
-                  <div className="space-y-2">
-                    {[
-                      "Обновить IT-инфраструктуру в соответствии с Ф3 № 149-ФЗ",
-                      "Разработать ВПД по учету рабочего времени и документооборота", 
-                      "Провести аудит соответствия системы защиты данных законодательным требованиям"
-                    ].map((rec, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                        <div className="p-1 bg-compBlue-100 dark:bg-compBlue-900/30 rounded">
-                          <FileText className="w-3 h-3 text-compBlue-600" />
-                        </div>
-                        <span className="text-sm flex-1">{rec}</span>
-                        <Button size="sm" variant="outline" className="text-xs h-7 px-2">
-                          Снизить риск
-                        </Button>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">Риски информационной безопасности</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-495 • 15.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div 
-                  className="flex items-center gap-3 p-4 bg-background border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handleRiskClick('Несоблюдение требований ФЗ № 126-ФЗ по установке технических средств контроля', 'RSG-171185 • 20.02.2024')}
-                >
-                  <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Несоблюдение требований ФЗ № 126-ФЗ по установке технических средств контроля</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-muted-foreground">RSG-171185 • 20.02.2024</span>
-                      <Badge variant="info" className="text-xs">Новый</Badge>
+                    </div>
+                    <Badge variant="destructive" className="text-xs">
+                      Очень высокий
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
-                  <Badge variant="destructive" className="text-xs">
-                    Высокий
-                  </Badge>
-                  <div className="text-muted-foreground">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="space-y-2 ml-4">
-                  <h4 className="text-sm font-medium">Рекомендации 🔥</h4>
-                  <div className="space-y-2">
-                    {[
-                      "Отсутствие автоматизации процесса модерации контента",
-                      "Недостаточная защита данных и контента от утечек"
-                    ].map((rec, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                        <div className="p-1 bg-compBlue-100 dark:bg-compBlue-900/30 rounded">
-                          <FileText className="w-3 h-3 text-compBlue-600" />
-                        </div>
-                        <span className="text-sm flex-1">{rec}</span>
-                        <Button size="sm" variant="outline" className="text-xs h-7 px-2">
-                          Снизить риск
-                        </Button>
+                  
+                  <div 
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Недостаточная защита информационных систем', 'Возможные блокировки систем и приостановка деятельности')}
+                  >
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">Регуляторные риски</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-496 • 16.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div 
-                  className="flex items-center gap-3 p-4 bg-background border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handleRiskClick('Нарушение норм законодательства о запрещённом контенте (ФЗ № 436-ФЗ)', 'RSG-171185 • 20.02.2024')}
-                >
-                  <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-full flex-shrink-0">
-                    <AlertTriangle className="w-4 h-4 text-orange-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Нарушение норм законодательства о запрещённом контенте (ФЗ № 436-ФЗ)</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-muted-foreground">RSG-171185 • 20.02.2024</span>
-                      <Badge variant="info" className="text-xs">Новый</Badge>
+                    </div>
+                    <Badge variant="destructive" className="text-xs">
+                      Высокий
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
-                  <Badge variant="warning" className="text-xs">
-                    Средний
-                  </Badge>
-                  <div className="text-muted-foreground">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </div>
-
-                <div className="space-y-2 ml-4">
-                  <h4 className="text-sm font-medium">Рекомендации 🔥</h4>
-                  <div className="space-y-2">
-                    {[
-                      "Усилить модерацию контента с учетом ФЗ № 436-ФЗ",
-                      "Внедрить AI-системы для автоматической фильтрации запрещенного контента",
-                      "Обновить внутренние регламенты работы с контентом"
-                    ].map((rec, index) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                        <div className="p-1 bg-compBlue-100 dark:bg-compBlue-900/30 rounded">
-                          <FileText className="w-3 h-3 text-compBlue-600" />
-                        </div>
-                        <span className="text-sm flex-1">{rec}</span>
-                        <Button size="sm" variant="outline" className="text-xs h-7 px-2">
-                          Снизить риск
-                        </Button>
+                  
+                  <div 
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Отсутствие назначенного ответственного за ПДн', 'Административная ответственность руководителя организации')}
+                  >
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">Репутационные риски</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-497 • 17.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div 
-                  className="flex items-center gap-3 p-4 bg-background border border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handleRiskClick('Отток пользователей в B2C-сегменте', 'RSG-171185 • 20.02.2024')}
-                >
-                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full flex-shrink-0">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">Отток пользователей в B2C-сегменте</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-muted-foreground">RSG-171185 • 20.02.2024</span>
-                      <span className="text-xs text-green-600">Уровень снижен</span>
+                    </div>
+                    <Badge variant="warning" className="text-xs">
+                      Средний
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="text-xs">
-                    Низкий
-                  </Badge>
-                  <div className="text-muted-foreground">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  
+                  <div 
+                    className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                    onClick={() => handleRiskClick('Нарушение сроков уведомления регулятора', 'Дополнительные санкции за несвоевременное информирование')}
+                  >
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-full flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">Финансовые риски</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground">RSK-498 • 18.07.2025</span>
+                        <Badge variant="info" className="text-xs">Новый</Badge>
+                      </div>
+                    </div>
+                    <Badge variant="warning" className="text-xs">
+                      Средний
+                    </Badge>
+                    <div className="text-muted-foreground">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
+
+            {/* Что делать */}
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-compBlue-600" />
+                Что делать
+              </h3>
+              <div className="space-y-4">
+                <RecommendationItem 
+                  recommendation={{
+                    text: "Назначить ответственного за обработку персональных данных",
+                    responsible: "Не назначен",
+                    status: "pending"
+                  }}
+                />
+                <RecommendationItem 
+                  recommendation={{
+                    text: "Провести аудит текущих процессов обработки ПДн",
+                    responsible: "Не назначен", 
+                    status: "pending"
+                  }}
+                />
+                <RecommendationItem 
+                  recommendation={{
+                    text: "Обновить политику обработки персональных данных",
+                    responsible: "Не назначен",
+                    status: "pending"
+                  }}
+                />
+                <RecommendationItem 
+                  recommendation={{
+                    text: "Провести обучение сотрудников новым требованиям",
+                    responsible: "Не назначен",
+                    status: "pending"
+                  }}
+                />
+                <RecommendationItem 
+                  recommendation={{
+                    text: "Внедрить технические меры защиты информации",
+                    responsible: "Не назначен",
+                    status: "pending"
+                  }}
+                />
+              </div>
+            </Card>
           </div>
 
-          {/* Sidebar */}
+          {/* Боковая панель */}
           <div className="space-y-4">
-            {/* Нормы на связь */}
-            <Card className="p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="p-1 bg-green-100 dark:bg-green-900/30 rounded">
-                  <img 
-                    src="/lovable-uploads/baced79b-ef78-45d4-ae84-b842ec73b605.png" 
-                    alt="AI Assistant" 
-                    className="w-4 h-4"
-                  />
+            {/* Есть вопросы */}
+            <Card 
+              className="p-4 bg-compGreen-50 dark:bg-compGreen-900/20 border-compGreen-200"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-compGreen-500 rounded-full">
+                  <MessageCircle className="w-4 h-4 text-white" />
                 </div>
-                <h4 className="font-medium text-green-700 dark:text-green-300">Норм на связи</h4>
-                <div className="text-muted-foreground">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <div>
+                  <h4 className="font-medium text-compGreen-700 dark:text-compGreen-300">Есть вопросы?</h4>
+                  <p className="text-xs text-compGreen-600 dark:text-compGreen-400">Я отвечу на любой из них</p>
                 </div>
               </div>
-              <p className="text-xs text-green-600 dark:text-green-400">Принимаю вопросы</p>
             </Card>
 
             {/* Информация */}
             <Card className="p-4">
               <h4 className="font-medium mb-3">Информация</h4>
               <div className="space-y-3 text-sm">
-                <div>
-                  <span className="text-muted-foreground block">Опубликован</span>
-                  <span className="text-xs">01.02.2024</span>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Дата публикования документа</span>
+                  <span>{formatDate(item.date)}</span>
                 </div>
+                <Separator />
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Дата выгрузки на платформу</span>
+                  <span>{formatDate(item.date)}</span>
+                </div>
+                <Separator />
                 <div>
-                  <span className="text-muted-foreground block">В норме</span>
-                  <span className="text-xs">04.02.2024</span>
+                  <span className="text-muted-foreground">Источники</span>
+                  <a 
+                    href={item.sourceUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 mt-1"
+                  >
+                    <span className="text-xs">{item.source}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
-            </Card>
-
-            {/* Кем принят */}
-            <Card className="p-4">
-              <h4 className="font-medium mb-3">Кем принят</h4>
-              <p className="text-xs text-muted-foreground">
-                Государственная Дума Федерального Собрания Российской Федерации
-              </p>
-              <Button variant="ghost" size="sm" className="mt-2 p-0 h-auto text-xs text-compBlue-600">
-                <ExternalLink className="w-3 h-3 mr-1" />
-                Скачать текст закона
-              </Button>
             </Card>
 
             {/* Влияние на ФЗ */}
             <Card className="p-4">
               <h4 className="font-medium mb-3">Влияние на ФЗ</h4>
-              <div className="space-y-2 text-xs">
-                <div>
-                  <a href="#" className="text-compBlue-600 hover:text-compBlue-700 block">
-                    ФЗ № 149-ФЗ «Об информации, информационных технологиях и о защите информации»
+              <div className="space-y-2 text-sm">
+                <p className="text-muted-foreground mb-2">Вносит изменения в:</p>
+                <div className="space-y-1">
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    ФЗ-152 "О персональных данных"
+                  </a>
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    ФЗ-149 "Об информации"
+                  </a>
+                  <a 
+                    href="#" 
+                    className="flex items-center gap-1 text-compBlue-600 hover:text-compBlue-700 text-xs"
+                  >
+                    <FileText className="w-3 h-3" />
+                    КоАП РФ ст. 13.11
                   </a>
                 </div>
-                <div>
-                  <a href="#" className="text-compBlue-600 hover:text-compBlue-700 block">
-                    ФЗ № 436-ФЗ «О защите детей от информации, причиняющей вред их здоровью и развитию»
-                  </a>
+              </div>
+            </Card>
+
+            {/* Действия */}
+            <div className="flex gap-2">
+              <Button variant="ghost" size="sm" className="flex-1">
+                <Star className="w-4 h-4 mr-1" />
+                В избранное
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setIsForwardModalOpen(true)}
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Оценка согласованности */}
+            <Card 
+              className="p-4 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+              onClick={() => setIsFeedbackModalOpen(true)}
+            >
+              <div className="mb-2">
+                <div className="w-8 h-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <AlertTriangle className="w-4 h-4 text-red-600" />
                 </div>
-                <div>
-                  <a href="#" className="text-compBlue-600 hover:text-compBlue-700 block">
-                    ФЗ № 126-ФЗ «О связи»
-                  </a>
-                </div>
-                <Button variant="ghost" size="sm" className="mt-2 p-0 h-auto text-xs">
-                  Ещё 6 ↓
-                </Button>
+                <p className="text-sm font-medium text-red-600">Не согласен с оценкой</p>
               </div>
             </Card>
           </div>
         </div>
-
-        {/* Модальные окна */}
-        <FeedbackModal
+        
+        <FeedbackModal 
           isOpen={isFeedbackModalOpen}
           onClose={() => setIsFeedbackModalOpen(false)}
         />
         
-        <RiskDetailModal
-          isOpen={isRiskModalOpen}
-          onClose={() => setIsRiskModalOpen(false)}
-          risk={selectedRisk}
-        />
-        
-        <ForwardModal
+        <ForwardModal 
           isOpen={isForwardModalOpen}
           onClose={() => setIsForwardModalOpen(false)}
           itemTitle={item.title}
         />
+        
+        <RiskDetailModal 
+          isOpen={isRiskModalOpen}
+          onClose={() => setIsRiskModalOpen(false)}
+          risk={selectedRisk}
+        />
       </DialogContent>
     </Dialog>
+  );
+}
+
+function RecommendationItem({ recommendation }: { recommendation: Recommendation }) {
+  return (
+    <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+      <div className="p-2 bg-compBlue-100 dark:bg-compBlue-900/30 rounded-lg">
+        <FileText className="w-4 h-4 text-compBlue-600" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-medium">{recommendation.text}</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Ответственный: {recommendation.responsible}
+        </p>
+      </div>
+      <div className="flex gap-2">
+        <Button size="sm" className="bg-compGreen-500 hover:bg-compGreen-600 text-white">
+          Делать
+        </Button>
+        <Button variant="ghost" size="sm">
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
   );
 }

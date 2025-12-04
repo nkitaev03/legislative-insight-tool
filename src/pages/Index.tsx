@@ -261,6 +261,10 @@ export default function Index() {
     switch (path) {
       case '/monitoring':
         return <MonitoringPage />;
+      case '/simulation':
+        return <SimulationPage />;
+      case '/audit':
+        return <AuditPage />;
       case '/profile':
         return <ProfilePage />;
       default:
