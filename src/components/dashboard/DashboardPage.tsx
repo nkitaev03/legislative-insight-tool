@@ -44,28 +44,11 @@ import {
 import BusinessProcessMap from './BusinessProcessMap';
 import InteractiveChecklist from '../common/InteractiveChecklist';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import FinancialForecastChart from '../simulation/FinancialForecastChart';
 
 const riskData = [
   { name: 'Высокий', value: 25, color: '#f44336' },
   { name: 'Средний', value: 30, color: '#ff9800' },
   { name: 'Низкий', value: 45, color: '#2a9e31' },
-];
-
-// Financial forecast data
-const financialForecastData = [
-  { month: 'Янв', forecast: 5.2, actual: 5.4 },
-  { month: 'Фев', forecast: 5.6, actual: 5.7 },
-  { month: 'Мар', forecast: 5.8, actual: 5.9 },
-  { month: 'Апр', forecast: 6.1, actual: 5.8 },
-  { month: 'Май', forecast: 6.3, actual: 6.2 },
-  { month: 'Июн', forecast: 6.5, actual: 6.3 },
-  { month: 'Июл', forecast: 6.7, actual: 6.5 },
-  { month: 'Авг', forecast: 6.9, actual: null },
-  { month: 'Сен', forecast: 7.1, actual: null },
-  { month: 'Окт', forecast: 7.3, actual: null },
-  { month: 'Ноя', forecast: 7.5, actual: null },
-  { month: 'Дек', forecast: 7.7, actual: null },
 ];
 
 // Macro parameters impact data
@@ -404,60 +387,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Financial Forecast Chart */}
-          <Card className="hover-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Финансовый прогноз</CardTitle>
-              <CardDescription>Влияние макропараметров на финансовые показатели</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={financialForecastData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <defs>
-                      <linearGradient id="colorForecast" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1eaedb" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#1eaedb" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="month" />
-                    <YAxis 
-                      tickFormatter={(value) => `${value}M₽`}
-                      domain={['dataMin - 0.5', 'dataMax + 0.5']}
-                    />
-                    <Tooltip 
-                      formatter={(value) => [`${value}M₽`, '']}
-                      labelFormatter={(label) => `${label} 2023`}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="actual" 
-                      stroke="#8884d8" 
-                      strokeWidth={2}
-                      fillOpacity={1} 
-                      fill="url(#colorActual)" 
-                      name="Факт"
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="forecast" 
-                      stroke="#1eaedb" 
-                      strokeWidth={2}
-                      strokeDasharray="5 5"
-                      fillOpacity={1} 
-                      fill="url(#colorForecast)" 
-                      name="Прогноз"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Macro Parameters and Risk Distribution */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
