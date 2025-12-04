@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Search, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import NotificationBell from '../common/NotificationBell';
 import { ThemeToggle } from '../theme/ThemeToggle';
-import { Input } from '@/components/ui/input';
+
 
 interface HeaderProps {
   sidebarCollapsed: boolean;
@@ -25,16 +25,7 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
     >
       <div className="h-full flex items-center justify-between px-6">
         <div className="flex-1">
-          <div className="max-w-md">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <Input 
-                type="text" 
-                placeholder="Поиск по документам" 
-                className="pl-9 pr-4 h-10 rounded-xl border-border bg-background"
-              />
-            </div>
-          </div>
+          {/* Пустое место */}
         </div>
         
         <div className="flex items-center gap-4">

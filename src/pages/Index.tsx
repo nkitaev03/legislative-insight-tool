@@ -38,7 +38,7 @@ export default function Index() {
   // Show welcome toast on first render
   useEffect(() => {
     toast({
-      title: "Добро пожаловать в НОРМ",
+      title: "Добро пожаловать в RiskAI",
       description: "У вас 2 новых уведомления об изменениях в законодательстве",
       className: "bg-white border-l-4 border-compGreen-500",
     });
